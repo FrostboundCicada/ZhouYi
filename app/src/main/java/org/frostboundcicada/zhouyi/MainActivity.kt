@@ -28,7 +28,7 @@ class MainActivity : Activity() {
         Entry("易经", "${section} · 第${i + 1}卦", "${name}卦目录条目；经文与传文尚待据可靠底本逐项录入。", "本条目前仅建立卦名与通行本次序，不代表正文已收录。后续将分别录入卦辞、爻辞、彖传、大象、小象，并标注底本、参校本、位置与异文。缺文、残字和不可辨字一律保留缺失状态，不按上下文补写。")
     }.drop(2)
     private val wingsIndex = listOf("彖传上","彖传下","象传上","象传下","系辞上传","系辞下传","文言传","说卦传","序卦传","杂卦传").map {
-        Entry("十翼", "易传十翼", "《${it}》", "十翼篇目目录；全文尚待按可靠底本逐段录入。", "本条为篇目目录，不是全文。收录时将区分经文、传文层次，标注章次、版本异文及译文依据。")
+        Entry("十翼 · 易传十翼", "《${it}》", "十翼篇目目录；全文尚待按可靠底本逐段录入。", "本条为篇目目录，不是全文。收录时将区分经文、传文层次，标注章次、版本异文及译文依据。")
     }
 
     private val entries = listOf(
@@ -112,7 +112,7 @@ class MainActivity : Activity() {
 
 残片拼接关系、卷次、年代判断和释文均须保留来源及置信程度。未经原图核验的 OCR 不作为底本文字。
 """.trimIndent())
-     + hexagramIndex + wingsIndex
+    ) + hexagramIndex + wingsIndex
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
