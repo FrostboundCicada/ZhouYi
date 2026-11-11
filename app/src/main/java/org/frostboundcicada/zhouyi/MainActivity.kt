@@ -51,6 +51,11 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zeroui.kit.components.Card as ZeroCard
+import com.zeroui.kit.components.Button as ZeroButton
+import com.zeroui.kit.components.TextButton as ZeroTextButton
+import com.zeroui.kit.components.TextField as ZeroTextField
+import com.zeroui.kit.components.Slider as ZeroSlider
+import com.zeroui.kit.components.ListRow
 import com.zeroui.kit.components.Scaffold as ZeroScaffold
 import com.zeroui.kit.components.TopAppBar as ZeroTopAppBar
 import com.zeroui.kit.glass.LiquidBottomTab
@@ -367,56 +372,69 @@ private fun ReadingPage(entry: Entry, onBack: () -> Unit) {
     ) { padding ->
         LazyColumn(
             modifier = Modifier.fillMaxSize().padding(padding),
-            contentPadding = PaddingValues(start = 22.dp, end = 22.dp, top = 20.dp, bottom = 40.dp),
-            verticalArrangement = Arrangement.spacedBy(18.dp)
+            contentPadding = PaddingValues(start = 18.dp, end = 18.dp, top = 14.dp, bottom = 44.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
             item {
-                Text(entry.title, style = MaterialTheme.typography.headlineMedium,
-                    fontFamily = FontFamily.Serif, fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface)
-                Spacer(Modifier.height(10.dp))
-                Text(entry.source, style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant)
-                val sourceImageUrl = originalImageSourceFor(entry.title)
-                if (sourceImageUrl != null) {
-                    Spacer(Modifier.height(10.dp))
-                    Text(
-                        "查看古籍原书影像（需要联网）",
-                        modifier = Modifier.clickable { uriHandler.openUri(sourceImageUrl) }
-                            .padding(vertical = 8.dp),
-                        color = MaterialTheme.colorScheme.primary,
-                        style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                    Text(
-                        "当前为馆藏／数字化原书入口，尚未缓存为应用内离线图片。",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                ZeroCard(
+                    modifier = Modifier.fillMaxWidth(),
+                    cornerRadius = 26.dp,
+                    contentPadding = PaddingValues(20.dp)
+                ) {
+                    Text(entry.section, style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.SemiBold)
+                    Text(entry.title, style = MaterialTheme.typography.headlineSmall,
+                        fontFamily = FontFamily.Serif, fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface)
+                    Text(entry.source, style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant, lineHeight = 20.sp)
+                    val sourceImageUrl = originalImageSourceFor(entry.title)
+                    if (sourceImageUrl != null) {
+                        ZeroTextButton(
+                            text = "打开古籍原书影像 ↗",
+                            onClick = { uriHandler.openUri(sourceImageUrl) },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        Text(
+                            "馆藏／数字化原书入口，需要联网；目前尚未缓存为应用内离线图片。",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 }
             }
             if (entry.section == "洛书") {
                 item { LuoshuIllustration(entry.title) }
             }
             item {
-                HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.45f))
-                Text("正文", style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.SemiBold)
-                SelectionContainer {
-                    Text(
-                        entry.body,
-                        modifier = Modifier.fillMaxWidth(),
-                        style = MaterialTheme.typography.bodyLarge.copy(
-                            fontFamily = FontFamily.Serif, lineHeight = 32.sp
-                        ),
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
+                ZeroCard(
+                    modifier = Modifier.fillMaxWidth(),
+                    cornerRadius = 24.dp,
+                    contentPadding = PaddingValues(horizontal = 20.dp, vertical = 18.dp)
+                ) {
+                    Text("原文", style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.SemiBold)
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.35f))
+                    SelectionContainer {
+                        Text(
+                            entry.body,
+                            modifier = Modifier.fillMaxWidth(),
+                            style = MaterialTheme.typography.bodyLarge.copy(
+                                fontFamily = FontFamily.Serif, lineHeight = 32.sp
+                            ),
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
                 }
             }
             if (entry.translation != null) {
                 item {
-                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Text("逐段译文", style = MaterialTheme.typography.titleSmall,
+                    ZeroCard(
+                        modifier = Modifier.fillMaxWidth(),
+                        cornerRadius = 24.dp,
+                        contentPadding = PaddingValues(20.dp)
+                    ) {
+                        Text("逐段译文", style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.SemiBold)
                         Text(entry.translation, modifier = Modifier.fillMaxWidth(),
                             style = MaterialTheme.typography.bodyLarge.copy(lineHeight = 30.sp),
@@ -425,26 +443,23 @@ private fun ReadingPage(entry: Entry, onBack: () -> Unit) {
                 }
             }
             item {
-                Surface(
-                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.55f),
-                    shape = RoundedCornerShape(18.dp),
-                    modifier = Modifier.fillMaxWidth()
+                ZeroCard(
+                    modifier = Modifier.fillMaxWidth(),
+                    cornerRadius = 22.dp,
+                    contentPadding = PaddingValues(18.dp)
                 ) {
-                    Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                        Text("收录与校勘说明", style = MaterialTheme.typography.titleSmall,
-                            fontWeight = FontWeight.SemiBold)
-                        Text(
-                            "请以条目所列底本和版本说明为准。目录占位内容不代表正文已经完整收录；缺文、残字及未经核验的译文不会根据上下文补造。",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
+                    Text("收录与校勘说明", style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.SemiBold)
+                    Text(
+                        "请以条目所列底本和版本说明为准。目录占位内容不代表正文已经完整收录；缺文、残字及未经核验的译文不会根据上下文补造。",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        lineHeight = 21.sp
+                    )
                 }
             }
             item {
-                OutlinedButton(onClick = onBack, modifier = Modifier.fillMaxWidth()) {
-                    Text("返回目录")
-                }
+                ZeroTextButton(text = "返回目录", onClick = onBack, modifier = Modifier.fillMaxWidth())
             }
         }
     }
@@ -474,29 +489,35 @@ private fun LibraryPage(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         item {
-            OutlinedTextField(
-                value = query, onValueChange = onQueryChange,
-                modifier = Modifier.fillMaxWidth(), singleLine = true,
-                shape = RoundedCornerShape(22.dp),
-                placeholder = { Text("搜索卦名、篇名、原文或版本") },
-                leadingIcon = { Text("⌕", fontSize = 24.sp) },
-                colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                    focusedContainerColor = MaterialTheme.colorScheme.surface,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.45f),
-                    focusedBorderColor = MaterialTheme.colorScheme.primary
-                )
+            ZeroTextField(
+                value = query,
+                onValueChange = onQueryChange,
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+                label = "搜索卦名、篇名、原文或版本",
+                useLabelAsPlaceholder = true,
+                leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) }
             )
         }
         item {
             LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 items(categories) { name ->
-                    FilterChip(
-                        selected = category == name,
-                        onClick = { onCategoryChange(name) },
-                        label = { Text(name, maxLines = 1) },
-                        shape = RoundedCornerShape(50)
-                    )
+                    ZeroCard(
+                        color = if (category == name) MaterialTheme.colorScheme.primaryContainer
+                            else MaterialTheme.colorScheme.surface,
+                        cornerRadius = 50.dp,
+                        contentPadding = PaddingValues(horizontal = 15.dp, vertical = 9.dp),
+                        onClick = { onCategoryChange(name) }
+                    ) {
+                        Text(
+                            name,
+                            maxLines = 1,
+                            style = MaterialTheme.typography.labelLarge,
+                            color = if (category == name) MaterialTheme.colorScheme.onPrimaryContainer
+                                else MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontWeight = if (category == name) FontWeight.SemiBold else FontWeight.Normal
+                        )
+                    }
                 }
             }
         }
@@ -718,108 +739,138 @@ private fun SettingsPage(
 
     LazyColumn(
         modifier = modifier.fillMaxSize(),
-        contentPadding = PaddingValues(horizontal = 18.dp, vertical = 12.dp),
-        verticalArrangement = Arrangement.spacedBy(14.dp)
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 14.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         item {
-            Text("显示与排版", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Text("偏好设置", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+                Text("调整阅读环境与应用外观", style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
         }
         item {
-            Surface(color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(24.dp),
-                tonalElevation = 1.dp, modifier = Modifier.fillMaxWidth()) {
-                Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text("界面大小", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-                        Spacer(Modifier.weight(1f))
-                        Text("${(uiScale * 100).toInt()}%", color = MaterialTheme.colorScheme.primary,
-                            fontWeight = FontWeight.SemiBold)
+            ZeroCard(
+                modifier = Modifier.fillMaxWidth(),
+                cornerRadius = 24.dp,
+                contentPadding = PaddingValues(18.dp)
+            ) {
+                Text("显示与排版", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                ListRow {
+                    Column(verticalArrangement = Arrangement.spacedBy(7.dp)) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text("界面大小", style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
+                            Spacer(Modifier.weight(1f))
+                            Text("${(uiScale * 100).toInt()}%", color = MaterialTheme.colorScheme.primary,
+                                fontWeight = FontWeight.SemiBold)
+                        }
+                        Text("调整卡片、间距、图标和导航等界面元素。",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        ZeroSlider(value = uiScale, onValueChange = onUiScaleChange,
+                            valueRange = 0.85f..1.20f, keyPoints = listOf(0.85f, 1f, 1.2f))
+                        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                            Text("紧凑", style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text("宽松", style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
                     }
-                    Text("调整卡片、间距、图标和导航等界面元素的整体大小。",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Slider(value = uiScale, onValueChange = onUiScaleChange,
-                        valueRange = 0.85f..1.20f, steps = 6)
-                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                        Text("紧凑", style = MaterialTheme.typography.labelSmall,
+                }
+                HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.28f))
+                ListRow {
+                    Column(verticalArrangement = Arrangement.spacedBy(7.dp)) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text("字体大小", style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
+                            Spacer(Modifier.weight(1f))
+                            Text("${(fontScale * 100).toInt()}%", color = MaterialTheme.colorScheme.primary,
+                                fontWeight = FontWeight.SemiBold)
+                        }
+                        Text("独立调整文字比例，不改变卡片和图标尺寸。",
+                            style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant)
-                        Text("宽松", style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    }
-                    HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.35f))
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text("字体大小", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-                        Spacer(Modifier.weight(1f))
-                        Text("${(fontScale * 100).toInt()}%", color = MaterialTheme.colorScheme.primary,
-                            fontWeight = FontWeight.SemiBold)
-                    }
-                    Text("独立调整所有页面的文字显示比例，不改变界面元素尺寸。",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Slider(value = fontScale, onValueChange = onFontScaleChange,
-                        valueRange = 0.85f..1.40f, steps = 10)
-                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                        Text("小", style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant)
-                        Text("大", style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        ZeroSlider(value = fontScale, onValueChange = onFontScaleChange,
+                            valueRange = 0.85f..1.40f,
+                            keyPoints = listOf(0.85f, 1f, 1.2f, 1.4f))
+                        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                            Text("小", style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text("大", style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
                     }
                 }
             }
         }
         item {
-            Surface(color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(24.dp),
-                tonalElevation = 1.dp, modifier = Modifier.fillMaxWidth()) {
-                Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                    Text("字体", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-                    Text(fontName, style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.primary, maxLines = 2, overflow = TextOverflow.Ellipsis)
-                    Text("支持导入 TTF、OTF、TTC、OTC 字体文件。字体仅保存在本机应用设置中，不会上传。",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Button(onClick = { fontPicker.launch(arrayOf("*/*")) }) {
-                            Text("导入字体")
-                        }
-                        OutlinedButton(onClick = {
+            ZeroCard(
+                modifier = Modifier.fillMaxWidth(),
+                cornerRadius = 24.dp,
+                contentPadding = PaddingValues(18.dp)
+            ) {
+                Text("字体", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                Text(fontName, style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.primary, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                Text("支持导入 TTF、OTF、TTC、OTC。字体文件仅保存在本机应用设置中。",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    ZeroButton(onClick = { fontPicker.launch(arrayOf("*/*")) }) {
+                        Text("导入字体")
+                    }
+                    ZeroTextButton(
+                        text = "恢复默认",
+                        onClick = {
                             onFontUriChange(null)
                             fontMessage = "已恢复系统默认字体。"
-                        }, enabled = fontUri != null) {
-                            Text("恢复默认")
+                        },
+                        enabled = fontUri != null
+                    )
+                }
+                if (fontMessage != null) {
+                    Text(fontMessage!!, style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.primary)
+                }
+            }
+        }
+        item {
+            ZeroCard(
+                modifier = Modifier.fillMaxWidth(),
+                cornerRadius = 24.dp,
+                contentPadding = PaddingValues(18.dp)
+            ) {
+                Text("主题模式", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                Text("选择应用外观，也可以跟随系统自动切换。",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    listOf("system" to "跟随系统", "light" to "浅色", "dark" to "深色").forEach { (value, label) ->
+                        ZeroCard(
+                            color = if (themeMode == value) MaterialTheme.colorScheme.primaryContainer
+                                else MaterialTheme.colorScheme.surfaceVariant,
+                            cornerRadius = 50.dp,
+                            contentPadding = PaddingValues(horizontal = 14.dp, vertical = 9.dp),
+                            onClick = { onThemeChange(value) }
+                        ) {
+                            Text(label, style = MaterialTheme.typography.labelLarge,
+                                color = if (themeMode == value) MaterialTheme.colorScheme.onPrimaryContainer
+                                    else MaterialTheme.colorScheme.onSurfaceVariant,
+                                fontWeight = if (themeMode == value) FontWeight.SemiBold else FontWeight.Normal)
                         }
-                    }
-                    if (fontMessage != null) {
-                        Text(fontMessage!!, style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.primary)
                     }
                 }
             }
         }
         item {
-            Surface(color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(24.dp),
-                tonalElevation = 1.dp, modifier = Modifier.fillMaxWidth()) {
-                Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text("主题模式", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-                    Text("选择应用外观，也可以跟随系统自动切换。",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        listOf("system" to "跟随系统", "light" to "浅色", "dark" to "深色").forEach { (value, label) ->
-                            FilterChip(selected = themeMode == value,
-                                onClick = { onThemeChange(value) }, label = { Text(label) })
-                        }
-                    }
-                }
-            }
-        }
-        item {
-            Surface(color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(24.dp),
-                tonalElevation = 1.dp, modifier = Modifier.fillMaxWidth()) {
-                Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text("典藏原则", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-                    Text("缺文不补、异文并列、译文标明依据；未经原图核验的 OCR 不作为底本文字。",
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        style = MaterialTheme.typography.bodyMedium)
-                }
+            ZeroCard(
+                modifier = Modifier.fillMaxWidth(),
+                cornerRadius = 24.dp,
+                contentPadding = PaddingValues(18.dp)
+            ) {
+                Text("典藏原则", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                Text("缺文不补、异文并列、译文标明依据；未经原图核验的 OCR 不作为底本文字。",
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.bodyMedium, lineHeight = 22.sp)
             }
         }
     }
