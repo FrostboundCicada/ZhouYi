@@ -636,7 +636,6 @@ private fun CategoryGrid(onCategoryChange: (String) -> Unit) {
                             Text(description, style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 maxLines = 2, overflow = TextOverflow.Ellipsis)
-                        }
                     }
                 }
             }
@@ -672,7 +671,6 @@ private fun EntryCard(entry: Entry, onClick: () -> Unit) {
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.88f),
                 maxLines = 3, overflow = TextOverflow.Ellipsis)
-        }
     }
 }
 
