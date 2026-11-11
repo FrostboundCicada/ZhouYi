@@ -1,7 +1,7 @@
 [versions]
 compileSdk = "37"
 targetSdk = "36"
-minSdk = "24"
+minSdk = "33"
 
 agp = "9.2.1"
 kotlin = "2.4.20"
@@ -47,8 +47,6 @@ kyant-backdrop = { group = "io.github.kyant0", name = "backdrop", version.ref = 
 kyant-shapes = { group = "io.github.kyant0", name = "shapes", version.ref = "shapes" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutinesTest" }
-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 aboutlibraries-core = { group = "com.mikepenz", name = "aboutlibraries-core", version.ref = "aboutlibraries" }
