@@ -383,6 +383,9 @@ private fun ReadingPage(entry: Entry, onBack: () -> Unit) {
                 Text(entry.source, style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
+            if (entry.section == "洛书") {
+                item { LuoshuIllustration(entry.title) }
+            }
             item {
                 HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.45f))
                 Text("正文", style = MaterialTheme.typography.titleSmall,
@@ -904,17 +907,82 @@ private fun buildWingsIndex(): List<Entry> =
     }
 
 private fun buildEntries(): List<Entry> = listOf(
-    Entry("洛书", "洛书九宫数图（通行图式）", "后世通行九宫排列示意；不是已核验的先秦原图。", """四　九　二
+    Entry("洛书", "洛书九宫数图（后世通行图式）", "现代常见九宫排列示意。它是后世定型并广泛流传的图式，不应倒推为先秦《尚书·洪范》或《周易·系辞》原图。", """通行排列：
+
+四　九　二
 三　五　七
 八　一　六
 
-横、纵、两条对角线各数之和均为十五：
-4+9+2=15；3+5+7=15；8+1+6=15。
-4+3+8=15；9+5+1=15；2+7+6=15。
-4+5+6=15；2+5+8=15。
+横列、纵列与两条对角线的和均为十五。此图常用于后世术数、历法与方位解释；其具体定型过程须与先秦“洛书”文字记载分开考察。
 
-以上是通行九宫图式的算术关系。其历史形成及与早期“洛书”记载的对应关系，仍须依据具体文献版本和出土材料分别论证。"""),
-    Entry("洛书", "《周易·系辞上传》相关原文", "通行本《系辞上传》第十一章；原文提及河图、洛书，但未直接列出九宫数字。", """是故天生神物，圣人则之；天地变化，圣人效之；天垂象，见吉凶，圣人象之；河出图，洛出书，圣人则之。
+图像说明：上方为本应用绘制的现代矢量示意图，仅呈现通行九宫数字排列，不是古籍原图，也不代表已经证明其源自先秦。"""),
+    Entry("洛书", "刘牧《洛书五行生数》第五十三图", "《易数钩隐图》卷下第五十三图；北宋刘牧图书易学体系。图式依据山东大学《周易研究》2024年第4期论文所刊图13及文中释读重绘。", """刘牧将洛书理解为五行生成数系统。其生数为：
+
+一曰水，二曰火，三曰木，四曰金，五曰土。
+
+这五个数是五行生数。刘牧强调此数属于“已交之数”，与其河图系统所表达的未交之象不同。此处按原文次第列出，不擅自补定图中未能由文字确认的方位。
+
+图像说明：应用绘制的现代矢量资料图，展示五行与生数对应关系；不是古籍原图。原论文图13可用于对照核查。"""),
+    Entry("洛书", "刘牧《洛书五行成数》第五十四图", "《易数钩隐图》卷下第五十四图；依据刘牧“以土数足之”的解释及山东大学《周易研究》2024年第4期论文图14重绘。", """刘牧以天五与五行生数相合，说明五行成数：
+
+水：一与五合，成数六；
+火：二与五合，成数七；
+木：三与五合，成数八；
+金：四与五合，成数九；
+土：五与五合，成数十。
+
+因此，五行成数为六、七、八、九、十。刘牧把生数与成数分图表达，并未在《易数钩隐图》中将二图合成一张完整的洛书总图。
+
+图像说明：应用绘制的现代矢量资料图，以配对方式呈现生数、成数；不冒称原刻图。"""),
+    Entry("洛书", "刘牧《十日生五行并相生》第五十五图", "《易数钩隐图》卷下第五十五图及其图后文字；通行数字文本据《四库全书》本与道藏本相关整理页面互校。", """天一、地六，地二、天七，天三、地八，地四、天九，天五、地十，合而生水、火、木、金、土。
+
+十日者，刚日也。
+
+相生者：金生水，水生木，木生火，火生土，土生金也。
+
+相克者：金克木，木克土，土克水，水克火，火克金也。
+
+说明：本段把天地数配合与五行生成联系起来。相生次序和相克次序照录原文；“十日”一词的具体训释不在此处擅自扩写。"""),
+    Entry("洛书", "刘牧《易数钩隐图》洛书说", "《易数钩隐图》卷下“河图第四十九”图后问答；宋刘牧撰。原文可据《四库全书》本卷下及《道藏》本相关数字整理核对。", """或问曰：“洛书云：一曰水，二曰火，三曰木，四曰金，五曰土。则与龙图五行之数之位不偶者，何也？”
+
+答曰：“此谓陈其生数也。且虽则陈其生数，乃是已交之数也。下篇分土王四季，则备其成数矣。且夫洛书、九畴，惟出于五行之数，故先陈其已交之生数，然后以土数足之，乃可见其成数也。”
+
+整理说明：此处明确呈现刘牧对洛书的解释框架——先陈五行生数，再以中五配合说明成数。不同版本在“已／巳”“四季／四时”等字样上存在数字文本差异，正式校勘时须以具体底本影像为准。"""),
+    Entry("洛书", "刘牧《龙图龟书论上》洛书相关论述", "《易数钩隐图》卷下卷末《龙图龟书论上》节录；宋刘牧撰。", """《易》曰：“河出图，洛出书，圣人则之。”
+
+刘牧在论述中讨论了《尚书·洪范》九畴、汉儒关于禹受洛书的解释，以及河图、洛书在易学体系中的关系。他并不简单把九畴文本等同于一张固定的九宫数字图，而是试图说明圣人如何取法图书之象数。
+
+其论述中有一段关键判断：“今河图相传于前代，其数自一至九，包四象八卦之义，而兼五行之数；洛书则惟五行生成之数也。”
+
+校读提示：刘牧的说法属于北宋图书易学的理论建构。此处是刘牧本人的解释，不应改写成先秦经文的原始定义。关于神龟负书、伏羲画卦等叙事，须分别标记为经文、注疏或纬书传说。"""),
+    Entry("洛书", "河图九数、洛书十数的名称易位", "依据刘牧《易数钩隐图》、李觏《删定易图论》相关材料及张克宾《论刘牧〈河图〉〈洛书〉说的架构与意蕴》（《周易研究》2024年第4期）。", """名称与数图关系曾发生重要变化：
+
+刘牧系统：
+• 河图：九宫九数图，四十五数；
+• 洛书：五行生成数系统，天地十数合计五十五。
+
+后世通行系统：
+• 河图：天地五行生成数，五十五数；
+• 洛书：九宫数图，四十五数。
+
+因此，不能把今天常见的“河图五十五、洛书四十五”直接套用到刘牧《易数钩隐图》上，也不能把刘牧的名称配置误说成自古不变。
+
+学术说明：北宋刘牧对图名作了与此前传统不同的配置；南宋以后围绕河九洛十、河十洛九形成持续争论，后经蔡元定、朱熹等人的论说，后世通行配置逐渐确立。具体传承环节仍应依各家原文分别核验。"""),
+    Entry("洛书", "《洛书》与《洪范》九畴的关系", "《尚书·洪范》与宋代图书易学的解释关系专题；不将九畴次第直接等同于九宫数位。", """《洪范》叙述“天乃锡禹洪范九畴”，并列出九类治国纲目：
+
+一曰五行；
+二曰敬用五事；
+三曰农用八政；
+四曰协用五纪；
+五曰建用皇极；
+六曰乂用三德；
+七曰明用稽疑；
+八曰念用庶征；
+九曰向用五福，威用六极。
+
+文献层次说明：
+《洪范》原文确有“九畴”及五行次第；《周易·系辞上传》另有“河出图，洛出书，圣人则之”；后世注家逐渐将二者关联，并发展出神龟负书、九宫数位等解释。三者之间存在解释史联系，但不是同一段原文，也不能仅凭“九畴”二字证明《洪范》原本就附有今天通行的九宫图。"""),
+    Entry("洛书", "《周易·系辞上传》河图洛书原文", "通行本《系辞上传》第十一章；原文提及河图、洛书，没有直接列出九宫数字。", """是故天生神物，圣人则之；天地变化，圣人效之；天垂象，见吉凶，圣人象之；河出图，洛出书，圣人则之。
 
 译文：因此，上天产生神妙之物，圣人取法于它；天地发生变化，圣人仿效它；天上显示征象并呈现吉凶，圣人据此取象；黄河出现图，洛水出现书，圣人取法于它们。
 
@@ -945,3 +1013,95 @@ private fun buildEntries(): List<Entry> = listOf(
 
 残片拼接关系、卷次、年代判断和释文均须保留来源及置信程度。未经原图核验的 OCR 不作为底本文字。""")
 )
+
+@Composable
+private fun LuoshuIllustration(title: String) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.42f),
+        shape = RoundedCornerShape(24.dp),
+        border = androidx.compose.foundation.BorderStroke(
+            1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.28f)
+        )
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text("图式示意", style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.SemiBold)
+            when {
+                title.contains("九宫数图") -> {
+                    val values = listOf(4, 9, 2, 3, 5, 7, 8, 1, 6)
+                    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                        values.chunked(3).forEach { row ->
+                            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                                row.forEach { number ->
+                                    Surface(
+                                        modifier = Modifier.weight(1f).aspectRatio(1.12f),
+                                        color = if (number == 5) MaterialTheme.colorScheme.primaryContainer
+                                            else MaterialTheme.colorScheme.surface,
+                                        shape = RoundedCornerShape(14.dp),
+                                        border = androidx.compose.foundation.BorderStroke(
+                                            1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.30f)
+                                        )
+                                    ) {
+                                        Box(contentAlignment = Alignment.Center) {
+                                            Text(number.toString(),
+                                                style = MaterialTheme.typography.headlineMedium,
+                                                fontWeight = FontWeight.Bold,
+                                                color = if (number == 5) MaterialTheme.colorScheme.onPrimaryContainer
+                                                    else MaterialTheme.colorScheme.onSurface)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    Text("横、纵、斜向各线之和均为 15",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+                title.contains("生数") || title.contains("成数") -> {
+                    val isGenerating = title.contains("生数")
+                    val values = if (isGenerating)
+                        listOf("水" to "1", "火" to "2", "木" to "3", "金" to "4", "土" to "5")
+                    else
+                        listOf("水" to "6", "火" to "7", "木" to "8", "金" to "9", "土" to "10")
+                    Text(if (isGenerating) "五行生数" else "五行成数",
+                        style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                    Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                        values.forEach { (element, number) ->
+                            Surface(
+                                modifier = Modifier.weight(1f),
+                                color = MaterialTheme.colorScheme.surface,
+                                shape = RoundedCornerShape(14.dp),
+                                border = androidx.compose.foundation.BorderStroke(
+                                    1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.28f)
+                                )
+                            ) {
+                                Column(
+                                    modifier = Modifier.padding(vertical = 14.dp, horizontal = 3.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.spacedBy(5.dp)
+                                ) {
+                                    Text(number, style = MaterialTheme.typography.headlineSmall,
+                                        fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+                                    Text(element, style = MaterialTheme.typography.labelMedium,
+                                        color = MaterialTheme.colorScheme.onSurface)
+                                }
+                            }
+                        }
+                    }
+                    Text("此图仅列数与五行对应，不表示古图方位。",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+            }
+            Text("现代矢量重绘 · 非古籍原图",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+    }
+}
