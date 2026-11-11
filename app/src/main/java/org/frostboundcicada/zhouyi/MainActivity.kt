@@ -50,7 +50,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import top.yukonga.miuix.kmp.basic.TopAppBar as MiuixTopAppBar
+import com.zeroui.kit.components.Card as ZeroCard
+import com.zeroui.kit.components.Scaffold as ZeroScaffold
+import com.zeroui.kit.components.TopAppBar as ZeroTopAppBar
 import com.zeroui.kit.glass.LiquidBottomTab
 import com.zeroui.kit.glass.LiquidBottomTabs
 import com.zeroui.kit.glass.LocalLiquidBottomTabActive
@@ -233,15 +235,14 @@ private fun MainScreen(
 
     if (selectedEntry != null) {
         ReadingPage(entry = selectedEntry!!, onBack = { selectedEntry = null })
-    } else Scaffold(
+    } else ZeroScaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
-            MiuixTopAppBar(
+            ZeroTopAppBar(
                 title = titles[tab],
                 largeTitle = if (tab == 0) "周易数字典藏" else titles[tab],
+                subtitle = if (tab == 0) "经典 · 图像 · 版本 · 校勘" else "",
                 color = MaterialTheme.colorScheme.background,
-                titleColor = MaterialTheme.colorScheme.onSurface,
-                largeTitleColor = MaterialTheme.colorScheme.onSurface,
                 actions = {
                     if (tab != 3) IconButton(onClick = { tab = 3 }) {
                         Icon(Icons.Filled.Tune, contentDescription = "外观与设置")
@@ -349,27 +350,18 @@ private fun MainScreen(
 @Composable
 private fun ReadingPage(entry: Entry, onBack: () -> Unit) {
     val uriHandler = LocalUriHandler.current
-    Scaffold(
+    ZeroScaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
-            TopAppBar(
-                title = {
-                    Column {
-                        Text(entry.title, maxLines = 1, overflow = TextOverflow.Ellipsis,
-                            style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-                        Text(entry.section, style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    }
-                },
+            ZeroTopAppBar(
+                title = entry.title,
+                subtitle = entry.section,
+                color = MaterialTheme.colorScheme.background,
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.Filled.ArrowBack, contentDescription = "返回目录")
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface
-                )
+                }
             )
         }
     ) { padding ->
