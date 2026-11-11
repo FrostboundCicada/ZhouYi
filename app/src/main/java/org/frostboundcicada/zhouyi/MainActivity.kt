@@ -256,6 +256,7 @@ private fun MainScreen(
     if (selectedEntry != null) {
         ReadingPage(entry = selectedEntry!!, onBack = { selectedEntry = null })
     } else ZeroScaffold(
+        modifier = Modifier.nestedScroll(topBarScrollBehavior.nestedScrollConnection),
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             BlurredTopBar(topBarBackdrop, topBarScrollBehavior) {
