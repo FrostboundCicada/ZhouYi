@@ -145,7 +145,7 @@ private fun ZhouYiApp() {
     CompositionLocalProvider(
         LocalDensity provides Density(
             density = baseDensity.density * uiScale,
-            fontScale = baseDensity.fontScale * fontScale
+            fontScale = baseDensity.fontScale * fontScale / uiScale
         )
     ) {
         MiuixTheme(controller = controller) {
