@@ -1,44 +1,35 @@
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.kotlin.plugin.compose")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.compose)
 }
 
 android {
     namespace = "org.frostboundcicada.zhouyi"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "org.frostboundcicada.zhouyi"
         minSdk = 26
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 2
         versionName = "0.2.0"
     }
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-}
-
-kotlin {
-    compilerOptions {
-        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 }
 
 dependencies {
-    implementation("androidx.activity:activity-compose:1.12.0")
-    implementation("org.jetbrains.compose.ui:ui:1.10.3")
-    implementation("org.jetbrains.compose.ui:ui-tooling-preview:1.10.3")
-    implementation("androidx.compose.material3:material3:1.4.0")
-    implementation("androidx.compose.material:material-icons-extended:1.7.8")
-    implementation("top.yukonga.miuix.kmp:miuix-android:0.8.8")
-    implementation("com.google.android.material:material:1.13.0")
+    implementation(project(":kit"))
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.compose.ui.tooling.preview)
+    debugImplementation(libs.compose.ui.tooling)
 }
