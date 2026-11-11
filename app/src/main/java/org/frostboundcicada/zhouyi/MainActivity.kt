@@ -17,7 +17,19 @@ class MainActivity : Activity() {
     private val paper = Color.rgb(248, 245, 237)
     private lateinit var list: LinearLayout
     private lateinit var query: EditText
-    private var category = "全部"
+    private var category = "总览"
+
+    private val hexagramNames = listOf(
+        "乾","坤","屯","蒙","需","讼","师","比","小畜","履","泰","否","同人","大有","谦","豫","随","蛊","临","观","噬嗑","贲","剥","复","无妄","大畜","颐","大过","坎","离",
+        "咸","恒","遁","大壮","晋","明夷","家人","睽","蹇","解","损","益","夬","姤","萃","升","困","井","革","鼎","震","艮","渐","归妹","丰","旅","巽","兑","涣","节","中孚","小过","既济","未济"
+    )
+    private val hexagramIndex = hexagramNames.mapIndexed { i, name ->
+        val section = if (i < 30) "上经" else "下经"
+        Entry("易经", "${section} · 第${i + 1}卦", "${name}卦目录条目；经文与传文尚待据可靠底本逐项录入。", "本条目前仅建立卦名与通行本次序，不代表正文已收录。后续将分别录入卦辞、爻辞、彖传、大象、小象，并标注底本、参校本、位置与异文。缺文、残字和不可辨字一律保留缺失状态，不按上下文补写。")
+    }
+    private val wingsIndex = listOf("彖传上","彖传下","象传上","象传下","系辞上传","系辞下传","文言传","说卦传","序卦传","杂卦传").map {
+        Entry("十翼", "易传十翼", "《${it}》", "十翼篇目目录；全文尚待按可靠底本逐段录入。", "本条为篇目目录，不是全文。收录时将区分经文、传文层次，标注章次、版本异文及译文依据。")
+    }
 
     private val entries = listOf(
         Entry("易经", "乾卦·经文", "《周易》通行本·上经；多版本逐字校勘尚待完成。", """
@@ -69,7 +81,7 @@ class MainActivity : Activity() {
 
 校勘提示：此段是“河图”“洛书”观念的重要传世文献依据，但不能仅凭这句话断定后世九宫数图的具体形态在此时已经固定。
 """.trimIndent()),
-        Entry("洛书", "《尚书·洪范》九畴", "《洪范》原文节录；与洛书九宫的对应关系属于后世解释史议题。", """
+        Entry("相关古籍", "《尚书·洪范》九畴", "《洪范》原文节录；与洛书九宫的对应关系属于后世解释史议题。", """
 惟十有三祀，王访于箕子。王乃言曰：“呜呼！箕子，惟天阴骘下民，相协厥居，我不知其彝伦攸叙。”
 
 箕子乃言曰：“我闻在昔，鲧陻洪水，汩陈其五行；帝乃震怒，不畀洪范九畴，彝伦攸斁。鲧则殛死，禹乃嗣兴。天乃锡禹洪范九畴，彝伦攸叙。”
@@ -100,7 +112,7 @@ class MainActivity : Activity() {
 
 残片拼接关系、卷次、年代判断和释文均须保留来源及置信程度。未经原图核验的 OCR 不作为底本文字。
 """.trimIndent())
-    )
+     + hexagramIndex + wingsIndex
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -120,41 +132,62 @@ class MainActivity : Activity() {
     private fun makeUi() {
         val root = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
-            setPadding(dp(16), dp(18), dp(16), dp(8))
+            setPadding(dp(18), dp(14), dp(18), dp(8))
             setBackgroundColor(paper)
         }
         root.addView(TextView(this).apply {
-            text = "周易数字典藏"
-            textSize = 27f
-            setTextColor(ink)
-            typeface = Typeface.create("serif", Typeface.BOLD)
+            text = "易 · 藏"
+            textSize = 12f
+            setTextColor(Color.rgb(157, 70, 48))
+            typeface = Typeface.DEFAULT_BOLD
         })
         root.addView(TextView(this).apply {
-            text = "离线古籍阅读 · 原文优先 · 版本可追溯"
+            text = "周易数字典藏"
+            textSize = 29f
+            setTextColor(ink)
+            typeface = Typeface.create("serif", Typeface.BOLD)
+            setPadding(0, dp(3), 0, dp(2))
+        })
+        root.addView(TextView(this).apply {
+            text = "经典原文 · 易传十翼 · 河图洛书 · 版本文献"
             textSize = 12f
             setTextColor(muted)
-            setPadding(0, dp(4), 0, dp(12))
+            setPadding(0, 0, 0, dp(12))
         })
         query = EditText(this).apply {
-            hint = "搜索卦名、篇名或正文"
+            hint = "⌕  搜索卦名、篇名、原文或版本"
             textSize = 14f
             setSingleLine(true)
             inputType = InputType.TYPE_CLASS_TEXT
-            setPadding(dp(12), 0, dp(12), 0)
-            background = panel(Color.WHITE, 12)
+            setTextColor(ink)
+            setHintTextColor(muted)
+            setPadding(dp(14), 0, dp(14), 0)
+            background = panel(Color.WHITE, 14)
             addTextChangedListener(SimpleTextWatcher { render() })
         }
-        root.addView(query, LinearLayout.LayoutParams(-1, dp(46)))
-        val nav = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
-        listOf("全部", "易经", "洛书", "河图", "版本档案").forEach { name ->
-            nav.addView(Button(this).apply {
-                text = name
-                textSize = 10f
-                isAllCaps = false
-                setOnClickListener { category = name; render() }
-            }, LinearLayout.LayoutParams(0, dp(44), 1f).apply { marginEnd = dp(2) })
+        root.addView(query, LinearLayout.LayoutParams(-1, dp(48)))
+        val navScroll = HorizontalScrollView(this).apply {
+            isHorizontalScrollBarEnabled = false
+            setPadding(0, dp(12), 0, dp(10))
         }
-        root.addView(nav)
+        val nav = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+        listOf("总览", "易经", "十翼", "河图", "洛书", "版本档案", "相关古籍").forEach { name ->
+            nav.addView(TextView(this).apply {
+                text = name
+                textSize = 13f
+                gravity = android.view.Gravity.CENTER
+                setTextColor(if (category == name) Color.WHITE else muted)
+                setPadding(dp(15), 0, dp(15), 0)
+                background = GradientDrawable().apply {
+                    setColor(if (category == name) ink else Color.WHITE)
+                    cornerRadius = dp(20).toFloat()
+                    if (category != name) setStroke(dp(1), Color.rgb(229, 221, 207))
+                }
+                setOnClickListener { category = name; makeUiRefreshNav(); render() }
+            }, LinearLayout.LayoutParams(-2, dp(36)).apply { marginEnd = dp(8) })
+        }
+        navScroll.addView(nav)
+        root.addView(navScroll, LinearLayout.LayoutParams(-1, dp(54)))
         val scroll = ScrollView(this)
         list = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         scroll.addView(list)
@@ -162,62 +195,138 @@ class MainActivity : Activity() {
         setContentView(root)
     }
 
+    private fun makeUiRefreshNav() {
+        makeUi()
+    }
+
     private fun render() {
         if (!::list.isInitialized) return
         list.removeAllViews()
         val term = if (::query.isInitialized) query.text.toString().trim() else ""
-        val matches = entries.filter { e ->
-            (category == "全部" || e.section == category) &&
-            (term.isEmpty() || e.title.contains(term, true) ||
-             e.body.contains(term, true) || e.source.contains(term, true))
+        val matches = entries + hexagramIndex + wingsIndex
+        val filtered = matches.filter { e ->
+            (category == "总览" || e.section == category) &&
+            (term.isEmpty() || e.title.contains(term, true) || e.body.contains(term, true) ||
+                e.source.contains(term, true) || e.section.contains(term, true))
         }
-        if (matches.isEmpty()) list.addView(TextView(this).apply {
-            text = "没有找到匹配内容。"
-            setTextColor(muted)
-            setPadding(dp(12), dp(20), dp(12), dp(20))
-        })
-        matches.forEach { e ->
-            val card = LinearLayout(this).apply {
+        if (category == "总览" && term.isEmpty()) {
+            val hero = LinearLayout(this).apply {
                 orientation = LinearLayout.VERTICAL
-                setPadding(dp(16), dp(14), dp(16), dp(16))
-                background = panel(Color.WHITE, 14)
+                setPadding(dp(18), dp(17), dp(18), dp(17))
+                background = GradientDrawable().apply {
+                    setColor(ink)
+                    cornerRadius = dp(18).toFloat()
+                }
             }
-            card.addView(TextView(this).apply {
-                text = e.section
-                textSize = 11f
-                setTextColor(Color.rgb(151, 91, 49))
+            hero.addView(TextView(this).apply {
+                text = "典籍总览"
+                textSize = 12f
+                setTextColor(Color.rgb(224, 192, 132))
             })
-            card.addView(TextView(this).apply {
-                text = e.title
-                textSize = 19f
+            hero.addView(TextView(this).apply {
+                text = "从经文出发，逐本核对版本"
+                textSize = 20f
+                setTextColor(Color.WHITE)
+                typeface = Typeface.create("serif", Typeface.BOLD)
+                setPadding(0, dp(5), 0, dp(5))
+            })
+            hero.addView(TextView(this).apply {
+                text = "目录先行，正文持续校录；未核验内容不以推测补齐。"
+                textSize = 12f
+                setTextColor(Color.rgb(225, 218, 204))
+            })
+            list.addView(hero, LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = dp(14) })
+            list.addView(TextView(this).apply {
+                text = "典藏分类"
+                textSize = 20f
                 setTextColor(ink)
                 typeface = Typeface.create("serif", Typeface.BOLD)
-                setPadding(0, dp(4), 0, dp(5))
+                setPadding(dp(2), dp(4), 0, dp(9))
             })
-            card.addView(TextView(this).apply {
-                text = e.source
-                textSize = 11f
-                setTextColor(muted)
-                setPadding(0, 0, 0, dp(12))
-            })
-            card.addView(TextView(this).apply {
-                text = e.body
-                textSize = 16f
+            listOf(
+                "易经" to "六十四卦 · 上经与下经",
+                "十翼" to "彖传、象传、系辞等十篇",
+                "河图" to "文献源流、历代图式与争议",
+                "洛书" to "九宫图式、文献依据与解释史",
+                "版本档案" to "敦煌写本、宋本、日本古活字本",
+                "相关古籍" to "《尚书·洪范》等互见文献"
+            ).forEach { (name, desc) ->
+                list.addView(TextView(this).apply {
+                    text = "${name}    ›\n${desc}"
+                    textSize = 15f
+                    setTextColor(ink)
+                    setPadding(dp(15), dp(13), dp(12), dp(13))
+                    background = panel(Color.WHITE, 14)
+                    setOnClickListener { category = name; makeUi(); render() }
+                }, LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = dp(8) })
+            }
+        } else {
+            list.addView(TextView(this).apply {
+                text = if (category == "总览") "检索结果" else category
+                textSize = 21f
                 setTextColor(ink)
-                typeface = Typeface.create("serif", Typeface.NORMAL)
-                setLineSpacing(dp(5).toFloat(), 1.08f)
-                setTextIsSelectable(true)
-            })
-            list.addView(card, LinearLayout.LayoutParams(-1, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
-                bottomMargin = dp(12)
+                typeface = Typeface.create("serif", Typeface.BOLD)
+                setPadding(dp(2), dp(6), 0, dp(10))
             })
         }
+        if (filtered.isEmpty()) {
+            list.addView(TextView(this).apply {
+                text = "没有找到匹配内容。"
+                setTextColor(muted)
+                setPadding(dp(12), dp(20), dp(12), dp(20))
+            })
+        } else if (!(category == "总览" && term.isEmpty())) {
+            filtered.forEach { e ->
+                val card = LinearLayout(this).apply {
+                    orientation = LinearLayout.VERTICAL
+                    setPadding(dp(15), dp(13), dp(15), dp(14))
+                    background = panel(Color.WHITE, 15)
+                    setOnClickListener { showEntry(e) }
+                }
+                card.addView(TextView(this).apply {
+                    text = e.section + " · " + e.source
+                    textSize = 10f
+                    setTextColor(muted)
+                })
+                card.addView(TextView(this).apply {
+                    text = e.title
+                    textSize = 18f
+                    setTextColor(ink)
+                    typeface = Typeface.create("serif", Typeface.BOLD)
+                    setPadding(0, dp(5), 0, dp(6))
+                })
+                card.addView(TextView(this).apply {
+                    text = e.body.replace("\n", " ").take(100) + if (e.body.length > 100) "…" else ""
+                    textSize = 12f
+                    setTextColor(ink)
+                })
+                list.addView(card, LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = dp(9) })
+            }
+        }
         list.addView(TextView(this).apply {
-            text = "开发预览版：未录入内容不会以推测文字补齐；校勘、译文及图像出处将逐条补充。"
+            text = "目录条目不等于正文已收录；版本与译文状态以各条说明为准。"
             textSize = 11f
             setTextColor(muted)
             gravity = android.view.Gravity.CENTER
-            setPadding(dp(8), dp(12), dp(8), dp(20))
+            setPadding(dp(8), dp(15), dp(8), dp(22))
         })
     }
-}
+
+    private fun showEntry(e: Entry) {
+        val body = TextView(this).apply {
+            text = e.source + "\n\n" + e.body
+            textSize = 16f
+            setTextColor(ink)
+            typeface = Typeface.create("serif", Typeface.NORMAL)
+            setLineSpacing(dp(5).toFloat(), 1.08f)
+            setPadding(dp(20), dp(12), dp(20), dp(16))
+            setTextIsSelectable(true)
+        }
+        val scroll = ScrollView(this).apply { addView(body) }
+        android.app.AlertDialog.Builder(this)
+            .setTitle(e.title)
+            .setView(scroll)
+            .setPositiveButton("关闭", null)
+            .show()
+    }
+
