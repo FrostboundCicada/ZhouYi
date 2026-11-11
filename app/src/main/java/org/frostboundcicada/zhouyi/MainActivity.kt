@@ -53,6 +53,8 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zeroui.kit.components.Card as ZeroCard
+import com.zeroui.kit.components.Text as ZeroText
+import com.zeroui.kit.components.Icon as ZeroIcon
 import com.zeroui.kit.components.Button as ZeroButton
 import com.zeroui.kit.components.TextButton as ZeroTextButton
 import com.zeroui.kit.components.TextField as ZeroTextField
@@ -268,7 +270,7 @@ private fun MainScreen(
                 scrollBehavior = topBarScrollBehavior,
                 actions = {
                     if (tab != 3) ZeroIconButton(onClick = { tab = 3 }) {
-                        Icon(Icons.Filled.Tune, contentDescription = "外观与设置")
+                        ZeroIcon(Icons.Filled.Tune, contentDescription = "外观与设置")
                     }
                 }
             )
@@ -302,14 +304,14 @@ private fun MainScreen(
                                 query = ""
                             }) {
                                 val active = LocalLiquidBottomTabActive.current
-                                Icon(
+                                ZeroIcon(
                                     imageVector = icons[index],
                                     contentDescription = label,
                                     tint = if (active) MaterialTheme.colorScheme.primary
                                     else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.72f),
                                     modifier = Modifier.size(22.dp)
                                 )
-                                Text(
+                                ZeroText(
                                     label,
                                     style = MaterialTheme.typography.labelSmall,
                                     color = if (active) MaterialTheme.colorScheme.primary
@@ -391,7 +393,7 @@ private fun ReadingPage(entry: Entry, onBack: () -> Unit) {
                 scrollBehavior = readingScrollBehavior,
                 navigationIcon = {
                     ZeroIconButton(onClick = onBack) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = "返回目录")
+                        ZeroIcon(Icons.Filled.ArrowBack, contentDescription = "返回目录")
                     }
                 }
             )
@@ -410,12 +412,12 @@ private fun ReadingPage(entry: Entry, onBack: () -> Unit) {
                     cornerRadius = 26.dp,
                     contentPadding = PaddingValues(20.dp)
                 ) {
-                    Text(entry.section, style = MaterialTheme.typography.labelMedium,
+                    ZeroText(entry.section, style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.SemiBold)
-                    Text(entry.title, style = MaterialTheme.typography.headlineSmall,
+                    ZeroText(entry.title, style = MaterialTheme.typography.headlineSmall,
                         fontFamily = FontFamily.Serif, fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface)
-                    Text(entry.source, style = MaterialTheme.typography.bodySmall,
+                    ZeroText(entry.source, style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant, lineHeight = 20.sp)
                     val sourceImageUrl = originalImageSourceFor(entry.title)
                     if (sourceImageUrl != null) {
@@ -424,7 +426,7 @@ private fun ReadingPage(entry: Entry, onBack: () -> Unit) {
                             onClick = { uriHandler.openUri(sourceImageUrl) },
                             modifier = Modifier.fillMaxWidth()
                         )
-                        Text(
+                        ZeroText(
                             "馆藏／数字化原书入口，需要联网；目前尚未缓存为应用内离线图片。",
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -441,11 +443,11 @@ private fun ReadingPage(entry: Entry, onBack: () -> Unit) {
                     cornerRadius = 24.dp,
                     contentPadding = PaddingValues(horizontal = 20.dp, vertical = 18.dp)
                 ) {
-                    Text("原文", style = MaterialTheme.typography.titleMedium,
+                    ZeroText("原文", style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.SemiBold)
                     HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.35f))
                     SelectionContainer {
-                        Text(
+                        ZeroText(
                             entry.body,
                             modifier = Modifier.fillMaxWidth(),
                             style = MaterialTheme.typography.bodyLarge.copy(
@@ -463,9 +465,9 @@ private fun ReadingPage(entry: Entry, onBack: () -> Unit) {
                         cornerRadius = 24.dp,
                         contentPadding = PaddingValues(20.dp)
                     ) {
-                        Text("逐段译文", style = MaterialTheme.typography.titleMedium,
+                        ZeroText("逐段译文", style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.SemiBold)
-                        Text(entry.translation, modifier = Modifier.fillMaxWidth(),
+                        ZeroText(entry.translation, modifier = Modifier.fillMaxWidth(),
                             style = MaterialTheme.typography.bodyLarge.copy(lineHeight = 30.sp),
                             color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
@@ -477,9 +479,9 @@ private fun ReadingPage(entry: Entry, onBack: () -> Unit) {
                     cornerRadius = 22.dp,
                     contentPadding = PaddingValues(18.dp)
                 ) {
-                    Text("收录与校勘说明", style = MaterialTheme.typography.titleSmall,
+                    ZeroText("收录与校勘说明", style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.SemiBold)
-                    Text(
+                    ZeroText(
                         "请以条目所列底本和版本说明为准。目录占位内容不代表正文已经完整收录；缺文、残字及未经核验的译文不会根据上下文补造。",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -526,7 +528,7 @@ private fun LibraryPage(
                 singleLine = true,
                 label = "搜索卦名、篇名、原文或版本",
                 useLabelAsPlaceholder = true,
-                leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) }
+                leadingIcon = { ZeroIcon(Icons.Filled.Search, contentDescription = null) }
             )
         }
         item {
@@ -539,7 +541,7 @@ private fun LibraryPage(
                         contentPadding = PaddingValues(horizontal = 15.dp, vertical = 9.dp),
                         onClick = { onCategoryChange(name) }
                     ) {
-                        Text(
+                        ZeroText(
                             name,
                             maxLines = 1,
                             style = MaterialTheme.typography.labelLarge,
@@ -553,7 +555,7 @@ private fun LibraryPage(
         }
         if (!(tab == 0 && category == "全部" && query.isBlank())) {
             item {
-                Text(if (entries.isEmpty()) "没有匹配条目" else "共 ${entries.size} 条",
+                ZeroText(if (entries.isEmpty()) "没有匹配条目" else "共 ${entries.size} 条",
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
@@ -562,7 +564,7 @@ private fun LibraryPage(
             EntryCard(entry) { onEntryClick(entry) }
         }
         item {
-            Text("目录条目不等于正文已收录；版本、译文与校勘状态以各条说明为准。",
+            ZeroText("目录条目不等于正文已收录；版本、译文与校勘状态以各条说明为准。",
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.fillMaxWidth().padding(top = 8.dp))
@@ -590,7 +592,7 @@ private fun HomePage(
                     color = MaterialTheme.colorScheme.primary.copy(alpha = 0.10f),
                     shape = RoundedCornerShape(50)
                 ) {
-                    Text(
+                    ZeroText(
                         "离线古籍典藏 · 持续整理",
                         modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
                         style = MaterialTheme.typography.labelSmall,
@@ -598,19 +600,19 @@ private fun HomePage(
                         fontWeight = FontWeight.SemiBold
                     )
                 }
-                Text(
+                ZeroText(
                     "周易数字典藏",
                     style = MaterialTheme.typography.headlineLarge,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
                 )
-                Text(
+                ZeroText(
                     "以《周易》经传为中心，连接历代版本、相关古籍与易学专题。",
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     lineHeight = 27.sp
                 )
-                Text(
+                ZeroText(
                     "原文优先  ·  版本可查  ·  异文并列  ·  缺文不补",
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.primary,
@@ -620,9 +622,9 @@ private fun HomePage(
         }
         item {
             Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
-                Text("开始探索", style = MaterialTheme.typography.titleLarge,
+                ZeroText("开始探索", style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold)
-                Text("选择一个分类进入目录，不在首页直接展开正文。",
+                ZeroText("选择一个分类进入目录，不在首页直接展开正文。",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
@@ -638,9 +640,9 @@ private fun HomePage(
                 )
             ) {
                 Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(7.dp)) {
-                    Text("典藏原则", style = MaterialTheme.typography.titleMedium,
+                    ZeroText("典藏原则", style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.SemiBold)
-                    Text(
+                    ZeroText(
                         "区分经文、传文与后世注释；残缺内容如实标记，不以推测补齐。译文、异文和图版均注明可核验的来源。",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -677,14 +679,14 @@ private fun CategoryGrid(onCategoryChange: (String) -> Unit) {
                                 shape = RoundedCornerShape(13.dp)
                             ) {
                                 Box(Modifier.size(36.dp), contentAlignment = Alignment.Center) {
-                                    Text(glyph, style = MaterialTheme.typography.titleMedium,
+                                    ZeroText(glyph, style = MaterialTheme.typography.titleMedium,
                                         fontFamily = FontFamily.Serif,
                                         color = MaterialTheme.colorScheme.onSecondaryContainer)
                                 }
                             }
-                            Text(name, fontWeight = FontWeight.SemiBold,
+                            ZeroText(name, fontWeight = FontWeight.SemiBold,
                                 style = MaterialTheme.typography.titleSmall)
-                            Text(description, style = MaterialTheme.typography.labelSmall,
+                            ZeroText(description, style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 maxLines = 2, overflow = TextOverflow.Ellipsis)
                     }
@@ -703,21 +705,21 @@ private fun EntryCard(entry: Entry, onClick: () -> Unit) {
         onClick = onClick,
     ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(entry.section, style = MaterialTheme.typography.labelMedium,
+                ZeroText(entry.section, style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.SemiBold)
                 Spacer(Modifier.weight(1f))
-                Text("阅读  ›", style = MaterialTheme.typography.labelSmall,
+                ZeroText("阅读  ›", style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
             Spacer(Modifier.height(7.dp))
-            Text(entry.title, style = MaterialTheme.typography.titleMedium,
+            ZeroText(entry.title, style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
             Spacer(Modifier.height(5.dp))
-            Text(entry.source, style = MaterialTheme.typography.labelSmall,
+            ZeroText(entry.source, style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 2, overflow = TextOverflow.Ellipsis)
             Spacer(Modifier.height(9.dp))
-            Text(entry.body.replace("\n", " ").take(116) +
+            ZeroText(entry.body.replace("\n", " ").take(116) +
                 if (entry.body.length > 116) "…" else "",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.88f),
@@ -774,8 +776,8 @@ private fun SettingsPage(
     ) {
         item {
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Text("偏好设置", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
-                Text("调整阅读环境与应用外观", style = MaterialTheme.typography.bodySmall,
+                ZeroText("偏好设置", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+                ZeroText("调整阅读环境与应用外观", style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
@@ -785,24 +787,24 @@ private fun SettingsPage(
                 cornerRadius = 24.dp,
                 contentPadding = PaddingValues(18.dp)
             ) {
-                Text("显示与排版", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                ZeroText("显示与排版", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
                 ListRow {
                     Column(verticalArrangement = Arrangement.spacedBy(7.dp)) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text("界面大小", style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
+                            ZeroText("界面大小", style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
                             Spacer(Modifier.weight(1f))
-                            Text("${(uiScale * 100).toInt()}%", color = MaterialTheme.colorScheme.primary,
+                            ZeroText("${(uiScale * 100).toInt()}%", color = MaterialTheme.colorScheme.primary,
                                 fontWeight = FontWeight.SemiBold)
                         }
-                        Text("调整卡片、间距、图标和导航等界面元素。",
+                        ZeroText("调整卡片、间距、图标和导航等界面元素。",
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant)
                         ZeroSlider(value = uiScale, onValueChange = onUiScaleChange,
                             valueRange = 0.85f..1.20f, keyPoints = listOf(0.85f, 1f, 1.2f))
                         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                            Text("紧凑", style = MaterialTheme.typography.labelSmall,
+                            ZeroText("紧凑", style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant)
-                            Text("宽松", style = MaterialTheme.typography.labelSmall,
+                            ZeroText("宽松", style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     }
@@ -811,21 +813,21 @@ private fun SettingsPage(
                 ListRow {
                     Column(verticalArrangement = Arrangement.spacedBy(7.dp)) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text("字体大小", style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
+                            ZeroText("字体大小", style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
                             Spacer(Modifier.weight(1f))
-                            Text("${(fontScale * 100).toInt()}%", color = MaterialTheme.colorScheme.primary,
+                            ZeroText("${(fontScale * 100).toInt()}%", color = MaterialTheme.colorScheme.primary,
                                 fontWeight = FontWeight.SemiBold)
                         }
-                        Text("独立调整文字比例，不改变卡片和图标尺寸。",
+                        ZeroText("独立调整文字比例，不改变卡片和图标尺寸。",
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant)
                         ZeroSlider(value = fontScale, onValueChange = onFontScaleChange,
                             valueRange = 0.85f..1.40f,
                             keyPoints = listOf(0.85f, 1f, 1.2f, 1.4f))
                         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                            Text("小", style = MaterialTheme.typography.labelSmall,
+                            ZeroText("小", style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant)
-                            Text("大", style = MaterialTheme.typography.labelSmall,
+                            ZeroText("大", style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     }
@@ -838,15 +840,15 @@ private fun SettingsPage(
                 cornerRadius = 24.dp,
                 contentPadding = PaddingValues(18.dp)
             ) {
-                Text("字体", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-                Text(fontName, style = MaterialTheme.typography.bodyMedium,
+                ZeroText("字体", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                ZeroText(fontName, style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.primary, maxLines = 2, overflow = TextOverflow.Ellipsis)
-                Text("支持导入 TTF、OTF、TTC、OTC。字体文件仅保存在本机应用设置中。",
+                ZeroText("支持导入 TTF、OTF、TTC、OTC。字体文件仅保存在本机应用设置中。",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     ZeroButton(onClick = { fontPicker.launch(arrayOf("*/*")) }) {
-                        Text("导入字体")
+                        ZeroText("导入字体")
                     }
                     ZeroTextButton(
                         text = "恢复默认",
@@ -858,7 +860,7 @@ private fun SettingsPage(
                     )
                 }
                 if (fontMessage != null) {
-                    Text(fontMessage!!, style = MaterialTheme.typography.bodySmall,
+                    ZeroText(fontMessage!!, style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.primary)
                 }
             }
@@ -869,8 +871,8 @@ private fun SettingsPage(
                 cornerRadius = 24.dp,
                 contentPadding = PaddingValues(18.dp)
             ) {
-                Text("主题模式", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-                Text("选择应用外观，也可以跟随系统自动切换。",
+                ZeroText("主题模式", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                ZeroText("选择应用外观，也可以跟随系统自动切换。",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -882,7 +884,7 @@ private fun SettingsPage(
                             contentPadding = PaddingValues(horizontal = 14.dp, vertical = 9.dp),
                             onClick = { onThemeChange(value) }
                         ) {
-                            Text(label, style = MaterialTheme.typography.labelLarge,
+                            ZeroText(label, style = MaterialTheme.typography.labelLarge,
                                 color = if (themeMode == value) MaterialTheme.colorScheme.onPrimaryContainer
                                     else MaterialTheme.colorScheme.onSurfaceVariant,
                                 fontWeight = if (themeMode == value) FontWeight.SemiBold else FontWeight.Normal)
@@ -897,8 +899,8 @@ private fun SettingsPage(
                 cornerRadius = 24.dp,
                 contentPadding = PaddingValues(18.dp)
             ) {
-                Text("典藏原则", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-                Text("缺文不补、异文并列、译文标明依据；未经原图核验的 OCR 不作为底本文字。",
+                ZeroText("典藏原则", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                ZeroText("缺文不补、异文并列、译文标明依据；未经原图核验的 OCR 不作为底本文字。",
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     style = MaterialTheme.typography.bodyMedium, lineHeight = 22.sp)
             }
@@ -1598,7 +1600,7 @@ private fun LuoshuIllustration(title: String) {
             verticalArrangement = Arrangement.spacedBy(12.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("图式示意", style = MaterialTheme.typography.titleSmall,
+            ZeroText("图式示意", style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.SemiBold)
             when {
                 title.contains("九宫数图") -> {
@@ -1617,7 +1619,7 @@ private fun LuoshuIllustration(title: String) {
                                         )
                                     ) {
                                         Box(contentAlignment = Alignment.Center) {
-                                            Text(number.toString(),
+                                            ZeroText(number.toString(),
                                                 style = MaterialTheme.typography.headlineMedium,
                                                 fontWeight = FontWeight.Bold,
                                                 color = if (number == 5) MaterialTheme.colorScheme.onPrimaryContainer
@@ -1628,7 +1630,7 @@ private fun LuoshuIllustration(title: String) {
                             }
                         }
                     }
-                    Text("横、纵、斜向各线之和均为 15",
+                    ZeroText("横、纵、斜向各线之和均为 15",
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
@@ -1638,7 +1640,7 @@ private fun LuoshuIllustration(title: String) {
                         listOf("水" to "1", "火" to "2", "木" to "3", "金" to "4", "土" to "5")
                     else
                         listOf("水" to "6", "火" to "7", "木" to "8", "金" to "9", "土" to "10")
-                    Text(if (isGenerating) "五行生数" else "五行成数",
+                    ZeroText(if (isGenerating) "五行生数" else "五行成数",
                         style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
                     Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                         values.forEach { (element, number) ->
@@ -1655,20 +1657,20 @@ private fun LuoshuIllustration(title: String) {
                                     horizontalAlignment = Alignment.CenterHorizontally,
                                     verticalArrangement = Arrangement.spacedBy(5.dp)
                                 ) {
-                                    Text(number, style = MaterialTheme.typography.headlineSmall,
+                                    ZeroText(number, style = MaterialTheme.typography.headlineSmall,
                                         fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
-                                    Text(element, style = MaterialTheme.typography.labelMedium,
+                                    ZeroText(element, style = MaterialTheme.typography.labelMedium,
                                         color = MaterialTheme.colorScheme.onSurface)
                                 }
                             }
                         }
                     }
-                    Text("此图仅列数与五行对应，不表示古图方位。",
+                    ZeroText("此图仅列数与五行对应，不表示古图方位。",
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
-            Text("现代矢量重绘 · 非古籍原图",
+            ZeroText("现代矢量重绘 · 非古籍原图",
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
