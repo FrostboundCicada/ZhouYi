@@ -51,9 +51,16 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import top.yukonga.miuix.kmp.basic.TopAppBar as MiuixTopAppBar
-import top.yukonga.miuix.kmp.theme.ColorSchemeMode
-import top.yukonga.miuix.kmp.theme.MiuixTheme
-import top.yukonga.miuix.kmp.theme.ThemeController
+import com.zeroui.kit.glass.LiquidBottomTab
+import com.zeroui.kit.glass.LiquidBottomTabs
+import com.zeroui.kit.glass.LocalLiquidBottomTabActive
+import com.zeroui.kit.glass.liquidSource
+import com.zeroui.kit.glass.rememberLiquidBackdrop
+import com.zeroui.kit.theme.DarkMode
+import com.zeroui.kit.theme.GlassMode
+import com.zeroui.kit.theme.ThemeSettings
+import com.zeroui.kit.theme.UiStyle
+import com.zeroui.kit.theme.ZeroTheme
 
 private data class Entry(val section: String, val title: String, val source: String, val body: String, val translation: String? = null)
 
@@ -83,13 +90,10 @@ private fun ZhouYiApp() {
     val appFontFamily = remember(customTypeface) {
         customTypeface?.let { FontFamily(it) } ?: FontFamily.Default
     }
-    val miuixMode = when (themeMode) {
-        "light" -> ColorSchemeMode.Light
-        "dark" -> ColorSchemeMode.Dark
-        else -> ColorSchemeMode.System
-    }
-    val controller = remember(themeMode) {
-        ThemeController(miuixMode, keyColor = Color(0xFF86533D))
+    val zeroDarkMode = when (themeMode) {
+        "light" -> DarkMode.Light
+        "dark" -> DarkMode.Dark
+        else -> DarkMode.System
     }
     val dark = when (themeMode) {
         "light" -> false
@@ -151,7 +155,15 @@ private fun ZhouYiApp() {
             fontScale = baseDensity.fontScale * fontScale / uiScale
         )
     ) {
-        MiuixTheme(controller = controller) {
+        ZeroTheme(
+            settings = ThemeSettings(
+                style = UiStyle.Miuix,
+                darkMode = zeroDarkMode,
+                uiScale = 100,
+                glassMode = GlassMode.Liquid,
+                glassIntensity = 100,
+            )
+        ) {
             MaterialTheme(colorScheme = scheme, typography = scaledTypography) {
                 MainScreen(
                     themeMode = themeMode,
@@ -197,6 +209,7 @@ private fun MainScreen(
     var query by remember { mutableStateOf("") }
     var selectedEntry by remember { mutableStateOf<Entry?>(null) }
     val libraryListState = rememberLazyListState()
+    val liquidBackdrop = rememberLiquidBackdrop()
 
     val titles = listOf("典藏", "卦序", "专题", "设置")
     val all = remember { buildEntries() }
@@ -238,109 +251,75 @@ private fun MainScreen(
         },
         bottomBar = {
             Box(
-                modifier = Modifier.fillMaxWidth().height(84.dp),
+                modifier = Modifier.fillMaxWidth().height(92.dp),
                 contentAlignment = Alignment.BottomCenter
             ) {
-                FloatingGlassNavigationBar(tab = tab) { next ->
-                    tab = next
-                    category = "全部"
-                    query = ""
+                LiquidBottomTabs(
+                    selectedTabIndex = { tab },
+                    onTabSelected = { next ->
+                        tab = next
+                        category = "全部"
+                        query = ""
+                    },
+                    backdrop = liquidBackdrop,
+                    tabsCount = 4,
+                    modifier = Modifier.widthIn(max = 340.dp).fillMaxWidth().padding(horizontal = 22.dp),
+                    barHeight = 68.dp,
+                    intensity = 1f,
+                ) {
+                    val labels = listOf("典藏", "卦序", "专题", "设置")
+                    val icons = listOf(Icons.Filled.Home, Icons.Filled.List, Icons.Filled.Info, Icons.Filled.Settings)
+                    labels.forEachIndexed { index, label ->
+                        LiquidBottomTab(onClick = {
+                            tab = index
+                            category = "全部"
+                            query = ""
+                        }) {
+                            val active = LocalLiquidBottomTabActive.current
+                            Icon(
+                                imageVector = icons[index],
+                                contentDescription = label,
+                                tint = if (active) MaterialTheme.colorScheme.primary
+                                else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.72f),
+                                modifier = Modifier.size(22.dp)
+                            )
+                            Text(
+                                label,
+                                style = MaterialTheme.typography.labelSmall,
+                                color = if (active) MaterialTheme.colorScheme.primary
+                                else MaterialTheme.colorScheme.onSurfaceVariant,
+                                fontWeight = if (active) FontWeight.SemiBold else FontWeight.Normal
+                            )
+                        }
+                    }
                 }
             }
         }
     ) { padding ->
-        if (tab == 3) {
-            SettingsPage(
-                themeMode = themeMode,
-                onThemeChange = onThemeChange,
-                uiScale = uiScale,
-                onUiScaleChange = onUiScaleChange,
-                fontScale = fontScale,
-                onFontScaleChange = onFontScaleChange,
-                fontUri = fontUri,
-                onFontUriChange = onFontUriChange,
-                modifier = Modifier.padding(padding)
-            )
-        } else if (tab == 0) {
-            HomePage(
-                onOpenCategory = { name ->
-                    category = name
-                    tab = if (name == "易经" || name == "十翼") 1 else 2
-                    query = ""
-                },
-                modifier = Modifier.padding(padding)
-            )
-        } else {
-            LibraryPage(
-                tab, category, { category = it }, query, { query = it },
-                visible, { selectedEntry = it }, libraryListState, Modifier.padding(padding)
-            )
-        }
-    }
-
-
-}
-
-@Composable
-private fun FloatingGlassNavigationBar(tab: Int, onSelect: (Int) -> Unit) {
-    val icons = listOf(
-        Icons.Filled.Home, Icons.Filled.List, Icons.Filled.Info, Icons.Filled.Settings
-    )
-    val labels = listOf("典藏", "卦序", "专题", "设置")
-    val shape = RoundedCornerShape(30.dp)
-    Row(
-        modifier = Modifier
-            .widthIn(max = 390.dp)
-            .fillMaxWidth()
-            .padding(horizontal = 22.dp, vertical = 8.dp)
-            .shadow(20.dp, shape)
-            .clip(shape)
-            .background(
-                Brush.linearGradient(
-                    listOf(
-                        MaterialTheme.colorScheme.surface.copy(alpha = 0.94f),
-                        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.76f),
-                        MaterialTheme.colorScheme.surface.copy(alpha = 0.90f)
-                    )
+        Box(Modifier.fillMaxSize().padding(padding).liquidSource(liquidBackdrop)) {
+            if (tab == 3) {
+                SettingsPage(
+                    themeMode = themeMode,
+                    onThemeChange = onThemeChange,
+                    uiScale = uiScale,
+                    onUiScaleChange = onUiScaleChange,
+                    fontScale = fontScale,
+                    onFontScaleChange = onFontScaleChange,
+                    fontUri = fontUri,
+                    onFontUriChange = onFontUriChange,
                 )
-            )
-            .border(
-                1.dp,
-                MaterialTheme.colorScheme.outline.copy(alpha = 0.34f),
-                shape
-            )
-            .padding(horizontal = 7.dp, vertical = 7.dp),
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        labels.forEachIndexed { index, label ->
-            val selected = tab == index
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .clip(RoundedCornerShape(23.dp))
-                    .background(
-                        if (selected) MaterialTheme.colorScheme.primary.copy(alpha = 0.13f)
-                        else Color.Transparent
-                    )
-                    .clickable { onSelect(index) }
-                    .padding(horizontal = 7.dp, vertical = 5.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(2.dp)
-            ) {
-                Icon(
-                    imageVector = icons[index],
-                    contentDescription = label,
-                    tint = if (selected) MaterialTheme.colorScheme.primary
-                    else MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(21.dp)
+            } else if (tab == 0) {
+                HomePage(
+                    onOpenCategory = { name ->
+                        category = name
+                        tab = if (name == "易经" || name == "十翼") 1 else 2
+                        query = ""
+                    },
                 )
-                Text(
-                    label,
-                    style = MaterialTheme.typography.labelSmall,
-                    color = if (selected) MaterialTheme.colorScheme.primary
-                    else MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal
+            } else {
+                LibraryPage(
+                    tab, category, { category = it }, query, { query = it },
+                    visible, { selectedEntry = it }, libraryListState, Modifier
                 )
             }
         }
