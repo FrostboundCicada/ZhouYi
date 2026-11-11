@@ -73,7 +73,7 @@ private fun ZhouYiApp() {
         if (fontUri.isNullOrBlank()) null else runCatching {
             val uri = Uri.parse(fontUri)
             context.contentResolver.openFileDescriptor(uri, "r")?.use { descriptor ->
-                Typeface.Builder(descriptor).build()
+                Typeface.Builder(descriptor.fileDescriptor).build()
             }
         }.getOrNull()
     }
@@ -603,7 +603,7 @@ private fun SettingsPage(
                     uri, Intent.FLAG_GRANT_READ_URI_PERMISSION
                 )
                 context.contentResolver.openFileDescriptor(uri, "r")?.use { descriptor ->
-                    Typeface.Builder(descriptor).build()
+                    Typeface.Builder(descriptor.fileDescriptor).build()
                 } ?: error("无法打开字体文件")
                 onFontUriChange(uri.toString())
                 fontMessage = "字体已载入。支持 TTF、OTF、TTC、OTC。"
