@@ -62,6 +62,8 @@ import com.zeroui.kit.components.NavBarItem
 import com.zeroui.kit.components.IconButton as ZeroIconButton
 import com.zeroui.kit.components.Scaffold as ZeroScaffold
 import com.zeroui.kit.components.TopAppBar as ZeroTopAppBar
+import com.zeroui.kit.glass.CardGlass
+import com.zeroui.kit.glass.LocalCardGlass
 import com.zeroui.kit.glass.LiquidBottomTab
 import com.zeroui.kit.glass.LiquidBottomTabs
 import com.zeroui.kit.glass.LocalLiquidBottomTabActive
@@ -326,6 +328,7 @@ private fun MainScreen(
         }
     ) { padding ->
         Box(Modifier.fillMaxSize().padding(padding).liquidSource(liquidBackdrop)) {
+            CompositionLocalProvider(LocalCardGlass provides CardGlass(liquid = liquidBackdrop)) {
             if (tab == 3) {
                 SettingsPage(
                     themeMode = themeMode,
@@ -351,6 +354,7 @@ private fun MainScreen(
                     visible, { selectedEntry = it }, libraryListState, Modifier
                 )
             }
+            }
         }
     }
 }
@@ -359,6 +363,7 @@ private fun MainScreen(
 @Composable
 private fun ReadingPage(entry: Entry, onBack: () -> Unit) {
     val uriHandler = LocalUriHandler.current
+    val readingBackdrop = rememberLiquidBackdrop()
     ZeroScaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
@@ -374,8 +379,9 @@ private fun ReadingPage(entry: Entry, onBack: () -> Unit) {
             )
         }
     ) { padding ->
+        CompositionLocalProvider(LocalCardGlass provides CardGlass(liquid = readingBackdrop)) {
         LazyColumn(
-            modifier = Modifier.fillMaxSize().padding(padding),
+            modifier = Modifier.fillMaxSize().padding(padding).liquidSource(readingBackdrop),
             contentPadding = PaddingValues(start = 18.dp, end = 18.dp, top = 14.dp, bottom = 44.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
@@ -465,6 +471,7 @@ private fun ReadingPage(entry: Entry, onBack: () -> Unit) {
             item {
                 ZeroTextButton(text = "返回目录", onClick = onBack, modifier = Modifier.fillMaxWidth())
             }
+        }
         }
     }
 }
