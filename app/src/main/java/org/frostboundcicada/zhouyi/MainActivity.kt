@@ -60,6 +60,7 @@ import com.zeroui.kit.components.TextButton as ZeroTextButton
 import com.zeroui.kit.components.TextField as ZeroTextField
 import com.zeroui.kit.components.Slider as ZeroSlider
 import com.zeroui.kit.components.ListRow
+import com.zeroui.kit.components.HorizontalDivider as ZeroDivider
 import com.zeroui.kit.components.rememberTopBarScrollBehavior
 import com.zeroui.kit.components.ZeroNavigationBar
 import com.zeroui.kit.components.NavBarItem
@@ -241,7 +242,7 @@ private fun MainScreen(
     val wings = remember { buildWingsIndex() }
     val visible = remember(tab, category, query, all, hexagrams, wings) {
         val source = when (tab) {
-            1 -> all.filter { it.section == "易经" } + hexagrams
+            1 -> if (category == "十翼") wings else all.filter { it.section == "易经" } + hexagrams
             2 -> all.filter { it.section in listOf("河图", "洛书", "相关古籍", "版本档案") }
             else -> all + wings
         }
@@ -445,7 +446,7 @@ private fun ReadingPage(entry: Entry, onBack: () -> Unit) {
                 ) {
                     ZeroText("原文", style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.SemiBold)
-                    HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.35f))
+                    ZeroDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.35f))
                     SelectionContainer {
                         ZeroText(
                             entry.body,
@@ -808,7 +809,7 @@ private fun SettingsPage(
                         }
                     }
                 }
-                HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.28f))
+                ZeroDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.28f))
                 ListRow {
                     Column(verticalArrangement = Arrangement.spacedBy(7.dp)) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
