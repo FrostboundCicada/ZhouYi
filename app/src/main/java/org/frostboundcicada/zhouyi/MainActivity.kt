@@ -257,6 +257,15 @@ private fun MainScreen(
                 onFontUriChange = onFontUriChange,
                 modifier = Modifier.padding(padding)
             )
+        } else if (tab == 0) {
+            HomePage(
+                onOpenCategory = { name ->
+                    category = name
+                    tab = if (name == "易经" || name == "十翼") 1 else 2
+                    query = ""
+                },
+                modifier = Modifier.padding(padding)
+            )
         } else {
             LibraryPage(
                 tab, category, { category = it }, query, { query = it },
@@ -486,23 +495,97 @@ private fun LibraryPage(
 }
 
 @Composable
-private fun ArchiveHero() {
-    Text(
-        "原文优先  ·  逐段译注  ·  版本可查  ·  缺文不补",
-        modifier = Modifier.fillMaxWidth().padding(top = 2.dp, bottom = 4.dp),
-        style = MaterialTheme.typography.bodySmall,
-        color = MaterialTheme.colorScheme.onSurfaceVariant
-    )
-}
-
-@Composable
-private fun MetricCard(value: String, label: String, modifier: Modifier = Modifier) {
-    Surface(modifier, color = MaterialTheme.colorScheme.surface,
-        shape = RoundedCornerShape(20.dp), tonalElevation = 1.dp) {
-        Column(Modifier.padding(vertical = 15.dp, horizontal = 12.dp)) {
-            Text(value, style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
-            Text(label, style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant)
+private fun HomePage(
+    onOpenCategory: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    LazyColumn(
+        modifier = modifier.fillMaxSize(),
+        contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 14.dp, bottom = 34.dp),
+        verticalArrangement = Arrangement.spacedBy(22.dp)
+    ) {
+        item {
+            val shape = RoundedCornerShape(30.dp)
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(18.dp, shape)
+                    .clip(shape)
+                    .background(
+                        Brush.linearGradient(
+                            listOf(
+                                MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.96f),
+                                MaterialTheme.colorScheme.surface.copy(alpha = 0.98f),
+                                MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.72f)
+                            )
+                        )
+                    )
+                    .border(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.30f), shape)
+                    .padding(horizontal = 22.dp, vertical = 24.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Surface(
+                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.10f),
+                    shape = RoundedCornerShape(50)
+                ) {
+                    Text(
+                        "离线古籍典藏 · 持续整理",
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+                Text(
+                    "周易数字典藏",
+                    style = MaterialTheme.typography.headlineLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    "以《周易》经传为中心，连接历代版本、相关古籍与易学专题。",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    lineHeight = 27.sp
+                )
+                Text(
+                    "原文优先  ·  版本可查  ·  异文并列  ·  缺文不补",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+        }
+        item {
+            Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
+                Text("开始探索", style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold)
+                Text("选择一个分类进入目录，不在首页直接展开正文。",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+        }
+        item { CategoryGrid(onOpenCategory) }
+        item {
+            Surface(
+                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.72f),
+                shape = RoundedCornerShape(22.dp),
+                modifier = Modifier.fillMaxWidth(),
+                border = androidx.compose.foundation.BorderStroke(
+                    1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.28f)
+                )
+            ) {
+                Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(7.dp)) {
+                    Text("典藏原则", style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold)
+                    Text(
+                        "区分经文、传文与后世注释；残缺内容如实标记，不以推测补齐。译文、异文和图版均注明可核验的来源。",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        lineHeight = 21.sp
+                    )
+                }
+            }
         }
     }
 }
@@ -522,26 +605,34 @@ private fun CategoryGrid(onCategoryChange: (String) -> Unit) {
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 group.forEach { (name, description, glyph) ->
                     Surface(
-                        modifier = Modifier.weight(1f).clickable { onCategoryChange(name) },
-                        color = MaterialTheme.colorScheme.surface,
-                        shape = RoundedCornerShape(20.dp), tonalElevation = 1.dp
+                        modifier = Modifier.weight(1f).heightIn(min = 112.dp)
+                            .clickable { onCategoryChange(name) },
+                        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.88f),
+                        shape = RoundedCornerShape(22.dp),
+                        tonalElevation = 1.dp,
+                        border = androidx.compose.foundation.BorderStroke(
+                            1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.24f)
+                        )
                     ) {
-                        Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
-                            Surface(color = MaterialTheme.colorScheme.secondaryContainer,
-                                shape = RoundedCornerShape(14.dp)) {
-                                Box(Modifier.size(42.dp), contentAlignment = Alignment.Center) {
-                                    Text(glyph, style = MaterialTheme.typography.titleLarge,
+                        Column(
+                            Modifier.padding(15.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Surface(
+                                color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.78f),
+                                shape = RoundedCornerShape(13.dp)
+                            ) {
+                                Box(Modifier.size(36.dp), contentAlignment = Alignment.Center) {
+                                    Text(glyph, style = MaterialTheme.typography.titleMedium,
                                         fontFamily = FontFamily.Serif,
                                         color = MaterialTheme.colorScheme.onSecondaryContainer)
                                 }
                             }
-                            Spacer(Modifier.width(10.dp))
-                            Column(Modifier.weight(1f)) {
-                                Text(name, fontWeight = FontWeight.SemiBold, maxLines = 1)
-                                Text(description, style = MaterialTheme.typography.labelSmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    maxLines = 2, overflow = TextOverflow.Ellipsis)
-                            }
+                            Text(name, fontWeight = FontWeight.SemiBold,
+                                style = MaterialTheme.typography.titleSmall)
+                            Text(description, style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                maxLines = 2, overflow = TextOverflow.Ellipsis)
                         }
                     }
                 }
