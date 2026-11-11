@@ -1,6 +1,12 @@
 package org.frostboundcicada.zhouyi
 
 import android.os.Bundle
+import android.graphics.Typeface
+import android.content.Intent
+import android.net.Uri
+import android.provider.OpenableColumns
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.compose.BackHandler
@@ -34,9 +40,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import top.yukonga.miuix.kmp.basic.TopAppBar as MiuixTopAppBar
@@ -58,6 +66,20 @@ private fun ZhouYiApp() {
     val context = LocalContext.current
     val prefs = remember { context.getSharedPreferences("zhouyi_settings", 0) }
     var themeMode by remember { mutableStateOf(prefs.getString("theme_mode", "system") ?: "system") }
+    var uiScale by remember { mutableFloatStateOf(prefs.getFloat("ui_scale", 1.0f)) }
+    var fontScale by remember { mutableFloatStateOf(prefs.getFloat("font_scale", 1.0f)) }
+    var fontUri by remember { mutableStateOf(prefs.getString("font_uri", null)) }
+    val customTypeface = remember(fontUri) {
+        if (fontUri.isNullOrBlank()) null else runCatching {
+            val uri = Uri.parse(fontUri)
+            context.contentResolver.openFileDescriptor(uri, "r")?.use { descriptor ->
+                Typeface.Builder(descriptor).build()
+            }
+        }.getOrNull()
+    }
+    val appFontFamily = remember(customTypeface) {
+        customTypeface?.let { FontFamily(it) } ?: FontFamily.Default
+    }
     val miuixMode = when (themeMode) {
         "light" -> ColorSchemeMode.Light
         "dark" -> ColorSchemeMode.Dark
@@ -99,19 +121,74 @@ private fun ZhouYiApp() {
         }
     }
 
-    MiuixTheme(controller = controller) {
-        MaterialTheme(colorScheme = scheme) {
-            MainScreen(themeMode, onThemeChange = {
-                themeMode = it
-                prefs.edit().putString("theme_mode", it).apply()
-            })
+    val baseDensity = LocalDensity.current
+    val scaledTypography = remember(appFontFamily) {
+        val base = Typography()
+        Typography(
+            displayLarge = base.displayLarge.copy(fontFamily = appFontFamily),
+            displayMedium = base.displayMedium.copy(fontFamily = appFontFamily),
+            displaySmall = base.displaySmall.copy(fontFamily = appFontFamily),
+            headlineLarge = base.headlineLarge.copy(fontFamily = appFontFamily),
+            headlineMedium = base.headlineMedium.copy(fontFamily = appFontFamily),
+            headlineSmall = base.headlineSmall.copy(fontFamily = appFontFamily),
+            titleLarge = base.titleLarge.copy(fontFamily = appFontFamily),
+            titleMedium = base.titleMedium.copy(fontFamily = appFontFamily),
+            titleSmall = base.titleSmall.copy(fontFamily = appFontFamily),
+            bodyLarge = base.bodyLarge.copy(fontFamily = appFontFamily),
+            bodyMedium = base.bodyMedium.copy(fontFamily = appFontFamily),
+            bodySmall = base.bodySmall.copy(fontFamily = appFontFamily),
+            labelLarge = base.labelLarge.copy(fontFamily = appFontFamily),
+            labelMedium = base.labelMedium.copy(fontFamily = appFontFamily),
+            labelSmall = base.labelSmall.copy(fontFamily = appFontFamily)
+        )
+    }
+    CompositionLocalProvider(
+        LocalDensity provides Density(
+            density = baseDensity.density * uiScale,
+            fontScale = baseDensity.fontScale * fontScale
+        )
+    ) {
+        MiuixTheme(controller = controller) {
+            MaterialTheme(colorScheme = scheme, typography = scaledTypography) {
+                MainScreen(
+                    themeMode = themeMode,
+                    onThemeChange = {
+                        themeMode = it
+                        prefs.edit().putString("theme_mode", it).apply()
+                    },
+                    uiScale = uiScale,
+                    onUiScaleChange = {
+                        uiScale = it
+                        prefs.edit().putFloat("ui_scale", it).apply()
+                    },
+                    fontScale = fontScale,
+                    onFontScaleChange = {
+                        fontScale = it
+                        prefs.edit().putFloat("font_scale", it).apply()
+                    },
+                    fontUri = fontUri,
+                    onFontUriChange = {
+                        fontUri = it
+                        prefs.edit().putString("font_uri", it).apply()
+                    }
+                )
+            }
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MainScreen(themeMode: String, onThemeChange: (String) -> Unit) {
+private fun MainScreen(
+    themeMode: String,
+    onThemeChange: (String) -> Unit,
+    uiScale: Float,
+    onUiScaleChange: (Float) -> Unit,
+    fontScale: Float,
+    onFontScaleChange: (Float) -> Unit,
+    fontUri: String?,
+    onFontUriChange: (String?) -> Unit
+) {
     var tab by remember { mutableIntStateOf(0) }
     var category by remember { mutableStateOf("全部") }
     var query by remember { mutableStateOf("") }
@@ -169,7 +246,17 @@ private fun MainScreen(themeMode: String, onThemeChange: (String) -> Unit) {
         }
     ) { padding ->
         if (tab == 3) {
-            SettingsPage(themeMode, onThemeChange, Modifier.padding(padding))
+            SettingsPage(
+                themeMode = themeMode,
+                onThemeChange = onThemeChange,
+                uiScale = uiScale,
+                onUiScaleChange = onUiScaleChange,
+                fontScale = fontScale,
+                onFontScaleChange = onFontScaleChange,
+                fontUri = fontUri,
+                onFontUriChange = onFontUriChange,
+                modifier = Modifier.padding(padding)
+            )
         } else {
             LibraryPage(
                 tab, category, { category = it }, query, { query = it },
@@ -494,47 +581,151 @@ private fun EntryCard(entry: Entry, onClick: () -> Unit) {
 }
 
 @Composable
-private fun SettingsPage(themeMode: String, onThemeChange: (String) -> Unit,
-                         modifier: Modifier = Modifier) {
-    Column(modifier.fillMaxSize().padding(horizontal = 18.dp, vertical = 12.dp),
-        verticalArrangement = Arrangement.spacedBy(14.dp)) {
-        Text("外观", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
-        Surface(color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(24.dp),
-            tonalElevation = 1.dp) {
-            Column(Modifier.padding(18.dp)) {
-                Text("主题模式", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-                Spacer(Modifier.height(6.dp))
-                Text("选择应用外观，也可以跟随系统自动切换。",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant)
-                Spacer(Modifier.height(16.dp))
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    listOf("system" to "跟随系统", "light" to "浅色", "dark" to "深色").forEach { (value, label) ->
-                        FilterChip(selected = themeMode == value,
-                            onClick = { onThemeChange(value) }, label = { Text(label) })
+private fun SettingsPage(
+    themeMode: String,
+    onThemeChange: (String) -> Unit,
+    uiScale: Float,
+    onUiScaleChange: (Float) -> Unit,
+    fontScale: Float,
+    onFontScaleChange: (Float) -> Unit,
+    fontUri: String?,
+    onFontUriChange: (String?) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val context = LocalContext.current
+    var fontMessage by remember { mutableStateOf<String?>(null) }
+    val fontPicker = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument()
+    ) { uri: Uri? ->
+        if (uri != null) {
+            runCatching {
+                context.contentResolver.takePersistableUriPermission(
+                    uri, Intent.FLAG_GRANT_READ_URI_PERMISSION
+                )
+                context.contentResolver.openFileDescriptor(uri, "r")?.use { descriptor ->
+                    Typeface.Builder(descriptor).build()
+                } ?: error("无法打开字体文件")
+                onFontUriChange(uri.toString())
+                fontMessage = "字体已载入。支持 TTF、OTF、TTC、OTC。"
+            }.onFailure {
+                fontMessage = "无法载入该字体：${it.message ?: "格式不受支持"}"
+            }
+        }
+    }
+    val fontName = remember(fontUri) {
+        if (fontUri.isNullOrBlank()) "系统默认字体" else runCatching {
+            val uri = Uri.parse(fontUri)
+            context.contentResolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)
+                ?.use { cursor ->
+                    if (cursor.moveToFirst()) cursor.getString(0) else null
+                } ?: "已导入字体"
+        }.getOrDefault("已导入字体")
+    }
+
+    LazyColumn(
+        modifier = modifier.fillMaxSize(),
+        contentPadding = PaddingValues(horizontal = 18.dp, vertical = 12.dp),
+        verticalArrangement = Arrangement.spacedBy(14.dp)
+    ) {
+        item {
+            Text("显示与排版", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+        }
+        item {
+            Surface(color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(24.dp),
+                tonalElevation = 1.dp, modifier = Modifier.fillMaxWidth()) {
+                Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text("界面大小", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                        Spacer(Modifier.weight(1f))
+                        Text("${(uiScale * 100).toInt()}%", color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.SemiBold)
+                    }
+                    Text("调整卡片、间距、图标和导航等界面元素的整体大小。",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Slider(value = uiScale, onValueChange = onUiScaleChange,
+                        valueRange = 0.85f..1.20f, steps = 6)
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                        Text("紧凑", style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text("宽松", style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.35f))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text("字体大小", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                        Spacer(Modifier.weight(1f))
+                        Text("${(fontScale * 100).toInt()}%", color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.SemiBold)
+                    }
+                    Text("独立调整所有页面的文字显示比例，不改变界面元素尺寸。",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Slider(value = fontScale, onValueChange = onFontScaleChange,
+                        valueRange = 0.85f..1.40f, steps = 10)
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                        Text("小", style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text("大", style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
             }
         }
-        Surface(color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(24.dp),
-            tonalElevation = 1.dp) {
-            Column(Modifier.padding(18.dp)) {
-                Text("设计系统", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-                Spacer(Modifier.height(8.dp))
-                Text("Miuix · HyperOS 风格导航与顶部栏",
-                    color = MaterialTheme.colorScheme.onSurfaceVariant)
-                Text("Material 3 · 色彩体系、卡片、输入与底部阅读面板",
-                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+        item {
+            Surface(color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(24.dp),
+                tonalElevation = 1.dp, modifier = Modifier.fillMaxWidth()) {
+                Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Text("字体", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                    Text(fontName, style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.primary, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                    Text("支持导入 TTF、OTF、TTC、OTC 字体文件。字体仅保存在本机应用设置中，不会上传。",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Button(onClick = { fontPicker.launch(arrayOf("*/*")) }) {
+                            Text("导入字体")
+                        }
+                        OutlinedButton(onClick = {
+                            onFontUriChange(null)
+                            fontMessage = "已恢复系统默认字体。"
+                        }, enabled = fontUri != null) {
+                            Text("恢复默认")
+                        }
+                    }
+                    if (fontMessage != null) {
+                        Text(fontMessage!!, style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.primary)
+                    }
+                }
             }
         }
-        Surface(color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(24.dp),
-            tonalElevation = 1.dp) {
-            Column(Modifier.padding(18.dp)) {
-                Text("典藏原则", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-                Spacer(Modifier.height(8.dp))
-                Text("缺文不补、异文并列、译文标明依据；未经原图核验的 OCR 不作为底本文字。",
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    style = MaterialTheme.typography.bodyMedium)
+        item {
+            Surface(color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(24.dp),
+                tonalElevation = 1.dp, modifier = Modifier.fillMaxWidth()) {
+                Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text("主题模式", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                    Text("选择应用外观，也可以跟随系统自动切换。",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        listOf("system" to "跟随系统", "light" to "浅色", "dark" to "深色").forEach { (value, label) ->
+                            FilterChip(selected = themeMode == value,
+                                onClick = { onThemeChange(value) }, label = { Text(label) })
+                        }
+                    }
+                }
+            }
+        }
+        item {
+            Surface(color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(24.dp),
+                tonalElevation = 1.dp, modifier = Modifier.fillMaxWidth()) {
+                Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text("典藏原则", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                    Text("缺文不补、异文并列、译文标明依据；未经原图核验的 OCR 不作为底本文字。",
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.bodyMedium)
+                }
             }
         }
     }
