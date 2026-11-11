@@ -138,18 +138,6 @@ private fun ZhouYiApp() {
         outline = Color(0xFFD8CEC1)
     )
 
-    SideEffect {
-        val window = (context as? android.app.Activity)?.window
-        window?.statusBarColor = scheme.background.toArgb()
-        window?.navigationBarColor = scheme.surface.toArgb()
-        @Suppress("DEPRECATION")
-        run {
-            window?.decorView?.systemUiVisibility = if (dark) 0 else
-                android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or
-                android.view.View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
-        }
-    }
-
     val baseDensity = LocalDensity.current
     val scaledTypography = remember(appFontFamily) {
         val base = Typography()
@@ -235,6 +223,12 @@ private fun MainScreen(
     val liquidBackdrop = rememberLiquidBackdrop()
     val topBarScrollBehavior = rememberTopBarScrollBehavior()
     val topBarBackdrop = rememberTopBarBackdrop()
+    val windowPalette = ZeroTheme.colors
+    val appWindow = (LocalContext.current as? android.app.Activity)?.window
+    SideEffect {
+        appWindow?.statusBarColor = windowPalette.page.toArgb()
+        appWindow?.navigationBarColor = windowPalette.card.toArgb()
+    }
 
     val titles = listOf("典藏", "卦序", "专题", "设置")
     val all = remember { buildEntries() }
@@ -260,7 +254,7 @@ private fun MainScreen(
         ReadingPage(entry = selectedEntry!!, onBack = { selectedEntry = null })
     } else ZeroScaffold(
         modifier = Modifier.nestedScroll(topBarScrollBehavior.nestedScrollConnection),
-        containerColor = MaterialTheme.colorScheme.background,
+        containerColor = ZeroTheme.colors.page,
         topBar = {
             BlurredTopBar(topBarBackdrop, topBarScrollBehavior) {
             ZeroTopAppBar(
@@ -308,15 +302,15 @@ private fun MainScreen(
                                 ZeroIcon(
                                     imageVector = icons[index],
                                     contentDescription = label,
-                                    tint = if (active) MaterialTheme.colorScheme.primary
-                                    else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.72f),
+                                    tint = if (active) ZeroTheme.colors.accent
+                                    else ZeroTheme.colors.contentMuted.copy(alpha = 0.72f),
                                     modifier = Modifier.size(22.dp)
                                 )
                                 ZeroText(
                                     label,
                                     style = MaterialTheme.typography.labelSmall,
-                                    color = if (active) MaterialTheme.colorScheme.primary
-                                    else MaterialTheme.colorScheme.onSurfaceVariant,
+                                    color = if (active) ZeroTheme.colors.accent
+                                    else ZeroTheme.colors.contentMuted,
                                     fontWeight = if (active) FontWeight.SemiBold else FontWeight.Normal
                                 )
                             }
@@ -384,7 +378,7 @@ private fun ReadingPage(entry: Entry, onBack: () -> Unit) {
     val readingTopBarBackdrop = rememberTopBarBackdrop()
     ZeroScaffold(
         modifier = Modifier.nestedScroll(readingScrollBehavior.nestedScrollConnection),
-        containerColor = MaterialTheme.colorScheme.background,
+        containerColor = ZeroTheme.colors.page,
         topBar = {
             BlurredTopBar(readingTopBarBackdrop, readingScrollBehavior) {
             ZeroTopAppBar(
@@ -414,12 +408,12 @@ private fun ReadingPage(entry: Entry, onBack: () -> Unit) {
                     contentPadding = PaddingValues(20.dp)
                 ) {
                     ZeroText(entry.section, style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.SemiBold)
+                        color = ZeroTheme.colors.accent, fontWeight = FontWeight.SemiBold)
                     ZeroText(entry.title, style = MaterialTheme.typography.headlineSmall.copy(fontFamily = FontFamily.Serif),
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface)
+                        color = ZeroTheme.colors.content)
                     ZeroText(entry.source, style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant, lineHeight = 20.sp)
+                        color = ZeroTheme.colors.contentMuted, lineHeight = 20.sp)
                     val sourceImageUrl = originalImageSourceFor(entry.title)
                     if (sourceImageUrl != null) {
                         ZeroTextButton(
@@ -430,7 +424,7 @@ private fun ReadingPage(entry: Entry, onBack: () -> Unit) {
                         ZeroText(
                             "馆藏／数字化原书入口，需要联网；目前尚未缓存为应用内离线图片。",
                             style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = ZeroTheme.colors.contentMuted
                         )
                     }
                 }
@@ -445,8 +439,8 @@ private fun ReadingPage(entry: Entry, onBack: () -> Unit) {
                     contentPadding = PaddingValues(horizontal = 20.dp, vertical = 18.dp)
                 ) {
                     ZeroText("原文", style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.SemiBold)
-                    ZeroDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.35f))
+                        color = ZeroTheme.colors.accent, fontWeight = FontWeight.SemiBold)
+                    ZeroDivider(color = ZeroTheme.colors.outline.copy(alpha = 0.35f))
                     SelectionContainer {
                         ZeroText(
                             entry.body,
@@ -454,7 +448,7 @@ private fun ReadingPage(entry: Entry, onBack: () -> Unit) {
                             style = MaterialTheme.typography.bodyLarge.copy(
                                 fontFamily = FontFamily.Serif, lineHeight = 32.sp
                             ),
-                            color = MaterialTheme.colorScheme.onSurface
+                            color = ZeroTheme.colors.content
                         )
                     }
                 }
@@ -467,10 +461,10 @@ private fun ReadingPage(entry: Entry, onBack: () -> Unit) {
                         contentPadding = PaddingValues(20.dp)
                     ) {
                         ZeroText("逐段译文", style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.SemiBold)
+                            color = ZeroTheme.colors.accent, fontWeight = FontWeight.SemiBold)
                         ZeroText(entry.translation, modifier = Modifier.fillMaxWidth(),
                             style = MaterialTheme.typography.bodyLarge.copy(lineHeight = 30.sp),
-                            color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            color = ZeroTheme.colors.contentMuted)
                     }
                 }
             }
@@ -485,7 +479,7 @@ private fun ReadingPage(entry: Entry, onBack: () -> Unit) {
                     ZeroText(
                         "请以条目所列底本和版本说明为准。目录占位内容不代表正文已经完整收录；缺文、残字及未经核验的译文不会根据上下文补造。",
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        color = ZeroTheme.colors.contentMuted,
                         lineHeight = 21.sp
                     )
                 }
@@ -536,8 +530,8 @@ private fun LibraryPage(
             LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 items(categories) { name ->
                     ZeroCard(
-                        color = if (category == name) MaterialTheme.colorScheme.primaryContainer
-                            else MaterialTheme.colorScheme.surface,
+                        color = if (category == name) ZeroTheme.colors.accentContainer
+                            else ZeroTheme.colors.card,
                         cornerRadius = 50.dp,
                         contentPadding = PaddingValues(horizontal = 15.dp, vertical = 9.dp),
                         onClick = { onCategoryChange(name) }
@@ -546,8 +540,8 @@ private fun LibraryPage(
                             name,
                             maxLines = 1,
                             style = MaterialTheme.typography.labelLarge,
-                            color = if (category == name) MaterialTheme.colorScheme.onPrimaryContainer
-                                else MaterialTheme.colorScheme.onSurfaceVariant,
+                            color = if (category == name) ZeroTheme.colors.onAccentContainer
+                                else ZeroTheme.colors.contentMuted,
                             fontWeight = if (category == name) FontWeight.SemiBold else FontWeight.Normal
                         )
                     }
@@ -558,7 +552,7 @@ private fun LibraryPage(
             item {
                 ZeroText(if (entries.isEmpty()) "没有匹配条目" else "共 ${entries.size} 条",
                     style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    color = ZeroTheme.colors.contentMuted)
             }
         }
         items(entries, key = { it.section + it.title }) { entry ->
@@ -567,7 +561,7 @@ private fun LibraryPage(
         item {
             ZeroText("目录条目不等于正文已收录；版本、译文与校勘状态以各条说明为准。",
                 style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = ZeroTheme.colors.contentMuted,
                 modifier = Modifier.fillMaxWidth().padding(top = 8.dp))
         }
     }
@@ -590,14 +584,14 @@ private fun HomePage(
                 contentPadding = PaddingValues(horizontal = 22.dp, vertical = 24.dp),
             ) {
                 ZeroCard(
-                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.10f),
+                    color = ZeroTheme.colors.accent.copy(alpha = 0.10f),
                     cornerRadius = 50.dp,
                     contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
                 ) {
                     ZeroText(
                         "离线古籍典藏 · 持续整理",
                         style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.primary,
+                        color = ZeroTheme.colors.accent,
                         fontWeight = FontWeight.SemiBold
                     )
                 }
@@ -605,18 +599,18 @@ private fun HomePage(
                     "周易数字典藏",
                     style = MaterialTheme.typography.headlineLarge,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = ZeroTheme.colors.content
                 )
                 ZeroText(
                     "以《周易》经传为中心，连接历代版本、相关古籍与易学专题。",
                     style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = ZeroTheme.colors.contentMuted,
                     lineHeight = 27.sp
                 )
                 ZeroText(
                     "原文优先  ·  版本可查  ·  异文并列  ·  缺文不补",
                     style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.primary,
+                    color = ZeroTheme.colors.accent,
                     fontWeight = FontWeight.Medium
                 )
             }
@@ -627,13 +621,13 @@ private fun HomePage(
                     fontWeight = FontWeight.Bold)
                 ZeroText("选择一个分类进入目录，不在首页直接展开正文。",
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    color = ZeroTheme.colors.contentMuted)
             }
         }
         item { CategoryGrid(onOpenCategory) }
         item {
             ZeroCard(
-                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.72f),
+                color = ZeroTheme.colors.card.copy(alpha = 0.72f),
                 cornerRadius = 22.dp,
                 modifier = Modifier.fillMaxWidth(),
                 contentPadding = PaddingValues(18.dp)
@@ -643,7 +637,7 @@ private fun HomePage(
                 ZeroText(
                     "区分经文、传文与后世注释；残缺内容如实标记，不以推测补齐。译文、异文和图版均注明可核验的来源。",
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = ZeroTheme.colors.contentMuted,
                     lineHeight = 21.sp
                 )
             }
@@ -673,19 +667,19 @@ private fun CategoryGrid(onCategoryChange: (String) -> Unit) {
                     ) {
                             ZeroCard(
                                 modifier = Modifier.size(36.dp),
-                                color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.78f),
+                                color = ZeroTheme.colors.accentContainer.copy(alpha = 0.78f),
                                 cornerRadius = 13.dp,
                                 contentPadding = PaddingValues(0.dp)
                             ) {
                                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                                     ZeroText(glyph, style = MaterialTheme.typography.titleMedium.copy(fontFamily = FontFamily.Serif),
-                                        color = MaterialTheme.colorScheme.onSecondaryContainer)
+                                        color = ZeroTheme.colors.onAccentContainer)
                                 }
                             }
                             ZeroText(name, fontWeight = FontWeight.SemiBold,
                                 style = MaterialTheme.typography.titleSmall)
                             ZeroText(description, style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                color = ZeroTheme.colors.contentMuted,
                                 maxLines = 2, overflow = TextOverflow.Ellipsis)
                     }
                 }
@@ -704,23 +698,23 @@ private fun EntryCard(entry: Entry, onClick: () -> Unit) {
     ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 ZeroText(entry.section, style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.SemiBold)
+                    color = ZeroTheme.colors.accent, fontWeight = FontWeight.SemiBold)
                 Spacer(Modifier.weight(1f))
                 ZeroText("阅读  ›", style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    color = ZeroTheme.colors.contentMuted)
             }
             Spacer(Modifier.height(7.dp))
             ZeroText(entry.title, style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+                fontWeight = FontWeight.Bold, color = ZeroTheme.colors.content)
             Spacer(Modifier.height(5.dp))
             ZeroText(entry.source, style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = ZeroTheme.colors.contentMuted,
                 maxLines = 2, overflow = TextOverflow.Ellipsis)
             Spacer(Modifier.height(9.dp))
             ZeroText(entry.body.replace("\n", " ").take(116) +
                 if (entry.body.length > 116) "…" else "",
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.88f),
+                color = ZeroTheme.colors.content.copy(alpha = 0.88f),
                 maxLines = 3, overflow = TextOverflow.Ellipsis)
     }
 }
@@ -776,7 +770,7 @@ private fun SettingsPage(
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 ZeroText("偏好设置", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
                 ZeroText("调整阅读环境与应用外观", style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    color = ZeroTheme.colors.contentMuted)
             }
         }
         item {
@@ -791,42 +785,42 @@ private fun SettingsPage(
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             ZeroText("界面大小", style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
                             Spacer(Modifier.weight(1f))
-                            ZeroText("${(uiScale * 100).toInt()}%", color = MaterialTheme.colorScheme.primary,
+                            ZeroText("${(uiScale * 100).toInt()}%", color = ZeroTheme.colors.accent,
                                 fontWeight = FontWeight.SemiBold)
                         }
                         ZeroText("调整卡片、间距、图标和导航等界面元素。",
                             style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            color = ZeroTheme.colors.contentMuted)
                         ZeroSlider(value = uiScale, onValueChange = onUiScaleChange,
                             valueRange = 0.85f..1.20f, keyPoints = listOf(0.85f, 1f, 1.2f))
                         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                             ZeroText("紧凑", style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                color = ZeroTheme.colors.contentMuted)
                             ZeroText("宽松", style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                color = ZeroTheme.colors.contentMuted)
                         }
                     }
                 }
-                ZeroDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.28f))
+                ZeroDivider(color = ZeroTheme.colors.outline.copy(alpha = 0.28f))
                 ListRow {
                     Column(verticalArrangement = Arrangement.spacedBy(7.dp)) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             ZeroText("字体大小", style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
                             Spacer(Modifier.weight(1f))
-                            ZeroText("${(fontScale * 100).toInt()}%", color = MaterialTheme.colorScheme.primary,
+                            ZeroText("${(fontScale * 100).toInt()}%", color = ZeroTheme.colors.accent,
                                 fontWeight = FontWeight.SemiBold)
                         }
                         ZeroText("独立调整文字比例，不改变卡片和图标尺寸。",
                             style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            color = ZeroTheme.colors.contentMuted)
                         ZeroSlider(value = fontScale, onValueChange = onFontScaleChange,
                             valueRange = 0.85f..1.40f,
                             keyPoints = listOf(0.85f, 1f, 1.2f, 1.4f))
                         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                             ZeroText("小", style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                color = ZeroTheme.colors.contentMuted)
                             ZeroText("大", style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                color = ZeroTheme.colors.contentMuted)
                         }
                     }
                 }
@@ -840,10 +834,10 @@ private fun SettingsPage(
             ) {
                 ZeroText("字体", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
                 ZeroText(fontName, style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.primary, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                    color = ZeroTheme.colors.accent, maxLines = 2, overflow = TextOverflow.Ellipsis)
                 ZeroText("支持导入 TTF、OTF、TTC、OTC。字体文件仅保存在本机应用设置中。",
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    color = ZeroTheme.colors.contentMuted)
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     ZeroButton(onClick = { fontPicker.launch(arrayOf("*/*")) }) {
                         ZeroText("导入字体")
@@ -859,7 +853,7 @@ private fun SettingsPage(
                 }
                 if (fontMessage != null) {
                     ZeroText(fontMessage!!, style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.primary)
+                        color = ZeroTheme.colors.accent)
                 }
             }
         }
@@ -872,19 +866,19 @@ private fun SettingsPage(
                 ZeroText("主题模式", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
                 ZeroText("选择应用外观，也可以跟随系统自动切换。",
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    color = ZeroTheme.colors.contentMuted)
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     listOf("system" to "跟随系统", "light" to "浅色", "dark" to "深色").forEach { (value, label) ->
                         ZeroCard(
-                            color = if (themeMode == value) MaterialTheme.colorScheme.primaryContainer
-                                else MaterialTheme.colorScheme.surfaceVariant,
+                            color = if (themeMode == value) ZeroTheme.colors.accentContainer
+                                else ZeroTheme.colors.card,
                             cornerRadius = 50.dp,
                             contentPadding = PaddingValues(horizontal = 14.dp, vertical = 9.dp),
                             onClick = { onThemeChange(value) }
                         ) {
                             ZeroText(label, style = MaterialTheme.typography.labelLarge,
-                                color = if (themeMode == value) MaterialTheme.colorScheme.onPrimaryContainer
-                                    else MaterialTheme.colorScheme.onSurfaceVariant,
+                                color = if (themeMode == value) ZeroTheme.colors.onAccentContainer
+                                    else ZeroTheme.colors.contentMuted,
                                 fontWeight = if (themeMode == value) FontWeight.SemiBold else FontWeight.Normal)
                         }
                     }
@@ -899,7 +893,7 @@ private fun SettingsPage(
             ) {
                 ZeroText("典藏原则", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
                 ZeroText("缺文不补、异文并列、译文标明依据；未经原图核验的 OCR 不作为底本文字。",
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = ZeroTheme.colors.contentMuted,
                     style = MaterialTheme.typography.bodyMedium, lineHeight = 22.sp)
             }
         }
@@ -1587,7 +1581,7 @@ private fun originalImageSourceFor(title: String): String? = when {
 private fun LuoshuIllustration(title: String) {
     ZeroCard(
         modifier = Modifier.fillMaxWidth(),
-        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.42f),
+        color = ZeroTheme.colors.card.copy(alpha = 0.42f),
         cornerRadius = 24.dp,
         contentPadding = PaddingValues(16.dp)
     ) {
@@ -1596,7 +1590,7 @@ private fun LuoshuIllustration(title: String) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             ZeroText("图式示意", style = MaterialTheme.typography.titleSmall,
-                color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.SemiBold)
+                color = ZeroTheme.colors.accent, fontWeight = FontWeight.SemiBold)
             when {
                 title.contains("九宫数图") -> {
                     val values = listOf(4, 9, 2, 3, 5, 7, 8, 1, 6)
@@ -1606,8 +1600,8 @@ private fun LuoshuIllustration(title: String) {
                                 row.forEach { number ->
                                     ZeroCard(
                                         modifier = Modifier.weight(1f).aspectRatio(1.12f),
-                                        color = if (number == 5) MaterialTheme.colorScheme.primaryContainer
-                                            else MaterialTheme.colorScheme.surface,
+                                        color = if (number == 5) ZeroTheme.colors.accentContainer
+                                            else ZeroTheme.colors.card,
                                         cornerRadius = 14.dp,
                                         contentPadding = PaddingValues(0.dp)
                                     ) {
@@ -1615,8 +1609,8 @@ private fun LuoshuIllustration(title: String) {
                                             ZeroText(number.toString(),
                                                 style = MaterialTheme.typography.headlineMedium,
                                                 fontWeight = FontWeight.Bold,
-                                                color = if (number == 5) MaterialTheme.colorScheme.onPrimaryContainer
-                                                    else MaterialTheme.colorScheme.onSurface)
+                                                color = if (number == 5) ZeroTheme.colors.onAccentContainer
+                                                    else ZeroTheme.colors.content)
                                         }
                                     }
                                 }
@@ -1625,7 +1619,7 @@ private fun LuoshuIllustration(title: String) {
                     }
                     ZeroText("横、纵、斜向各线之和均为 15",
                         style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        color = ZeroTheme.colors.contentMuted)
                 }
                 title.contains("生数") || title.contains("成数") -> {
                     val isGenerating = title.contains("生数")
@@ -1639,7 +1633,7 @@ private fun LuoshuIllustration(title: String) {
                         values.forEach { (element, number) ->
                             ZeroCard(
                                 modifier = Modifier.weight(1f),
-                                color = MaterialTheme.colorScheme.surface,
+                                color = ZeroTheme.colors.card,
                                 cornerRadius = 14.dp,
                                 contentPadding = PaddingValues(vertical = 14.dp, horizontal = 3.dp)
                             ) {
@@ -1648,21 +1642,21 @@ private fun LuoshuIllustration(title: String) {
                                     verticalArrangement = Arrangement.spacedBy(5.dp)
                                 ) {
                                     ZeroText(number, style = MaterialTheme.typography.headlineSmall,
-                                        fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+                                        fontWeight = FontWeight.Bold, color = ZeroTheme.colors.accent)
                                     ZeroText(element, style = MaterialTheme.typography.labelMedium,
-                                        color = MaterialTheme.colorScheme.onSurface)
+                                        color = ZeroTheme.colors.content)
                                 }
                             }
                         }
                     }
                     ZeroText("此图仅列数与五行对应，不表示古图方位。",
                         style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        color = ZeroTheme.colors.contentMuted)
                 }
             }
             ZeroText("现代矢量重绘 · 非古籍原图",
                 style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant)
+                color = ZeroTheme.colors.contentMuted)
         }
     }
 }
