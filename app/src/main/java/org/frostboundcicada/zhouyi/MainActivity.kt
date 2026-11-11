@@ -254,41 +254,60 @@ private fun MainScreen(
                 modifier = Modifier.fillMaxWidth().height(92.dp),
                 contentAlignment = Alignment.BottomCenter
             ) {
-                LiquidBottomTabs(
-                    selectedTabIndex = { tab },
-                    onTabSelected = { next ->
-                        tab = next
-                        category = "全部"
-                        query = ""
-                    },
-                    backdrop = liquidBackdrop,
-                    tabsCount = 4,
-                    modifier = Modifier.widthIn(max = 340.dp).fillMaxWidth().padding(horizontal = 22.dp),
-                    barHeight = 68.dp,
-                    intensity = 1f,
-                ) {
-                    val labels = listOf("典藏", "卦序", "专题", "设置")
-                    val icons = listOf(Icons.Filled.Home, Icons.Filled.List, Icons.Filled.Info, Icons.Filled.Settings)
-                    labels.forEachIndexed { index, label ->
-                        LiquidBottomTab(onClick = {
-                            tab = index
+                if (liquidBackdrop != null) {
+                    LiquidBottomTabs(
+                        selectedTabIndex = { tab },
+                        onTabSelected = { next ->
+                            tab = next
                             category = "全部"
                             query = ""
-                        }) {
-                            val active = LocalLiquidBottomTabActive.current
-                            Icon(
-                                imageVector = icons[index],
-                                contentDescription = label,
-                                tint = if (active) MaterialTheme.colorScheme.primary
-                                else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.72f),
-                                modifier = Modifier.size(22.dp)
-                            )
-                            Text(
-                                label,
-                                style = MaterialTheme.typography.labelSmall,
-                                color = if (active) MaterialTheme.colorScheme.primary
-                                else MaterialTheme.colorScheme.onSurfaceVariant,
-                                fontWeight = if (active) FontWeight.SemiBold else FontWeight.Normal
+                        },
+                        backdrop = liquidBackdrop,
+                        tabsCount = 4,
+                        modifier = Modifier.widthIn(max = 340.dp).fillMaxWidth().padding(horizontal = 22.dp),
+                        barHeight = 68.dp,
+                        intensity = 1f,
+                    ) {
+                        val labels = listOf("典藏", "卦序", "专题", "设置")
+                        val icons = listOf(Icons.Filled.Home, Icons.Filled.List, Icons.Filled.Info, Icons.Filled.Settings)
+                        labels.forEachIndexed { index, label ->
+                            LiquidBottomTab(onClick = {
+                                tab = index
+                                category = "全部"
+                                query = ""
+                            }) {
+                                val active = LocalLiquidBottomTabActive.current
+                                Icon(
+                                    imageVector = icons[index],
+                                    contentDescription = label,
+                                    tint = if (active) MaterialTheme.colorScheme.primary
+                                    else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.72f),
+                                    modifier = Modifier.size(22.dp)
+                                )
+                                Text(
+                                    label,
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = if (active) MaterialTheme.colorScheme.primary
+                                    else MaterialTheme.colorScheme.onSurfaceVariant,
+                                    fontWeight = if (active) FontWeight.SemiBold else FontWeight.Normal
+                                )
+                            }
+                        }
+                    }
+                } else {
+                    NavigationBar {
+                        val labels = listOf("典藏", "卦序", "专题", "设置")
+                        val icons = listOf(Icons.Filled.Home, Icons.Filled.List, Icons.Filled.Info, Icons.Filled.Settings)
+                        labels.forEachIndexed { index, label ->
+                            NavigationBarItem(
+                                selected = tab == index,
+                                onClick = {
+                                    tab = index
+                                    category = "全部"
+                                    query = ""
+                                },
+                                icon = { Icon(icons[index], contentDescription = label) },
+                                label = { Text(label) }
                             )
                         }
                     }
