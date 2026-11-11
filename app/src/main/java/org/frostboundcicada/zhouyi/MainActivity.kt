@@ -10,6 +10,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -23,6 +24,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
@@ -40,6 +43,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -193,6 +198,7 @@ private fun MainScreen(
     var category by remember { mutableStateOf("全部") }
     var query by remember { mutableStateOf("") }
     var selectedEntry by remember { mutableStateOf<Entry?>(null) }
+    val libraryListState = rememberLazyListState()
 
     val titles = listOf("典藏", "卦序", "专题", "设置")
     val all = remember { buildEntries() }
@@ -269,7 +275,7 @@ private fun MainScreen(
         } else {
             LibraryPage(
                 tab, category, { category = it }, query, { query = it },
-                visible, { selectedEntry = it }, Modifier.padding(padding)
+                visible, { selectedEntry = it }, libraryListState, Modifier.padding(padding)
             )
         }
     }
@@ -386,6 +392,9 @@ private fun ReadingPage(entry: Entry, onBack: () -> Unit) {
             if (entry.section == "洛书") {
                 item { LuoshuIllustration(entry.title) }
             }
+            if (entry.title.contains("用户提供图像")) {
+                item { SourceImagePlate(entry.title) }
+            }
             item {
                 HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.45f))
                 Text("正文", style = MaterialTheme.typography.titleSmall,
@@ -447,6 +456,7 @@ private fun LibraryPage(
     onQueryChange: (String) -> Unit,
     entries: List<Entry>,
     onEntryClick: (Entry) -> Unit,
+    listState: LazyListState,
     modifier: Modifier = Modifier
 ) {
     val categories = when (tab) {
@@ -456,6 +466,7 @@ private fun LibraryPage(
     }
     LazyColumn(
         modifier = modifier.fillMaxSize(),
+        state = listState,
         contentPadding = PaddingValues(start = 18.dp, end = 18.dp, top = 8.dp, bottom = 28.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
@@ -1004,6 +1015,8 @@ private fun buildEntries(): List<Entry> = listOf(
 四、图式异同、来源争议与现代研究。
 
 在取得可核验的版本影像前，不补画所谓“古本原图”，也不把现代重绘图标成古籍原图。"""),
+    Entry("洛书", "《洛书之图》旧籍图版（用户提供图像）", "图像由用户提供的书页照片裁切整理；目前尚未获得书名、卷次、刊刻年代、馆藏及版权信息。图中文字与图式不据模糊影像擅自补录。", "图版可见右页题作‘洛书之图’，左页另有易图。现阶段仅作为待考图像证据保存；不得据此直接断定其为先秦原图或刘牧原图。图像来源与版本信息待补。"),
+    Entry("版本档案", "《河图八卦第五十二图》《洛书五行生数第五十三图》图版（用户提供图像）", "图像由用户提供；画面为两幅图版的黑白影印/扫描式页面，具体底本、版本、页码、馆藏与授权状态待考。", "图版左侧标题可辨为‘洛书五行生数第五十三图’，右侧标题可辨为‘河图八卦第五十二图’。保留原图版布局，不根据图形外观推定其刊本年代。图像转录与来源核验待完成。"),
     Entry("版本档案", "敦煌本《周易》资料", "研究线索目录；原卷影像、释文及拼接关系仍需逐项核验。", """重点档案线索：
 • 敦煌《周易正义》188071：傅斯年图书馆数字资源。
 • P.2530：王弼注《周易》残卷，涉及噬嗑至离卦段落。
@@ -1014,6 +1027,24 @@ private fun buildEntries(): List<Entry> = listOf(
 残片拼接关系、卷次、年代判断和释文均须保留来源及置信程度。未经原图核验的 OCR 不作为底本文字。""")
 )
 
+@Composable
+private fun SourceImagePlate(title: String) {
+    val first = title.startsWith("《洛书之图》")
+    val imageRes = if (first) R.drawable.luoshu_manuscript_spread else R.drawable.hetu_luoshu_plate
+    val caption = if (first) "用户提供的旧籍书页照片 · 版本与馆藏待考" else "用户提供的图版照片 · 左：洛书五行生数第五十三图；右：河图八卦第五十二图"
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
+        shape = RoundedCornerShape(20.dp),
+        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.28f))
+    ) {
+        Column(modifier = Modifier.padding(10.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Image(painter = painterResource(imageRes), contentDescription = title, modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)), contentScale = ContentScale.Fit)
+            Text(caption, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text("图像来源：用户本次提供。当前仅作图像资料保存，书名、版本、年代、馆藏与使用授权尚待核验；不将其标注为已确认的古本原图。", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+    }
+}
 @Composable
 private fun LuoshuIllustration(title: String) {
     Surface(
