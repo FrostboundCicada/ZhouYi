@@ -589,13 +589,13 @@ private fun HomePage(
                 cornerRadius = 28.dp,
                 contentPadding = PaddingValues(horizontal = 22.dp, vertical = 24.dp),
             ) {
-                Surface(
+                ZeroCard(
                     color = MaterialTheme.colorScheme.primary.copy(alpha = 0.10f),
-                    shape = RoundedCornerShape(50)
+                    cornerRadius = 50.dp,
+                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
                 ) {
                     ZeroText(
                         "离线古籍典藏 · 持续整理",
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.SemiBold
@@ -632,24 +632,20 @@ private fun HomePage(
         }
         item { CategoryGrid(onOpenCategory) }
         item {
-            Surface(
+            ZeroCard(
                 color = MaterialTheme.colorScheme.surface.copy(alpha = 0.72f),
-                shape = RoundedCornerShape(22.dp),
+                cornerRadius = 22.dp,
                 modifier = Modifier.fillMaxWidth(),
-                border = androidx.compose.foundation.BorderStroke(
-                    1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.28f)
-                )
+                contentPadding = PaddingValues(18.dp)
             ) {
-                Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(7.dp)) {
-                    ZeroText("典藏原则", style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.SemiBold)
-                    ZeroText(
-                        "区分经文、传文与后世注释；残缺内容如实标记，不以推测补齐。译文、异文和图版均注明可核验的来源。",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        lineHeight = 21.sp
-                    )
-                }
+                ZeroText("典藏原则", style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold)
+                ZeroText(
+                    "区分经文、传文与后世注释；残缺内容如实标记，不以推测补齐。译文、异文和图版均注明可核验的来源。",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    lineHeight = 21.sp
+                )
             }
         }
     }
@@ -675,11 +671,13 @@ private fun CategoryGrid(onCategoryChange: (String) -> Unit) {
                         contentPadding = PaddingValues(15.dp),
                         onClick = { onCategoryChange(name) },
                     ) {
-                            Surface(
+                            ZeroCard(
+                                modifier = Modifier.size(36.dp),
                                 color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.78f),
-                                shape = RoundedCornerShape(13.dp)
+                                cornerRadius = 13.dp,
+                                contentPadding = PaddingValues(0.dp)
                             ) {
-                                Box(Modifier.size(36.dp), contentAlignment = Alignment.Center) {
+                                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                                     ZeroText(glyph, style = MaterialTheme.typography.titleMedium.copy(fontFamily = FontFamily.Serif),
                                         color = MaterialTheme.colorScheme.onSecondaryContainer)
                                 }
@@ -1587,16 +1585,13 @@ private fun originalImageSourceFor(title: String): String? = when {
 
 @Composable
 private fun LuoshuIllustration(title: String) {
-    Surface(
+    ZeroCard(
         modifier = Modifier.fillMaxWidth(),
         color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.42f),
-        shape = RoundedCornerShape(24.dp),
-        border = androidx.compose.foundation.BorderStroke(
-            1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.28f)
-        )
+        cornerRadius = 24.dp,
+        contentPadding = PaddingValues(16.dp)
     ) {
         Column(
-            modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -1609,16 +1604,14 @@ private fun LuoshuIllustration(title: String) {
                         values.chunked(3).forEach { row ->
                             Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                                 row.forEach { number ->
-                                    Surface(
+                                    ZeroCard(
                                         modifier = Modifier.weight(1f).aspectRatio(1.12f),
                                         color = if (number == 5) MaterialTheme.colorScheme.primaryContainer
                                             else MaterialTheme.colorScheme.surface,
-                                        shape = RoundedCornerShape(14.dp),
-                                        border = androidx.compose.foundation.BorderStroke(
-                                            1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.30f)
-                                        )
+                                        cornerRadius = 14.dp,
+                                        contentPadding = PaddingValues(0.dp)
                                     ) {
-                                        Box(contentAlignment = Alignment.Center) {
+                                        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                                             ZeroText(number.toString(),
                                                 style = MaterialTheme.typography.headlineMedium,
                                                 fontWeight = FontWeight.Bold,
@@ -1644,16 +1637,13 @@ private fun LuoshuIllustration(title: String) {
                         style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
                     Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                         values.forEach { (element, number) ->
-                            Surface(
+                            ZeroCard(
                                 modifier = Modifier.weight(1f),
                                 color = MaterialTheme.colorScheme.surface,
-                                shape = RoundedCornerShape(14.dp),
-                                border = androidx.compose.foundation.BorderStroke(
-                                    1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.28f)
-                                )
+                                cornerRadius = 14.dp,
+                                contentPadding = PaddingValues(vertical = 14.dp, horizontal = 3.dp)
                             ) {
                                 Column(
-                                    modifier = Modifier.padding(vertical = 14.dp, horizontal = 3.dp),
                                     horizontalAlignment = Alignment.CenterHorizontally,
                                     verticalArrangement = Arrangement.spacedBy(5.dp)
                                 ) {
