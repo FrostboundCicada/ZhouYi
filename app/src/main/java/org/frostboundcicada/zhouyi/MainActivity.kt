@@ -42,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -349,6 +350,7 @@ private fun FloatingGlassNavigationBar(tab: Int, onSelect: (Int) -> Unit) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ReadingPage(entry: Entry, onBack: () -> Unit) {
+    val uriHandler = LocalUriHandler.current
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
@@ -385,6 +387,23 @@ private fun ReadingPage(entry: Entry, onBack: () -> Unit) {
                 Spacer(Modifier.height(10.dp))
                 Text(entry.source, style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
+                val sourceImageUrl = originalImageSourceFor(entry.title)
+                if (sourceImageUrl != null) {
+                    Spacer(Modifier.height(10.dp))
+                    Text(
+                        "查看古籍原书影像（需要联网）",
+                        modifier = Modifier.clickable { uriHandler.openUri(sourceImageUrl) }
+                            .padding(vertical = 8.dp),
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Text(
+                        "当前为馆藏／数字化原书入口，尚未缓存为应用内离线图片。",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
             if (entry.section == "洛书") {
                 item { LuoshuIllustration(entry.title) }
@@ -1075,6 +1094,24 @@ private fun buildEntries(): List<Entry> = listOf(
 
 残片拼接关系、卷次、年代判断和释文均须保留来源及置信程度。未经原图核验的 OCR 不作为底本文字。""")
 )
+
+private fun originalImageSourceFor(title: String): String? = when {
+    title.contains("刘牧") || title.contains("易数钩隐图") ->
+        "https://www.shidianguji.com/book/DZ0159/chapter/DZ0159_58"
+    title.contains("周易本义") ->
+        "https://commons.wikimedia.org/wiki/File:NLC892-411999019942-45020_%E5%91%A8%E6%98%93%E6%9C%AC%E7%BE%A9_%E7%AC%AC1%E5%86%8A.pdf"
+    title.contains("易象图说") ->
+        "https://commons.wikimedia.org/wiki/File:CADAL06065978_%E6%98%93%E8%B1%A1%E5%9C%96%E8%AA%AA%E5%85%A7%E7%AF%87%C2%B7%E5%8D%B7%E4%B8%8A~%E5%8D%B7%E4%B8%8B.djvu"
+    title.contains("易经图释") ->
+        "https://commons.wikimedia.org/wiki/File:%E6%98%93%E7%B6%93%E5%9C%96%E9%87%8B(%E4%B8%80).djvu"
+    title.contains("正统道藏") || title.contains("周易图") ->
+        "https://ctext.org/library.pl?if=gb&res=83810"
+    title.contains("六十四卦版画") ->
+        "https://sourcelibrary.org/zh/book/yi-jing-64-hexagram-diagrams-anonymous"
+    title.contains("易象钩解") ->
+        "https://sourcelibrary.org/book/vol-1-1782366422220"
+    else -> null
+}
 
 @Composable
 private fun LuoshuIllustration(title: String) {
