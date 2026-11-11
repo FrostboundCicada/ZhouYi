@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "org.frostboundcicada.zhouyi"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "org.frostboundcicada.zhouyi"
