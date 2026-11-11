@@ -445,9 +445,6 @@ private fun LibraryPage(
         contentPadding = PaddingValues(start = 18.dp, end = 18.dp, top = 8.dp, bottom = 28.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        if (tab == 0 && category == "全部" && query.isBlank()) {
-            item { ArchiveHero() }
-        }
         item {
             OutlinedTextField(
                 value = query, onValueChange = onQueryChange,
