@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "org.frostboundcicada.zhouyi"
-        minSdk = 26
+        minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = 36
         versionCode = 2
         versionName = "0.2.0"
