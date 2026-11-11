@@ -4,12 +4,18 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.clip
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.draw.shadow
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
@@ -33,8 +39,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import top.yukonga.miuix.kmp.basic.NavigationBar as MiuixNavigationBar
-import top.yukonga.miuix.kmp.basic.NavigationBarItem as MiuixNavigationBarItem
 import top.yukonga.miuix.kmp.basic.TopAppBar as MiuixTopAppBar
 import top.yukonga.miuix.kmp.theme.ColorSchemeMode
 import top.yukonga.miuix.kmp.theme.MiuixTheme
@@ -152,16 +156,14 @@ private fun MainScreen(themeMode: String, onThemeChange: (String) -> Unit) {
             )
         },
         bottomBar = {
-            MiuixNavigationBar(color = MaterialTheme.colorScheme.surface) {
-                val icons = listOf(Icons.Filled.Home, Icons.Filled.List, Icons.Filled.Info, Icons.Filled.Settings)
-                val labels = listOf("典藏", "卦序", "专题", "设置")
-                labels.forEachIndexed { index, label ->
-                    MiuixNavigationBarItem(
-                        selected = tab == index,
-                        onClick = { tab = index; category = "全部"; query = "" },
-                        icon = icons[index],
-                        label = label
-                    )
+            Box(
+                modifier = Modifier.fillMaxWidth().height(84.dp),
+                contentAlignment = Alignment.BottomCenter
+            ) {
+                FloatingGlassNavigationBar(tab = tab) { next ->
+                    tab = next
+                    category = "全部"
+                    query = ""
                 }
             }
         }
@@ -177,6 +179,72 @@ private fun MainScreen(themeMode: String, onThemeChange: (String) -> Unit) {
     }
 
 
+}
+
+@Composable
+private fun FloatingGlassNavigationBar(tab: Int, onSelect: (Int) -> Unit) {
+    val icons = listOf(
+        Icons.Filled.Home, Icons.Filled.List, Icons.Filled.Info, Icons.Filled.Settings
+    )
+    val labels = listOf("典藏", "卦序", "专题", "设置")
+    val shape = RoundedCornerShape(30.dp)
+    Row(
+        modifier = Modifier
+            .widthIn(max = 390.dp)
+            .fillMaxWidth()
+            .padding(horizontal = 22.dp, vertical = 8.dp)
+            .shadow(20.dp, shape)
+            .clip(shape)
+            .background(
+                Brush.linearGradient(
+                    listOf(
+                        MaterialTheme.colorScheme.surface.copy(alpha = 0.94f),
+                        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.76f),
+                        MaterialTheme.colorScheme.surface.copy(alpha = 0.90f)
+                    )
+                )
+            )
+            .border(
+                1.dp,
+                MaterialTheme.colorScheme.outline.copy(alpha = 0.34f),
+                shape
+            )
+            .padding(horizontal = 7.dp, vertical = 7.dp),
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        labels.forEachIndexed { index, label ->
+            val selected = tab == index
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .clip(RoundedCornerShape(23.dp))
+                    .background(
+                        if (selected) MaterialTheme.colorScheme.primary.copy(alpha = 0.13f)
+                        else Color.Transparent
+                    )
+                    .clickable { onSelect(index) }
+                    .padding(horizontal = 7.dp, vertical = 5.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(2.dp)
+            ) {
+                Icon(
+                    imageVector = icons[index],
+                    contentDescription = label,
+                    tint = if (selected) MaterialTheme.colorScheme.primary
+                    else MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(21.dp)
+                )
+                Text(
+                    label,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = if (selected) MaterialTheme.colorScheme.primary
+                    else MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal
+                )
+            }
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -283,13 +351,6 @@ private fun LibraryPage(
     ) {
         if (tab == 0 && category == "全部" && query.isBlank()) {
             item { ArchiveHero() }
-            item {
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    MetricCard("64", "卦序目录", Modifier.weight(1f))
-                    MetricCard("10", "十翼篇目", Modifier.weight(1f))
-                    MetricCard("2", "专题方向", Modifier.weight(1f))
-                }
-            }
         }
         item {
             OutlinedTextField(
@@ -307,8 +368,8 @@ private fun LibraryPage(
             )
         }
         item {
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                categories.forEach { name ->
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                items(categories) { name ->
                     FilterChip(
                         selected = category == name,
                         onClick = { onCategoryChange(name) },
@@ -318,17 +379,7 @@ private fun LibraryPage(
                 }
             }
         }
-        if (tab == 0 && category == "全部" && query.isBlank()) {
-            item {
-                Text("按专题浏览", style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
-            }
-            item { CategoryGrid(onCategoryChange) }
-            item {
-                Text("典藏条目", style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
-            }
-        } else {
+        if (!(tab == 0 && category == "全部" && query.isBlank())) {
             item {
                 Text(if (entries.isEmpty()) "没有匹配条目" else "共 ${entries.size} 条",
                     style = MaterialTheme.typography.labelLarge,
@@ -349,21 +400,12 @@ private fun LibraryPage(
 
 @Composable
 private fun ArchiveHero() {
-    Surface(color = MaterialTheme.colorScheme.primaryContainer,
-        shape = RoundedCornerShape(28.dp), modifier = Modifier.fillMaxWidth()) {
-        Column(Modifier.padding(22.dp)) {
-            Text("CLASSICAL TEXT ARCHIVE", style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onPrimaryContainer, letterSpacing = 1.5.sp)
-            Spacer(Modifier.height(12.dp))
-            Text("在经文与版本之间，\n建立可追溯的典籍档案。",
-                style = MaterialTheme.typography.headlineSmall, fontFamily = FontFamily.Serif,
-                fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onPrimaryContainer)
-            Spacer(Modifier.height(12.dp))
-            Text("原文优先 · 逐段译注 · 版本可查 · 缺文不补",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.82f))
-        }
-    }
+    Text(
+        "原文优先  ·  逐段译注  ·  版本可查  ·  缺文不补",
+        modifier = Modifier.fillMaxWidth().padding(top = 2.dp, bottom = 4.dp),
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant
+    )
 }
 
 @Composable
