@@ -138,7 +138,7 @@ class MainActivity : Activity() {
         query = EditText(this).apply {
             hint = "搜索卦名、篇名或正文"
             textSize = 14f
-            singleLine = true
+            setSingleLine(true)
             inputType = InputType.TYPE_CLASS_TEXT
             setPadding(dp(12), 0, dp(12), 0)
             background = panel(Color.WHITE, 12)
