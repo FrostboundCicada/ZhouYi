@@ -17,6 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -57,17 +58,22 @@ import com.zeroui.kit.components.TextButton as ZeroTextButton
 import com.zeroui.kit.components.TextField as ZeroTextField
 import com.zeroui.kit.components.Slider as ZeroSlider
 import com.zeroui.kit.components.ListRow
+import com.zeroui.kit.components.rememberTopBarScrollBehavior
 import com.zeroui.kit.components.ZeroNavigationBar
 import com.zeroui.kit.components.NavBarItem
 import com.zeroui.kit.components.IconButton as ZeroIconButton
 import com.zeroui.kit.components.Scaffold as ZeroScaffold
 import com.zeroui.kit.components.TopAppBar as ZeroTopAppBar
+import com.zeroui.kit.glass.BlurredTopBar
 import com.zeroui.kit.glass.CardGlass
 import com.zeroui.kit.glass.LocalCardGlass
 import com.zeroui.kit.glass.LiquidBottomTab
 import com.zeroui.kit.glass.LiquidBottomTabs
 import com.zeroui.kit.glass.LocalLiquidBottomTabActive
 import com.zeroui.kit.glass.liquidSource
+import com.zeroui.kit.glass.rememberTopBarBackdrop
+import com.zeroui.kit.glass.topBarBlurSource
+import com.zeroui.kit.glass.topBarColor
 import com.zeroui.kit.glass.rememberLiquidBackdrop
 import com.zeroui.kit.theme.DarkMode
 import com.zeroui.kit.theme.GlassMode
@@ -175,6 +181,7 @@ private fun ZhouYiApp() {
                 uiScale = 100,
                 glassMode = GlassMode.Liquid,
                 glassIntensity = 100,
+                topBarBlur = true,
             )
         ) {
             MaterialTheme(colorScheme = scheme, typography = scaledTypography) {
@@ -223,6 +230,8 @@ private fun MainScreen(
     var selectedEntry by remember { mutableStateOf<Entry?>(null) }
     val libraryListState = rememberLazyListState()
     val liquidBackdrop = rememberLiquidBackdrop()
+    val topBarScrollBehavior = rememberTopBarScrollBehavior()
+    val topBarBackdrop = rememberTopBarBackdrop()
 
     val titles = listOf("典藏", "卦序", "专题", "设置")
     val all = remember { buildEntries() }
@@ -249,17 +258,20 @@ private fun MainScreen(
     } else ZeroScaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
+            BlurredTopBar(topBarBackdrop, topBarScrollBehavior) {
             ZeroTopAppBar(
                 title = titles[tab],
                 largeTitle = if (tab == 0) "周易数字典藏" else titles[tab],
                 subtitle = if (tab == 0) "经典 · 图像 · 版本 · 校勘" else "",
-                color = MaterialTheme.colorScheme.background,
+                color = topBarColor(topBarBackdrop),
+                scrollBehavior = topBarScrollBehavior,
                 actions = {
                     if (tab != 3) ZeroIconButton(onClick = { tab = 3 }) {
                         Icon(Icons.Filled.Tune, contentDescription = "外观与设置")
                     }
                 }
             )
+            }
         },
         bottomBar = {
             Box(
@@ -327,7 +339,7 @@ private fun MainScreen(
             }
         }
     ) { padding ->
-        Box(Modifier.fillMaxSize().padding(padding).liquidSource(liquidBackdrop)) {
+        Box(Modifier.fillMaxSize().padding(padding).topBarBlurSource(topBarBackdrop).liquidSource(liquidBackdrop)) {
             CompositionLocalProvider(LocalCardGlass provides CardGlass(liquid = liquidBackdrop)) {
             if (tab == 3) {
                 SettingsPage(
@@ -364,24 +376,30 @@ private fun MainScreen(
 private fun ReadingPage(entry: Entry, onBack: () -> Unit) {
     val uriHandler = LocalUriHandler.current
     val readingBackdrop = rememberLiquidBackdrop()
+    val readingScrollBehavior = rememberTopBarScrollBehavior()
+    val readingTopBarBackdrop = rememberTopBarBackdrop()
     ZeroScaffold(
+        modifier = Modifier.nestedScroll(readingScrollBehavior.nestedScrollConnection),
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
+            BlurredTopBar(readingTopBarBackdrop, readingScrollBehavior) {
             ZeroTopAppBar(
                 title = entry.title,
                 subtitle = entry.section,
-                color = MaterialTheme.colorScheme.background,
+                color = topBarColor(readingTopBarBackdrop),
+                scrollBehavior = readingScrollBehavior,
                 navigationIcon = {
                     ZeroIconButton(onClick = onBack) {
                         Icon(Icons.Filled.ArrowBack, contentDescription = "返回目录")
                     }
                 }
             )
+            }
         }
     ) { padding ->
         CompositionLocalProvider(LocalCardGlass provides CardGlass(liquid = readingBackdrop)) {
         LazyColumn(
-            modifier = Modifier.fillMaxSize().padding(padding).liquidSource(readingBackdrop),
+            modifier = Modifier.fillMaxSize().padding(padding).topBarBlurSource(readingTopBarBackdrop).liquidSource(readingBackdrop),
             contentPadding = PaddingValues(start = 18.dp, end = 18.dp, top = 14.dp, bottom = 44.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
