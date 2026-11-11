@@ -34,6 +34,7 @@ import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Tune
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.*
@@ -56,6 +57,9 @@ import com.zeroui.kit.components.TextButton as ZeroTextButton
 import com.zeroui.kit.components.TextField as ZeroTextField
 import com.zeroui.kit.components.Slider as ZeroSlider
 import com.zeroui.kit.components.ListRow
+import com.zeroui.kit.components.ZeroNavigationBar
+import com.zeroui.kit.components.NavBarItem
+import com.zeroui.kit.components.IconButton as ZeroIconButton
 import com.zeroui.kit.components.Scaffold as ZeroScaffold
 import com.zeroui.kit.components.TopAppBar as ZeroTopAppBar
 import com.zeroui.kit.glass.LiquidBottomTab
@@ -249,7 +253,7 @@ private fun MainScreen(
                 subtitle = if (tab == 0) "经典 · 图像 · 版本 · 校勘" else "",
                 color = MaterialTheme.colorScheme.background,
                 actions = {
-                    if (tab != 3) IconButton(onClick = { tab = 3 }) {
+                    if (tab != 3) ZeroIconButton(onClick = { tab = 3 }) {
                         Icon(Icons.Filled.Tune, contentDescription = "外观与设置")
                     }
                 }
@@ -301,22 +305,22 @@ private fun MainScreen(
                         }
                     }
                 } else {
-                    NavigationBar {
-                        val labels = listOf("典藏", "卦序", "专题", "设置")
-                        val icons = listOf(Icons.Filled.Home, Icons.Filled.List, Icons.Filled.Info, Icons.Filled.Settings)
-                        labels.forEachIndexed { index, label ->
-                            NavigationBarItem(
-                                selected = tab == index,
-                                onClick = {
-                                    tab = index
-                                    category = "全部"
-                                    query = ""
-                                },
-                                icon = { Icon(icons[index], contentDescription = label) },
-                                label = { Text(label) }
-                            )
-                        }
-                    }
+                    ZeroNavigationBar(
+                        items = listOf(
+                            NavBarItem("典藏", Icons.Filled.Home),
+                            NavBarItem("卦序", Icons.Filled.List),
+                            NavBarItem("专题", Icons.Filled.Info),
+                            NavBarItem("设置", Icons.Filled.Settings),
+                        ),
+                        selectedIndex = tab,
+                        onSelect = { next ->
+                            tab = next
+                            category = "全部"
+                            query = ""
+                        },
+                        floating = true,
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp)
+                    )
                 }
             }
         }
@@ -363,7 +367,7 @@ private fun ReadingPage(entry: Entry, onBack: () -> Unit) {
                 subtitle = entry.section,
                 color = MaterialTheme.colorScheme.background,
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    ZeroIconButton(onClick = onBack) {
                         Icon(Icons.Filled.ArrowBack, contentDescription = "返回目录")
                     }
                 }
