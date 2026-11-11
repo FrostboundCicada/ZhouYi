@@ -37,8 +37,8 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.12.0")
     implementation("org.jetbrains.compose.ui:ui:1.10.3")
     implementation("org.jetbrains.compose.ui:ui-tooling-preview:1.10.3")
-    implementation("org.jetbrains.compose.material3:material3:1.10.3")
-    implementation("org.jetbrains.compose.material:material-icons-extended:1.10.3")
-    implementation("top.yukonga.miuix.kmp:miuix-ui-android:0.8.8")
+    implementation("androidx.compose.material3:material3:1.4.0")
+    implementation("androidx.compose.material:material-icons-extended:1.7.8")
+    implementation("top.yukonga.miuix.kmp:miuix-android:0.8.8")
     implementation("com.google.android.material:material:1.13.0")
 }
