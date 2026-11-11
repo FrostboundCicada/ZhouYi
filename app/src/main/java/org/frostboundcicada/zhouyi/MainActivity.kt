@@ -17,6 +17,7 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.*
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -100,6 +101,7 @@ private fun ZhouYiApp() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MainScreen(themeMode: String, onThemeChange: (String) -> Unit) {
     var tab by remember { mutableIntStateOf(0) }
@@ -133,7 +135,6 @@ private fun MainScreen(themeMode: String, onThemeChange: (String) -> Unit) {
             MiuixTopAppBar(
                 title = titles[tab],
                 largeTitle = if (tab == 0) "周易数字典藏" else titles[tab],
-                subtitle = if (tab == 0) "经典原文 · 易传十翼 · 河图洛书 · 版本文献" else null,
                 color = MaterialTheme.colorScheme.background,
                 titleColor = MaterialTheme.colorScheme.onSurface,
                 largeTitleColor = MaterialTheme.colorScheme.onSurface,
@@ -450,7 +451,7 @@ private fun buildHexagramIndex(): List<Entry> {
     return names.mapIndexed { index, name ->
         val section = if (index < 30) "上经" else "下经"
         Entry("易经", "$section · 第${index + 1}卦 · $name",
-            "$name卦目录条目；经文与传文尚待据可靠底本逐项录入。",
+            "${name}卦目录条目；经文与传文尚待据可靠底本逐项录入。",
             "本条目前仅建立卦名与通行本次序，不代表正文已收录。后续将分别录入卦辞、爻辞、彖传、大象、小象，并标注底本、参校本、位置与异文。缺文、残字和不可辨字一律保留缺失状态，不按上下文补写。")
     }.drop(2)
 }
