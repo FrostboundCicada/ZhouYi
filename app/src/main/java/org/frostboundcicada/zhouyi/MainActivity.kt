@@ -11,11 +11,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.AutoStories
-import androidx.compose.material.icons.outlined.Explore
-import androidx.compose.material.icons.outlined.GridView
-import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material.icons.outlined.Tune
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -139,15 +139,14 @@ private fun MainScreen(themeMode: String, onThemeChange: (String) -> Unit) {
                 largeTitleColor = MaterialTheme.colorScheme.onSurface,
                 actions = {
                     if (tab != 3) IconButton(onClick = { tab = 3 }) {
-                        Icon(Icons.Outlined.Tune, contentDescription = "外观与设置")
+                        Icon(Icons.Filled.Tune, contentDescription = "外观与设置")
                     }
                 }
             )
         },
         bottomBar = {
             MiuixNavigationBar(color = MaterialTheme.colorScheme.surface) {
-                val icons = listOf(Icons.Outlined.AutoStories, Icons.Outlined.GridView,
-                    Icons.Outlined.Explore, Icons.Outlined.Settings)
+                val icons = listOf(Icons.Filled.Home, Icons.Filled.List, Icons.Filled.Info, Icons.Filled.Settings)
                 val labels = listOf("典藏", "卦序", "专题", "设置")
                 labels.forEachIndexed { index, label ->
                     MiuixNavigationBarItem(
