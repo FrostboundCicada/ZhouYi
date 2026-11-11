@@ -414,8 +414,8 @@ private fun ReadingPage(entry: Entry, onBack: () -> Unit) {
                 ) {
                     ZeroText(entry.section, style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.SemiBold)
-                    ZeroText(entry.title, style = MaterialTheme.typography.headlineSmall,
-                        fontFamily = FontFamily.Serif, fontWeight = FontWeight.Bold,
+                    ZeroText(entry.title, style = MaterialTheme.typography.headlineSmall.copy(fontFamily = FontFamily.Serif),
+                        fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface)
                     ZeroText(entry.source, style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant, lineHeight = 20.sp)
@@ -679,8 +679,7 @@ private fun CategoryGrid(onCategoryChange: (String) -> Unit) {
                                 shape = RoundedCornerShape(13.dp)
                             ) {
                                 Box(Modifier.size(36.dp), contentAlignment = Alignment.Center) {
-                                    ZeroText(glyph, style = MaterialTheme.typography.titleMedium,
-                                        fontFamily = FontFamily.Serif,
+                                    ZeroText(glyph, style = MaterialTheme.typography.titleMedium.copy(fontFamily = FontFamily.Serif),
                                         color = MaterialTheme.colorScheme.onSecondaryContainer)
                                 }
                             }
