@@ -68,8 +68,6 @@ import com.zeroui.kit.components.IconButton as ZeroIconButton
 import com.zeroui.kit.components.Scaffold as ZeroScaffold
 import com.zeroui.kit.components.TopAppBar as ZeroTopAppBar
 import com.zeroui.kit.glass.BlurredTopBar
-import com.zeroui.kit.glass.CardGlass
-import com.zeroui.kit.glass.LocalCardGlass
 import com.zeroui.kit.glass.LiquidBottomTab
 import com.zeroui.kit.glass.LiquidBottomTabs
 import com.zeroui.kit.glass.LocalLiquidBottomTabActive
@@ -338,7 +336,6 @@ private fun MainScreen(
         }
     ) { padding ->
         Box(Modifier.fillMaxSize().padding(padding).topBarBlurSource(topBarBackdrop).liquidSource(liquidBackdrop)) {
-            CompositionLocalProvider(LocalCardGlass provides CardGlass(liquid = liquidBackdrop)) {
             if (tab == 3) {
                 SettingsPage(
                     themeMode = themeMode,
@@ -364,7 +361,6 @@ private fun MainScreen(
                     visible, { selectedEntry = it }, libraryListState, Modifier
                 )
             }
-            }
         }
     }
 }
@@ -373,7 +369,6 @@ private fun MainScreen(
 @Composable
 private fun ReadingPage(entry: Entry, onBack: () -> Unit) {
     val uriHandler = LocalUriHandler.current
-    val readingBackdrop = rememberLiquidBackdrop()
     val readingScrollBehavior = rememberTopBarScrollBehavior()
     val readingTopBarBackdrop = rememberTopBarBackdrop()
     ZeroScaffold(
@@ -395,9 +390,8 @@ private fun ReadingPage(entry: Entry, onBack: () -> Unit) {
             }
         }
     ) { padding ->
-        CompositionLocalProvider(LocalCardGlass provides CardGlass(liquid = readingBackdrop)) {
         LazyColumn(
-            modifier = Modifier.fillMaxSize().padding(padding).topBarBlurSource(readingTopBarBackdrop).liquidSource(readingBackdrop),
+            modifier = Modifier.fillMaxSize().padding(padding).topBarBlurSource(readingTopBarBackdrop),
             contentPadding = PaddingValues(start = 18.dp, end = 18.dp, top = 14.dp, bottom = 44.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
@@ -487,7 +481,6 @@ private fun ReadingPage(entry: Entry, onBack: () -> Unit) {
             item {
                 ZeroTextButton(text = "返回目录", onClick = onBack, modifier = Modifier.fillMaxWidth())
             }
-        }
         }
     }
 }
