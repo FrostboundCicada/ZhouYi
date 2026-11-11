@@ -218,6 +218,7 @@ private fun MainScreen(
     var query by remember { mutableStateOf("") }
     var selectedEntry by remember { mutableStateOf<Entry?>(null) }
     val libraryListState = rememberLazyListState()
+    // Keep the sampled page layer separate from glass surfaces to avoid a render-layer cycle.
     val liquidBackdrop = rememberLiquidBackdrop()
     val topBarScrollBehavior = rememberTopBarScrollBehavior()
     val topBarBackdrop = rememberTopBarBackdrop()
