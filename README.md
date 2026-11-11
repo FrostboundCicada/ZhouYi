@@ -56,3 +56,26 @@ APK 输出：app/build/outputs/apk/debug/app-debug.apk
 - 张克宾：《论刘牧〈河图〉〈洛书〉说的架构与意蕴》，《周易研究》2024年第4期，山东大学易学与中国古代哲学研究中心页面及论文图版：<https://zhouyi.sdu.edu.cn/info/1034/1725.htm>。
 - 该论文对刘牧图式的分析指出：刘牧以九数图为河图、五行生成数为洛书；其洛书由五行生数图与成数图分别呈现，并未合为一张总图。后世通行的河图五十五数、洛书九宫四十五数与刘牧系统的图名配置不同。
 - 本应用中的九宫图及五行生数/成数图为重新绘制的本地矢量示意图，旨在准确呈现数字与五行对应关系；不冒充古籍原图。论文所刊图13、图14及识典古籍所列图像入口保留为外部图版核验线索。未经授权的期刊扫描图不直接打包进 APK。
+
+
+## 古籍图版档案（第一轮编目）
+
+本轮将图像资料范围从河图、洛书扩展到所有本来附图的易学古籍。当前先建立可追溯的图版目录，逐图抽取、核对和离线打包是后续步骤；**本目录中的来源链接不代表相应图片已经进入 APK**。
+
+### 已找到的原书扫描与图版线索
+
+1. **朱熹《周易本义》卷首九图**：河图、洛书、伏羲八卦次序、伏羲八卦方位、伏羲六十四卦次序、伏羲六十四卦方位、文王八卦次序、文王八卦方位、卦变图。清康熙内府仿宋咸淳本扫描入口：<https://old.shuge.org/ebook/zhou-yi-ben-yi/>；宋咸淳刊本书目：<https://www.shuge.org/view/zhou_yi_ben_yi/>。原色 PDF 625 MB、黑白 PDF 28.4 MB；下载与再利用条件须分别核验。
+2. **元张理《易象图说》**：内篇及外篇扫描。Source Library 目录确认 22 幅插图，包含龙图天地未交之数、天地交合之位、洛书天地交错数、洛书纵横十五数、两仪生四象、八卦次序、先后天八卦、伏羲六十四卦圆图、六十四卦循环图、重卦图、六十四卦变通图等。原书页码记录见 <https://sourcelibrary.org/book/yixiang-tushu-illustrated-explanation-of-yi-hexagram-images>；图版浏览 <https://sourcelibrary.org/gallery?bookId=6992cabdd4d545ae73fee906>；CADAL 内篇 <https://commons.wikimedia.org/wiki/File:CADAL06065978_%E6%98%93%E8%B1%A1%E5%9C%96%E8%AA%AA%E5%85%A7%E7%AF%87%C2%B7%E5%8D%B7%E4%B8%8A~%E5%8D%B7%E4%B8%8B.djvu>；外篇 <https://commons.wikimedia.org/wiki/File:CADAL06065979_%E6%98%93%E8%B1%A1%E5%9C%96%E8%AA%AA%E5%A4%96%E7%AF%87%C2%B7%E5%8D%B7%E4%B8%8A~%E5%8D%B7%E4%B8%8B.djvu>。
+3. **明刘定之《易经图释》**：Wikimedia Commons 所藏第一册 138 页 DjVu，来源 Internet Archive identifier 02071887.cn，页面标记 Public Domain；书首含先天、后天等图。原书说明有字迹不清与残页，必须保留缺损状态。扫描 <https://commons.wikimedia.org/wiki/File:%E6%98%93%E7%B6%93%E5%9C%96%E9%87%8B(%E4%B8%80).djvu>；文本和版本说明 <https://ctext.org/wiki.pl?if=gb&remap=gb&res=472287>。
+4. **《正统道藏》本《周易图》三卷**：正统道藏第69—70册、洞真部灵图类。已找到馆藏影像入口与图题目录，作者未题，不能擅自归属。图题包括太极、河图、洛书、先天数、先天象、六十四卦阴阳倍乘、八卦纳甲、六十四卦大象、序卦、杂卦、大衍数、十八变成卦等。馆藏影像 <https://ctext.org/library.pl?if=gb&res=83810>；目录 <https://ctext.org/wiki.pl?chapter=260323&if=gb&remap=gb>。
+5. **匿名《易经／断易天机》六十四卦图像册**：Source Library 收录约 1368—1700 年的 40 张扫描、36 幅图像；原件页面标记 Public Domain。部分图像是卦爻辞相关叙事木刻，须逐幅核对卦名，OCR 错误不可用作正文。<https://sourcelibrary.org/zh/book/yi-jing-64-hexagram-diagrams-anonymous>。
+6. **明陈士元《易象钩解》**：卷一至卷二 151 页扫描，适合作为历代卦象解释参照；需逐页确认图版内容和对应关系。<https://sourcelibrary.org/book/vol-1-1782366422220>。
+
+### 图版入库规则
+
+- 每张图保存原书名、作者/编者（不详则标不详）、版本、卷次、原书页码、馆藏、扫描来源、授权说明和对应正文位置。
+- 先保留原页全貌，再制作适合手机显示的裁切副本；不覆盖原图。
+- 图像只在确实对应经文、传文、卦或某一易学论说时关联；不能只因主题相近就硬挂到某卦。
+- 原图、后世摹刻、现代复原图分开显示；不清楚的版次和图名明确标待考。
+- 优先使用明确公有领域或许可允许再利用的图像。授权不明的扫描只记录来源，不打包分发。
+- 图像离线资源尚未完成抽取和打包前，不标记为“已收录原图”。
