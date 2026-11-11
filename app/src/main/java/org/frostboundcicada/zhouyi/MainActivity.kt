@@ -3,15 +3,19 @@ package org.frostboundcicada.zhouyi
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
@@ -127,9 +131,11 @@ private fun MainScreen(themeMode: String, onThemeChange: (String) -> Unit) {
                 e.body.contains(q, true) || e.source.contains(q, true) || e.section.contains(q, true))
         }
     }
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    BackHandler(enabled = selectedEntry != null) { selectedEntry = null }
 
-    Scaffold(
+    if (selectedEntry != null) {
+        ReadingPage(entry = selectedEntry!!, onBack = { selectedEntry = null })
+    } else Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             MiuixTopAppBar(
@@ -170,35 +176,84 @@ private fun MainScreen(themeMode: String, onThemeChange: (String) -> Unit) {
         }
     }
 
-    selectedEntry?.let { entry ->
-        ModalBottomSheet(
-            onDismissRequest = { selectedEntry = null },
-            sheetState = sheetState,
-            containerColor = MaterialTheme.colorScheme.surface
+
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ReadingPage(entry: Entry, onBack: () -> Unit) {
+    Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
+        topBar = {
+            TopAppBar(
+                title = {
+                    Column {
+                        Text(entry.title, maxLines = 1, overflow = TextOverflow.Ellipsis,
+                            style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                        Text(entry.section, style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(Icons.Filled.ArrowBack, contentDescription = "返回目录")
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface
+                )
+            )
+        }
+    ) { padding ->
+        LazyColumn(
+            modifier = Modifier.fillMaxSize().padding(padding),
+            contentPadding = PaddingValues(start = 22.dp, end = 22.dp, top = 20.dp, bottom = 40.dp),
+            verticalArrangement = Arrangement.spacedBy(18.dp)
         ) {
-            Column(
-                Modifier.fillMaxWidth().heightIn(max = 680.dp)
-                    .padding(horizontal = 24.dp).padding(bottom = 28.dp)
-            ) {
-                Text(entry.section, color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.SemiBold)
-                Spacer(Modifier.height(8.dp))
-                Text(entry.title, style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
-                Spacer(Modifier.height(8.dp))
+            item {
+                Text(entry.title, style = MaterialTheme.typography.headlineMedium,
+                    fontFamily = FontFamily.Serif, fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface)
+                Spacer(Modifier.height(10.dp))
                 Text(entry.source, style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
-                HorizontalDivider(Modifier.padding(vertical = 16.dp))
+            }
+            item {
+                HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.45f))
+                Text("正文", style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.SemiBold)
                 SelectionContainer {
-                    LazyColumn {
-                        item {
-                            Text(entry.body,
-                                style = MaterialTheme.typography.bodyLarge.copy(
-                                    fontFamily = FontFamily.Serif, lineHeight = 30.sp
-                                ),
-                                color = MaterialTheme.colorScheme.onSurface)
-                        }
+                    Text(
+                        entry.body,
+                        modifier = Modifier.fillMaxWidth(),
+                        style = MaterialTheme.typography.bodyLarge.copy(
+                            fontFamily = FontFamily.Serif, lineHeight = 32.sp
+                        ),
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+            }
+            item {
+                Surface(
+                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.55f),
+                    shape = RoundedCornerShape(18.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                        Text("收录与校勘说明", style = MaterialTheme.typography.titleSmall,
+                            fontWeight = FontWeight.SemiBold)
+                        Text(
+                            "请以条目所列底本和版本说明为准。目录占位内容不代表正文已经完整收录；缺文、残字及未经核验的译文不会根据上下文补造。",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
                     }
+                }
+            }
+            item {
+                OutlinedButton(onClick = onBack, modifier = Modifier.fillMaxWidth()) {
+                    Text("返回目录")
                 }
             }
         }
