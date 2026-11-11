@@ -530,24 +530,10 @@ private fun HomePage(
         verticalArrangement = Arrangement.spacedBy(22.dp)
     ) {
         item {
-            val shape = RoundedCornerShape(30.dp)
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .shadow(18.dp, shape)
-                    .clip(shape)
-                    .background(
-                        Brush.linearGradient(
-                            listOf(
-                                MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.96f),
-                                MaterialTheme.colorScheme.surface.copy(alpha = 0.98f),
-                                MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.72f)
-                            )
-                        )
-                    )
-                    .border(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.30f), shape)
-                    .padding(horizontal = 22.dp, vertical = 24.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ZeroCard(
+                modifier = Modifier.fillMaxWidth(),
+                cornerRadius = 28.dp,
+                contentPadding = PaddingValues(horizontal = 22.dp, vertical = 24.dp),
             ) {
                 Surface(
                     color = MaterialTheme.colorScheme.primary.copy(alpha = 0.10f),
@@ -629,20 +615,12 @@ private fun CategoryGrid(onCategoryChange: (String) -> Unit) {
         categories.chunked(2).forEach { group ->
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 group.forEach { (name, description, glyph) ->
-                    Surface(
-                        modifier = Modifier.weight(1f).heightIn(min = 112.dp)
-                            .clickable { onCategoryChange(name) },
-                        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.88f),
-                        shape = RoundedCornerShape(22.dp),
-                        tonalElevation = 1.dp,
-                        border = androidx.compose.foundation.BorderStroke(
-                            1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.24f)
-                        )
+                    ZeroCard(
+                        modifier = Modifier.weight(1f).heightIn(min = 112.dp),
+                        cornerRadius = 22.dp,
+                        contentPadding = PaddingValues(15.dp),
+                        onClick = { onCategoryChange(name) },
                     ) {
-                        Column(
-                            Modifier.padding(15.dp),
-                            verticalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
                             Surface(
                                 color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.78f),
                                 shape = RoundedCornerShape(13.dp)
@@ -668,10 +646,12 @@ private fun CategoryGrid(onCategoryChange: (String) -> Unit) {
 
 @Composable
 private fun EntryCard(entry: Entry, onClick: () -> Unit) {
-    Surface(modifier = Modifier.fillMaxWidth().clickable(onClick = onClick),
-        color = MaterialTheme.colorScheme.surface,
-        shape = RoundedCornerShape(22.dp), tonalElevation = 1.dp) {
-        Column(Modifier.padding(horizontal = 18.dp, vertical = 16.dp)) {
+    ZeroCard(
+        modifier = Modifier.fillMaxWidth(),
+        cornerRadius = 22.dp,
+        contentPadding = PaddingValues(horizontal = 18.dp, vertical = 16.dp),
+        onClick = onClick,
+    ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(entry.section, style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.SemiBold)
