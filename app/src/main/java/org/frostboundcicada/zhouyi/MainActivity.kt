@@ -340,7 +340,7 @@ private fun MainScreen(
                 modifier = Modifier.fillMaxWidth().height(92.dp),
                 contentAlignment = Alignment.BottomCenter
             ) {
-                if (glassNavEnabled && uiStyle == UiStyle.Miuix && liquidBackdrop != null) {
+                if (glassNavEnabled && liquidBackdrop != null) {
                     LiquidBottomTabs(
                         selectedTabIndex = { tab },
                         onTabSelected = { next ->
