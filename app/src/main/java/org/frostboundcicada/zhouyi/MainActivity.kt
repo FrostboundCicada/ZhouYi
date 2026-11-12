@@ -272,6 +272,7 @@ private fun MainScreen(
     } else BoxWithConstraints(Modifier.fillMaxSize()) {
         // Adapt navigation to the available app window width, not the physical device type.
         // Keep the adaptive branch compiled independently from the phone-only navigation path.
+        // Width-based navigation works for landscape phones, tablets and resized windows.
         val wideLayout = maxWidth >= 600.dp
         ZeroScaffold(
         modifier = Modifier.nestedScroll(topBarScrollBehavior.nestedScrollConnection),
