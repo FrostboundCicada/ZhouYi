@@ -35,7 +35,7 @@ val LocalLiquidIntensity = compositionLocalOf { 1f }
 /** True when Liquid Glass is selected, supported and the Miuix style is active. */
 @Composable
 fun isLiquidEnabled(): Boolean =
-    LocalGlassMode.current == GlassMode.Liquid && isLiquidGlassSupported() && !isMaterial()
+    LocalGlassMode.current == GlassMode.Liquid && isLiquidGlassSupported()
 
 /**
  * Returns a refraction source; null when Liquid Glass is unavailable.
