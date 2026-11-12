@@ -410,6 +410,7 @@ private fun MainScreen(
         }
     }
 }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
