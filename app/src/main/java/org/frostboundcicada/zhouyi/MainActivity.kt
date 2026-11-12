@@ -381,22 +381,34 @@ private fun MainScreen(
                         }
                     }
                 } else {
-                    ZeroNavigationBar(
-                        items = listOf(
-                            NavBarItem("典藏", Icons.Filled.Home),
-                            NavBarItem("卦序", Icons.Filled.List),
-                            NavBarItem("专题", Icons.Filled.Info),
-                            NavBarItem("设置", Icons.Filled.Settings),
-                        ),
-                        selectedIndex = tab,
-                        onSelect = { next ->
-                            tab = next
-                            category = "全部"
-                            query = ""
-                        },
-                        floating = true,
+                    // The regular navigation must remain visible when Liquid Glass is off.
+                    // Use Material 3's navigation surface here instead of the kit's
+                    // style-dependent bar, which can disappear in the Material style.
+                    NavigationBar(
                         modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp)
-                    )
+                            .clip(RoundedCornerShape(28.dp)),
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        tonalElevation = 0.dp,
+                    ) {
+                        val navLabels = listOf("典藏", "卦序", "专题", "设置")
+                        val navIcons = listOf(Icons.Filled.Home, Icons.Filled.List, Icons.Filled.Info, Icons.Filled.Settings)
+                        navLabels.forEachIndexed { index, label ->
+                            NavigationBarItem(
+                                selected = tab == index,
+                                onClick = {
+                                    tab = index
+                                    category = "全部"
+                                    query = ""
+                                },
+                                icon = { Icon(navIcons[index], contentDescription = label) },
+                                label = { Text(label) },
+                                alwaysShowLabel = true,
+                                colors = NavigationBarItemDefaults.colors(
+                                    indicatorColor = MaterialTheme.colorScheme.secondaryContainer,
+                                ),
+                            )
+                        }
+                    }
                 }
             }
         }
