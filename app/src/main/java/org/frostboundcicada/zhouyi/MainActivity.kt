@@ -533,6 +533,7 @@ private fun ReadingPage(entry: Entry, onBack: () -> Unit) {
         }
     }
 }
+}
 
 @Composable
 private fun LibraryPage(
