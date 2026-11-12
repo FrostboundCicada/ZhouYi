@@ -86,6 +86,7 @@ import com.zeroui.kit.glass.topBarColor
 import com.zeroui.kit.glass.rememberLiquidBackdrop
 import com.zeroui.kit.theme.DarkMode
 import com.zeroui.kit.theme.GlassMode
+import com.zeroui.kit.theme.UiStyle
 import com.zeroui.kit.theme.ThemeSettings
 import com.zeroui.kit.theme.UiStyle
 import com.zeroui.kit.theme.ZeroTheme
@@ -105,7 +106,14 @@ private fun ZhouYiApp() {
     val prefs = remember { context.getSharedPreferences("zhouyi_settings", 0) }
     var themeMode by rememberSaveable { mutableStateOf(prefs.getString("theme_mode", "system") ?: "system") }
     var dynamicColor by rememberSaveable { mutableStateOf(prefs.getBoolean("dynamic_color", true)) }
-    var uiScale by rememberSaveable { mutableFloatStateOf(prefs.getFloat("ui_scale", 1.0f)) }
+    var uiStyle by rememberSaveable { mutableStateOf(if (prefs.getString("ui_style", "miuix") == "material") UiStyle.Material else UiStyle.Miuix) }
+    var glassNavEnabled by rememberSaveable { mutableStateOf(prefs.getBoolean("glass_nav_enabled", true)) }
+    var glassCardsEnabled by rememberSaveable { mutableStateOf(prefs.getBoolean("glass_cards_enabled", true)) }
+    var topBarBlurEnabled by rememberSaveable { mutableStateOf(prefs.getBoolean("top_bar_blur_enabled", true)) }
+    var smoothCorners by rememberSaveable { mutableStateOf(prefs.getBoolean("smooth_corners", true)) }
+    var elasticScroll by rememberSaveable { mutableStateOf(prefs.getBoolean("elastic_scroll", true)) }
+    var haptics by rememberSaveable { mutableStateOf(prefs.getBoolean("haptics", true)) }
+    var uiScale by rememberSaveable { mutableFloatStateOf(prefs.getFloat("ui_scale", 1.0f).coerceIn(0.65f, 1.50f)) }
     var fontScale by rememberSaveable { mutableFloatStateOf(prefs.getFloat("font_scale", 1.0f)) }
     var fontUri by rememberSaveable { mutableStateOf(prefs.getString("font_uri", null)) }
     val customTypeface = remember(fontUri) {
@@ -178,17 +186,34 @@ private fun ZhouYiApp() {
     ) {
         ZeroTheme(
             settings = ThemeSettings(
-                style = UiStyle.Miuix,
+                style = uiStyle,
                 darkMode = zeroDarkMode,
                 dynamicColor = dynamicColor,
                 uiScale = 100,
-                glassMode = GlassMode.Liquid,
+                glassMode = if (glassNavEnabled) GlassMode.Liquid else GlassMode.Off,
                 glassIntensity = 100,
-                topBarBlur = true,
+                topBarBlur = topBarBlurEnabled,
+                smoothCorners = smoothCorners,
+                elasticScroll = elasticScroll,
+                haptics = haptics,
             )
         ) {
             MaterialTheme(colorScheme = scheme, typography = scaledTypography) {
                 MainScreen(
+                    uiStyle = uiStyle,
+                    onUiStyleChange = { uiStyle = it; prefs.edit().putString("ui_style", if (it == UiStyle.Material) "material" else "miuix").apply() },
+                    glassNavEnabled = glassNavEnabled,
+                    onGlassNavChange = { glassNavEnabled = it; prefs.edit().putBoolean("glass_nav_enabled", it).apply() },
+                    glassCardsEnabled = glassCardsEnabled,
+                    onGlassCardsChange = { glassCardsEnabled = it; prefs.edit().putBoolean("glass_cards_enabled", it).apply() },
+                    topBarBlurEnabled = topBarBlurEnabled,
+                    onTopBarBlurChange = { topBarBlurEnabled = it; prefs.edit().putBoolean("top_bar_blur_enabled", it).apply() },
+                    smoothCorners = smoothCorners,
+                    onSmoothCornersChange = { smoothCorners = it; prefs.edit().putBoolean("smooth_corners", it).apply() },
+                    elasticScroll = elasticScroll,
+                    onElasticScrollChange = { elasticScroll = it; prefs.edit().putBoolean("elastic_scroll", it).apply() },
+                    haptics = haptics,
+                    onHapticsChange = { haptics = it; prefs.edit().putBoolean("haptics", it).apply() },
                     themeMode = themeMode,
                     dynamicColor = dynamicColor,
                     onDynamicColorChange = {
@@ -223,6 +248,20 @@ private fun ZhouYiApp() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MainScreen(
+    uiStyle: UiStyle,
+    onUiStyleChange: (UiStyle) -> Unit,
+    glassNavEnabled: Boolean,
+    onGlassNavChange: (Boolean) -> Unit,
+    glassCardsEnabled: Boolean,
+    onGlassCardsChange: (Boolean) -> Unit,
+    topBarBlurEnabled: Boolean,
+    onTopBarBlurChange: (Boolean) -> Unit,
+    smoothCorners: Boolean,
+    onSmoothCornersChange: (Boolean) -> Unit,
+    elasticScroll: Boolean,
+    onElasticScrollChange: (Boolean) -> Unit,
+    haptics: Boolean,
+    onHapticsChange: (Boolean) -> Unit,
     themeMode: String,
     onThemeChange: (String) -> Unit,
     dynamicColor: Boolean,
@@ -240,7 +279,7 @@ private fun MainScreen(
     var selectedEntryTitle by rememberSaveable { mutableStateOf<String?>(null) }
     val libraryListState = rememberLazyListState()
     // Keep the sampled page layer separate from glass surfaces to avoid a render-layer cycle.
-    val liquidBackdrop = rememberLiquidBackdrop()
+    val liquidBackdrop = rememberLiquidBackdrop(always = glassNavEnabled || glassCardsEnabled)
     val topBarScrollBehavior = rememberTopBarScrollBehavior()
     val topBarBackdrop = rememberTopBarBackdrop()
     val windowPalette = ZeroTheme.colors
@@ -302,7 +341,7 @@ private fun MainScreen(
                 modifier = Modifier.fillMaxWidth().height(92.dp),
                 contentAlignment = Alignment.BottomCenter
             ) {
-                if (liquidBackdrop != null) {
+                if (glassNavEnabled && uiStyle == UiStyle.Miuix && liquidBackdrop != null) {
                     LiquidBottomTabs(
                         selectedTabIndex = { tab },
                         onTabSelected = { next ->
@@ -410,7 +449,7 @@ private fun MainScreen(
                         }
                 )
                 CompositionLocalProvider(
-                    LocalCardGlass provides liquidBackdrop?.let { CardGlass(liquid = it) }
+                    LocalCardGlass provides if (glassCardsEnabled && uiStyle == UiStyle.Miuix) liquidBackdrop?.let { CardGlass(liquid = it) } else null
                 ) {
                     Box(
                         Modifier.widthIn(max = 1120.dp).fillMaxSize()
@@ -429,6 +468,20 @@ private fun MainScreen(
                                 onFontUriChange = onFontUriChange,
                                 dynamicColor = dynamicColor,
                                 onDynamicColorChange = onDynamicColorChange,
+                                uiStyle = uiStyle,
+                                onUiStyleChange = onUiStyleChange,
+                                glassNavEnabled = glassNavEnabled,
+                                onGlassNavChange = onGlassNavChange,
+                                glassCardsEnabled = glassCardsEnabled,
+                                onGlassCardsChange = onGlassCardsChange,
+                                topBarBlurEnabled = topBarBlurEnabled,
+                                onTopBarBlurChange = onTopBarBlurChange,
+                                smoothCorners = smoothCorners,
+                                onSmoothCornersChange = onSmoothCornersChange,
+                                elasticScroll = elasticScroll,
+                                onElasticScrollChange = onElasticScrollChange,
+                                haptics = haptics,
+                                onHapticsChange = onHapticsChange,
                             )
                         } else if (tab == 0) {
                             HomePage(
@@ -608,7 +661,9 @@ private fun LibraryPage(
                 ZeroTextField(
                     value = query,
                     onValueChange = onQueryChange,
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(32.dp)),
+                    cornerRadius = 32.dp,
+                    insideMargin = androidx.compose.ui.unit.DpSize(18.dp, 12.dp),
                     singleLine = true,
                     label = "搜索卦名、篇名、原文或版本",
                     useLabelAsPlaceholder = true,
@@ -957,11 +1012,41 @@ private fun EntryCard(
 }
 
 @Composable
+private fun PreferenceSwitchRow(
+    title: String,
+    description: String,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit
+) {
+    Row(Modifier.fillMaxWidth().padding(vertical = 9.dp), verticalAlignment = Alignment.CenterVertically) {
+        Column(Modifier.weight(1f).padding(end = 12.dp), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+            ZeroText(title, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
+            ZeroText(description, style = MaterialTheme.typography.bodySmall, color = ZeroTheme.colors.contentMuted)
+        }
+        Switch(checked = checked, onCheckedChange = onCheckedChange)
+    }
+}
+
+@Composable
 private fun SettingsPage(
     themeMode: String,
     onThemeChange: (String) -> Unit,
     dynamicColor: Boolean,
     onDynamicColorChange: (Boolean) -> Unit,
+    uiStyle: UiStyle,
+    onUiStyleChange: (UiStyle) -> Unit,
+    glassNavEnabled: Boolean,
+    onGlassNavChange: (Boolean) -> Unit,
+    glassCardsEnabled: Boolean,
+    onGlassCardsChange: (Boolean) -> Unit,
+    topBarBlurEnabled: Boolean,
+    onTopBarBlurChange: (Boolean) -> Unit,
+    smoothCorners: Boolean,
+    onSmoothCornersChange: (Boolean) -> Unit,
+    elasticScroll: Boolean,
+    onElasticScrollChange: (Boolean) -> Unit,
+    haptics: Boolean,
+    onHapticsChange: (Boolean) -> Unit,
     uiScale: Float,
     onUiScaleChange: (Float) -> Unit,
     fontScale: Float,
@@ -1031,11 +1116,11 @@ private fun SettingsPage(
                             style = MaterialTheme.typography.bodySmall,
                             color = ZeroTheme.colors.contentMuted)
                         ZeroSlider(value = uiScale, onValueChange = onUiScaleChange,
-                            valueRange = 0.85f..1.20f, keyPoints = listOf(0.85f, 1f, 1.2f))
+                            valueRange = 0.65f..1.50f, keyPoints = listOf(0.65f, 0.8f, 1f, 1.2f, 1.35f, 1.5f))
                         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                            ZeroText("紧凑", style = MaterialTheme.typography.labelSmall,
+                            ZeroText("65% 紧凑", style = MaterialTheme.typography.labelSmall,
                                 color = ZeroTheme.colors.contentMuted)
-                            ZeroText("宽松", style = MaterialTheme.typography.labelSmall,
+                            ZeroText("150% 宽松", style = MaterialTheme.typography.labelSmall,
                                 color = ZeroTheme.colors.contentMuted)
                         }
                     }
@@ -1053,12 +1138,12 @@ private fun SettingsPage(
                             style = MaterialTheme.typography.bodySmall,
                             color = ZeroTheme.colors.contentMuted)
                         ZeroSlider(value = fontScale, onValueChange = onFontScaleChange,
-                            valueRange = 0.85f..1.40f,
-                            keyPoints = listOf(0.85f, 1f, 1.2f, 1.4f))
+                            valueRange = 0.75f..1.60f,
+                            keyPoints = listOf(0.75f, 0.9f, 1f, 1.2f, 1.4f, 1.6f))
                         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                            ZeroText("小", style = MaterialTheme.typography.labelSmall,
+                            ZeroText("75% 小", style = MaterialTheme.typography.labelSmall,
                                 color = ZeroTheme.colors.contentMuted)
-                            ZeroText("大", style = MaterialTheme.typography.labelSmall,
+                            ZeroText("160% 大", style = MaterialTheme.typography.labelSmall,
                                 color = ZeroTheme.colors.contentMuted)
                         }
                     }
@@ -1094,6 +1179,44 @@ private fun SettingsPage(
                     ZeroText(fontMessage!!, style = MaterialTheme.typography.bodySmall,
                         color = ZeroTheme.colors.accent)
                 }
+            }
+        }
+        item {
+            ZeroCard(modifier = Modifier.fillMaxWidth(), cornerRadius = 24.dp, contentPadding = PaddingValues(18.dp)) {
+                ZeroText("组件风格", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                ZeroText("在 ZeroUI 的 Miuix 与 Material 3 两套组件之间切换。",
+                    style = MaterialTheme.typography.bodySmall, color = ZeroTheme.colors.contentMuted)
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    listOf(UiStyle.Miuix to "Miuix", UiStyle.Material to "Material 3").forEach { (style, label) ->
+                        ZeroCard(
+                            color = if (uiStyle == style) ZeroTheme.colors.accentContainer else ZeroTheme.colors.card,
+                            cornerRadius = 50.dp,
+                            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp),
+                            onClick = { onUiStyleChange(style) }
+                        ) {
+                            ZeroText(label,
+                                color = if (uiStyle == style) ZeroTheme.colors.onAccentContainer else ZeroTheme.colors.contentMuted,
+                                style = MaterialTheme.typography.labelLarge,
+                                fontWeight = if (uiStyle == style) FontWeight.SemiBold else FontWeight.Normal)
+                        }
+                    }
+                }
+            }
+        }
+        item {
+            ZeroCard(modifier = Modifier.fillMaxWidth(), cornerRadius = 24.dp, contentPadding = PaddingValues(18.dp)) {
+                ZeroText("独立效果开关", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                PreferenceSwitchRow("液态玻璃导航栏", "只控制底部悬浮导航。", glassNavEnabled, onGlassNavChange)
+                ZeroDivider(color = ZeroTheme.colors.outline.copy(alpha = 0.25f))
+                PreferenceSwitchRow("液态玻璃内容卡片", "只控制首页、目录等页面卡片。", glassCardsEnabled, onGlassCardsChange)
+                ZeroDivider(color = ZeroTheme.colors.outline.copy(alpha = 0.25f))
+                PreferenceSwitchRow("顶部栏背景模糊", "独立控制滚动内容经过顶部栏时的模糊效果。", topBarBlurEnabled, onTopBarBlurChange)
+                ZeroDivider(color = ZeroTheme.colors.outline.copy(alpha = 0.25f))
+                PreferenceSwitchRow("连续圆角", "启用 ZeroUI 平滑曲率圆角。", smoothCorners, onSmoothCornersChange)
+                ZeroDivider(color = ZeroTheme.colors.outline.copy(alpha = 0.25f))
+                PreferenceSwitchRow("弹性滚动", "控制列表边界的弹性滚动效果。", elasticScroll, onElasticScrollChange)
+                ZeroDivider(color = ZeroTheme.colors.outline.copy(alpha = 0.25f))
+                PreferenceSwitchRow("触感反馈", "控制应用内组件的触觉反馈。", haptics, onHapticsChange)
             }
         }
         item {
