@@ -15,6 +15,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.draw.shadow
@@ -72,6 +74,8 @@ import com.zeroui.kit.components.IconButton as ZeroIconButton
 import com.zeroui.kit.components.Scaffold as ZeroScaffold
 import com.zeroui.kit.components.TopAppBar as ZeroTopAppBar
 import com.zeroui.kit.glass.BlurredTopBar
+import com.zeroui.kit.glass.CardGlass
+import com.zeroui.kit.glass.LocalCardGlass
 import com.zeroui.kit.glass.LiquidBottomTab
 import com.zeroui.kit.glass.LiquidBottomTabs
 import com.zeroui.kit.glass.LocalLiquidBottomTabActive
@@ -378,35 +382,66 @@ private fun MainScreen(
                     }
                 }
             }
-            Box(Modifier.weight(1f).fillMaxHeight().topBarBlurSource(topBarBackdrop).liquidSource(liquidBackdrop)) {
-                Box(Modifier.widthIn(max = 1120.dp).fillMaxSize().align(Alignment.TopCenter)) {
-            if (tab == 3) {
-                SettingsPage(
-                    themeMode = themeMode,
-                    onThemeChange = onThemeChange,
-                    uiScale = uiScale,
-                    onUiScaleChange = onUiScaleChange,
-                    fontScale = fontScale,
-                    onFontScaleChange = onFontScaleChange,
-                    fontUri = fontUri,
-                    onFontUriChange = onFontUriChange,
-                    dynamicColor = dynamicColor,
-                    onDynamicColorChange = onDynamicColorChange,
+            Box(Modifier.weight(1f).fillMaxHeight()) {
+                // A dedicated background-only layer is sampled by glass cards.
+                // Never put the foreground page content in this backdrop source.
+                Box(
+                    Modifier.matchParentSize()
+                        .liquidSource(liquidBackdrop)
+                        .drawBehind {
+                            drawRect(ZeroTheme.colors.page)
+                            drawRect(
+                                Brush.radialGradient(
+                                    colors = listOf(ZeroTheme.colors.accent.copy(alpha = 0.20f), Color.Transparent),
+                                    center = Offset(size.width * 0.12f, size.height * 0.12f),
+                                    radius = size.minDimension * 0.78f
+                                )
+                            )
+                            drawRect(
+                                Brush.radialGradient(
+                                    colors = listOf(ZeroTheme.colors.accentContainer.copy(alpha = 0.30f), Color.Transparent),
+                                    center = Offset(size.width * 0.92f, size.height * 0.74f),
+                                    radius = size.minDimension * 0.72f
+                                )
+                            )
+                        }
                 )
-            } else if (tab == 0) {
-                HomePage(
-                    onOpenCategory = { name ->
-                        category = name
-                        tab = if (name == "易经" || name == "十翼") 1 else 2
-                        query = ""
-                    },
-                )
-            } else {
-                LibraryPage(
-                    tab, category, { category = it }, query, { query = it },
-                    visible, { selectedEntryTitle = it.title }, libraryListState, Modifier
-                )
-            }
+                CompositionLocalProvider(
+                    LocalCardGlass provides liquidBackdrop?.let { CardGlass(liquid = it) }
+                ) {
+                    Box(
+                        Modifier.widthIn(max = 1120.dp).fillMaxSize()
+                            .align(Alignment.TopCenter)
+                            .topBarBlurSource(topBarBackdrop)
+                    ) {
+                        if (tab == 3) {
+                            SettingsPage(
+                                themeMode = themeMode,
+                                onThemeChange = onThemeChange,
+                                uiScale = uiScale,
+                                onUiScaleChange = onUiScaleChange,
+                                fontScale = fontScale,
+                                onFontScaleChange = onFontScaleChange,
+                                fontUri = fontUri,
+                                onFontUriChange = onFontUriChange,
+                                dynamicColor = dynamicColor,
+                                onDynamicColorChange = onDynamicColorChange,
+                            )
+                        } else if (tab == 0) {
+                            HomePage(
+                                onOpenCategory = { name ->
+                                    category = name
+                                    tab = if (name == "易经" || name == "十翼") 1 else 2
+                                    query = ""
+                                },
+                            )
+                        } else {
+                            LibraryPage(
+                                tab, category, { category = it }, query, { query = it },
+                                visible, { selectedEntryTitle = it.title }, libraryListState, Modifier
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -553,60 +588,89 @@ private fun LibraryPage(
         2 -> listOf("全部", "河图", "洛书", "版本档案", "相关古籍")
         else -> listOf("全部", "易经", "十翼", "河图", "洛书", "版本档案", "相关古籍")
     }
-    LazyColumn(
-        modifier = modifier.fillMaxSize(),
-        state = listState,
-        contentPadding = PaddingValues(start = 18.dp, end = 18.dp, top = 8.dp, bottom = 28.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        item {
-            ZeroTextField(
-                value = query,
-                onValueChange = onQueryChange,
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true,
-                label = "搜索卦名、篇名、原文或版本",
-                useLabelAsPlaceholder = true,
-                leadingIcon = { ZeroIcon(Icons.Filled.Search, contentDescription = null) }
-            )
-        }
-        item {
-            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                items(categories) { name ->
-                    ZeroCard(
-                        color = if (category == name) ZeroTheme.colors.accentContainer
-                            else ZeroTheme.colors.card,
-                        cornerRadius = 50.dp,
-                        contentPadding = PaddingValues(horizontal = 15.dp, vertical = 9.dp),
-                        onClick = { onCategoryChange(name) }
-                    ) {
-                        ZeroText(
-                            name,
-                            maxLines = 1,
-                            style = MaterialTheme.typography.labelLarge,
-                            color = if (category == name) ZeroTheme.colors.onAccentContainer
-                                else ZeroTheme.colors.contentMuted,
-                            fontWeight = if (category == name) FontWeight.SemiBold else FontWeight.Normal
-                        )
+    BoxWithConstraints(modifier.fillMaxSize()) {
+        val columns = if (maxWidth >= 760.dp) 2 else 1
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            state = listState,
+            contentPadding = PaddingValues(
+                start = if (columns == 2) 24.dp else 18.dp,
+                end = if (columns == 2) 24.dp else 18.dp,
+                top = 10.dp,
+                bottom = 34.dp
+            ),
+            verticalArrangement = Arrangement.spacedBy(14.dp)
+        ) {
+            item {
+                ZeroTextField(
+                    value = query,
+                    onValueChange = onQueryChange,
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    label = "搜索卦名、篇名、原文或版本",
+                    useLabelAsPlaceholder = true,
+                    leadingIcon = { ZeroIcon(Icons.Filled.Search, contentDescription = null) }
+                )
+            }
+            item {
+                LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    items(categories) { name ->
+                        ZeroCard(
+                            color = if (category == name) ZeroTheme.colors.accentContainer
+                                else ZeroTheme.colors.card.copy(alpha = 0.78f),
+                            cornerRadius = 50.dp,
+                            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp),
+                            onClick = { onCategoryChange(name) }
+                        ) {
+                            ZeroText(
+                                name,
+                                maxLines = 1,
+                                style = MaterialTheme.typography.labelLarge,
+                                color = if (category == name) ZeroTheme.colors.onAccentContainer
+                                    else ZeroTheme.colors.contentMuted,
+                                fontWeight = if (category == name) FontWeight.SemiBold else FontWeight.Normal
+                            )
+                        }
                     }
                 }
             }
-        }
-        if (!(tab == 0 && category == "全部" && query.isBlank())) {
             item {
-                ZeroText(if (entries.isEmpty()) "没有匹配条目" else "共 ${entries.size} 条",
-                    style = MaterialTheme.typography.labelLarge,
-                    color = ZeroTheme.colors.contentMuted)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    ZeroText(
+                        if (entries.isEmpty()) "没有匹配条目" else "典藏条目",
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Spacer(Modifier.weight(1f))
+                    ZeroText(
+                        "${entries.size} 条",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = ZeroTheme.colors.contentMuted
+                    )
+                }
             }
-        }
-        items(entries, key = { it.section + it.title }) { entry ->
-            EntryCard(entry) { onEntryClick(entry) }
-        }
-        item {
-            ZeroText("目录条目不等于正文已收录；版本、译文与校勘状态以各条说明为准。",
-                style = MaterialTheme.typography.labelSmall,
-                color = ZeroTheme.colors.contentMuted,
-                modifier = Modifier.fillMaxWidth().padding(top = 8.dp))
+            items(
+                entries.chunked(columns),
+                key = { row -> row.first().section + row.first().title }
+            ) { row ->
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    row.forEach { entry ->
+                        EntryCard(entry, Modifier.weight(1f)) { onEntryClick(entry) }
+                    }
+                    repeat(columns - row.size) { Spacer(Modifier.weight(1f)) }
+                }
+            }
+            item {
+                ZeroText(
+                    "目录条目不等于正文已收录；版本、译文与校勘状态以各条说明为准。",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = ZeroTheme.colors.contentMuted,
+                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
+                )
+            }
         }
     }
 }
@@ -618,71 +682,147 @@ private fun HomePage(
 ) {
     LazyColumn(
         modifier = modifier.fillMaxSize(),
-        contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 14.dp, bottom = 34.dp),
-        verticalArrangement = Arrangement.spacedBy(22.dp)
+        contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 18.dp, bottom = 42.dp),
+        verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
         item {
             ZeroCard(
                 modifier = Modifier.fillMaxWidth(),
-                cornerRadius = 28.dp,
-                contentPadding = PaddingValues(horizontal = 22.dp, vertical = 24.dp),
+                cornerRadius = 30.dp,
+                contentPadding = PaddingValues(horizontal = 22.dp, vertical = 24.dp)
             ) {
-                ZeroCard(
-                    color = ZeroTheme.colors.accent.copy(alpha = 0.10f),
-                    cornerRadius = 50.dp,
-                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    ZeroText(
-                        "离线古籍典藏 · 持续整理",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = ZeroTheme.colors.accent,
-                        fontWeight = FontWeight.SemiBold
-                    )
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        Box(
+                            Modifier
+                                .clip(RoundedCornerShape(50.dp))
+                                .background(ZeroTheme.colors.accent.copy(alpha = 0.12f))
+                                .padding(horizontal = 12.dp, vertical = 7.dp)
+                        ) {
+                            ZeroText(
+                                "离线古籍 · 持续整理",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = ZeroTheme.colors.accent,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
+                        ZeroText(
+                            "周易",
+                            style = MaterialTheme.typography.displaySmall.copy(fontFamily = FontFamily.Serif),
+                            fontWeight = FontWeight.Bold,
+                            color = ZeroTheme.colors.content
+                        )
+                        ZeroText(
+                            "数字典藏",
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.SemiBold,
+                            color = ZeroTheme.colors.content
+                        )
+                        ZeroText(
+                            "以经传为中心，连接历代版本、相关古籍与易学专题。",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = ZeroTheme.colors.contentMuted,
+                            lineHeight = 24.sp
+                        )
+                    }
+                    Spacer(Modifier.width(10.dp))
+                    Box(
+                        Modifier
+                            .size(76.dp)
+                            .clip(RoundedCornerShape(26.dp))
+                            .background(ZeroTheme.colors.accentContainer.copy(alpha = 0.52f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        ZeroText(
+                            "易",
+                            style = MaterialTheme.typography.displayMedium.copy(fontFamily = FontFamily.Serif),
+                            color = ZeroTheme.colors.onAccentContainer,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
                 }
-                ZeroText(
-                    "周易数字典藏",
-                    style = MaterialTheme.typography.headlineLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = ZeroTheme.colors.content
+                ZeroDivider(
+                    color = ZeroTheme.colors.outline.copy(alpha = 0.28f),
+                    modifier = Modifier.padding(vertical = 16.dp)
                 )
-                ZeroText(
-                    "以《周易》经传为中心，连接历代版本、相关古籍与易学专题。",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = ZeroTheme.colors.contentMuted,
-                    lineHeight = 27.sp
-                )
-                ZeroText(
-                    "原文优先  ·  版本可查  ·  异文并列  ·  缺文不补",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = ZeroTheme.colors.accent,
-                    fontWeight = FontWeight.Medium
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    listOf("六十四卦经文", "易传十翼").forEach { label ->
+                        Box(
+                            Modifier
+                                .weight(1f)
+                                .clip(RoundedCornerShape(14.dp))
+                                .background(ZeroTheme.colors.accent.copy(alpha = 0.08f))
+                                .padding(horizontal = 10.dp, vertical = 10.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            ZeroText(
+                                label,
+                                style = MaterialTheme.typography.labelMedium,
+                                color = ZeroTheme.colors.accent,
+                                fontWeight = FontWeight.Medium
+                            )
+                        }
+                    }
+                }
             }
         }
         item {
-            Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
-                ZeroText("开始探索", style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold)
-                ZeroText("选择一个分类进入目录，不在首页直接展开正文。",
+            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    ZeroText(
+                        "典藏目录",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(Modifier.weight(1f))
+                    ZeroText(
+                        "6 个分类",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = ZeroTheme.colors.contentMuted
+                    )
+                }
+                ZeroText(
+                    "按文献类型与专题进入，正文和相关资料分层呈现。",
                     style = MaterialTheme.typography.bodySmall,
-                    color = ZeroTheme.colors.contentMuted)
+                    color = ZeroTheme.colors.contentMuted
+                )
             }
         }
         item { CategoryGrid(onOpenCategory) }
         item {
             ZeroCard(
-                color = ZeroTheme.colors.card.copy(alpha = 0.72f),
+                color = ZeroTheme.colors.card.copy(alpha = 0.82f),
                 cornerRadius = 22.dp,
                 modifier = Modifier.fillMaxWidth(),
                 contentPadding = PaddingValues(18.dp)
             ) {
-                ZeroText("典藏原则", style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    ZeroText(
+                        "典藏原则",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Spacer(Modifier.weight(1f))
+                    ZeroText(
+                        "校勘规范",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = ZeroTheme.colors.accent
+                    )
+                }
                 ZeroText(
                     "区分经文、传文与后世注释；残缺内容如实标记，不以推测补齐。译文、异文和图版均注明可核验的来源。",
                     style = MaterialTheme.typography.bodySmall,
                     color = ZeroTheme.colors.contentMuted,
-                    lineHeight = 21.sp
+                    lineHeight = 22.sp
                 )
             }
         }
@@ -701,38 +841,56 @@ private fun CategoryGrid(onCategoryChange: (String) -> Unit) {
     )
     BoxWithConstraints(Modifier.fillMaxWidth()) {
         val columnCount = if (maxWidth >= 720.dp) 3 else 2
-        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
             categories.chunked(columnCount).forEach { group ->
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     group.forEach { (name, description, glyph) ->
                         ZeroCard(
-                            modifier = Modifier.weight(1f).heightIn(min = 112.dp),
+                            modifier = Modifier.weight(1f).heightIn(min = 128.dp),
                             cornerRadius = 22.dp,
                             contentPadding = PaddingValues(15.dp),
-                            onClick = { onCategoryChange(name) },
+                            onClick = { onCategoryChange(name) }
                         ) {
-                            ZeroCard(
-                                modifier = Modifier.size(36.dp),
-                                color = ZeroTheme.colors.accentContainer.copy(alpha = 0.78f),
-                                cornerRadius = 13.dp,
-                                contentPadding = PaddingValues(0.dp)
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                Box(
+                                    Modifier
+                                        .size(38.dp)
+                                        .clip(RoundedCornerShape(13.dp))
+                                        .background(ZeroTheme.colors.accentContainer.copy(alpha = 0.62f)),
+                                    contentAlignment = Alignment.Center
+                                ) {
                                     ZeroText(
                                         glyph,
                                         style = MaterialTheme.typography.titleMedium.copy(fontFamily = FontFamily.Serif),
                                         color = ZeroTheme.colors.onAccentContainer
                                     )
                                 }
+                                Spacer(Modifier.weight(1f))
+                                ZeroText(
+                                    "↗",
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = ZeroTheme.colors.contentMuted
+                                )
                             }
-                            ZeroText(name, fontWeight = FontWeight.SemiBold,
-                                style = MaterialTheme.typography.titleSmall)
-                            ZeroText(description, style = MaterialTheme.typography.labelSmall,
+                            Spacer(Modifier.height(12.dp))
+                            ZeroText(
+                                name,
+                                fontWeight = FontWeight.SemiBold,
+                                style = MaterialTheme.typography.titleSmall
+                            )
+                            ZeroText(
+                                description,
+                                style = MaterialTheme.typography.labelSmall,
                                 color = ZeroTheme.colors.contentMuted,
-                                maxLines = 2, overflow = TextOverflow.Ellipsis)
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis
+                            )
                         }
                     }
                     repeat(columnCount - group.size) { Spacer(Modifier.weight(1f)) }
@@ -743,33 +901,55 @@ private fun CategoryGrid(onCategoryChange: (String) -> Unit) {
 }
 
 @Composable
-private fun EntryCard(entry: Entry, onClick: () -> Unit) {
+private fun EntryCard(
+    entry: Entry,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
     ZeroCard(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         cornerRadius = 22.dp,
-        contentPadding = PaddingValues(horizontal = 18.dp, vertical = 16.dp),
-        onClick = onClick,
+        contentPadding = PaddingValues(horizontal = 18.dp, vertical = 17.dp),
+        onClick = onClick
     ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                ZeroText(entry.section, style = MaterialTheme.typography.labelMedium,
-                    color = ZeroTheme.colors.accent, fontWeight = FontWeight.SemiBold)
-                Spacer(Modifier.weight(1f))
-                ZeroText("阅读  ›", style = MaterialTheme.typography.labelSmall,
-                    color = ZeroTheme.colors.contentMuted)
-            }
-            Spacer(Modifier.height(7.dp))
-            ZeroText(entry.title, style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold, color = ZeroTheme.colors.content)
-            Spacer(Modifier.height(5.dp))
-            ZeroText(entry.source, style = MaterialTheme.typography.labelSmall,
-                color = ZeroTheme.colors.contentMuted,
-                maxLines = 2, overflow = TextOverflow.Ellipsis)
-            Spacer(Modifier.height(9.dp))
-            ZeroText(entry.body.replace("\n", " ").take(116) +
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            ZeroText(
+                entry.section,
+                style = MaterialTheme.typography.labelMedium,
+                color = ZeroTheme.colors.accent,
+                fontWeight = FontWeight.SemiBold
+            )
+            Spacer(Modifier.weight(1f))
+            ZeroText(
+                "阅读  ›",
+                style = MaterialTheme.typography.labelSmall,
+                color = ZeroTheme.colors.contentMuted
+            )
+        }
+        Spacer(Modifier.height(9.dp))
+        ZeroText(
+            entry.title,
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            color = ZeroTheme.colors.content
+        )
+        Spacer(Modifier.height(6.dp))
+        ZeroText(
+            entry.source,
+            style = MaterialTheme.typography.labelSmall,
+            color = ZeroTheme.colors.contentMuted,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
+        )
+        Spacer(Modifier.height(10.dp))
+        ZeroText(
+            entry.body.replace("\n", " ").take(116) +
                 if (entry.body.length > 116) "…" else "",
-                style = MaterialTheme.typography.bodyMedium,
-                color = ZeroTheme.colors.content.copy(alpha = 0.88f),
-                maxLines = 3, overflow = TextOverflow.Ellipsis)
+            style = MaterialTheme.typography.bodyMedium,
+            color = ZeroTheme.colors.content.copy(alpha = 0.88f),
+            maxLines = 3,
+            overflow = TextOverflow.Ellipsis
+        )
     }
 }
 
