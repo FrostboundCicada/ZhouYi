@@ -2,6 +2,10 @@ name: Android APK
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - app/src/main/java/org/frostboundcicada/zhouyi/MainActivity.kt
 
 permissions:
   contents: read
