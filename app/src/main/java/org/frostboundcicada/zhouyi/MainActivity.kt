@@ -271,6 +271,7 @@ private fun MainScreen(
         ReadingPage(entry = selectedEntry, onBack = { selectedEntryTitle = null })
     } else BoxWithConstraints(Modifier.fillMaxSize()) {
         // Adapt navigation to the available app window width, not the physical device type.
+        // Keep the adaptive branch compiled independently from the phone-only navigation path.
         val wideLayout = maxWidth >= 600.dp
         ZeroScaffold(
         modifier = Modifier.nestedScroll(topBarScrollBehavior.nestedScrollConnection),
