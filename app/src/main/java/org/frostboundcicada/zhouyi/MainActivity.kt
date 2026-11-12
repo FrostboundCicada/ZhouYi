@@ -88,7 +88,6 @@ import com.zeroui.kit.theme.DarkMode
 import com.zeroui.kit.theme.GlassMode
 import com.zeroui.kit.theme.UiStyle
 import com.zeroui.kit.theme.ThemeSettings
-import com.zeroui.kit.theme.UiStyle
 import com.zeroui.kit.theme.ZeroTheme
 
 private data class Entry(val section: String, val title: String, val source: String, val body: String, val translation: String? = null)
