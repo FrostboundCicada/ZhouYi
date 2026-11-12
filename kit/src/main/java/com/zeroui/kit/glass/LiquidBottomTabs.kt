@@ -43,6 +43,7 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.util.lerp
 import com.kyant.backdrop.Backdrop
 import com.kyant.backdrop.backdrops.layerBackdrop
@@ -57,6 +58,7 @@ import com.kyant.backdrop.shadow.InnerShadow
 import com.kyant.backdrop.shadow.Shadow
 import com.kyant.shapes.Capsule
 import com.zeroui.kit.theme.LocalIsDark
+import com.zeroui.kit.theme.isMaterial
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
@@ -83,7 +85,7 @@ fun LiquidBottomTabs(
     content: @Composable RowScope.() -> Unit
 ) {
     val isLight = !LocalIsDark.current
-    val containerColor = MiuixTheme.colorScheme.surfaceContainer.copy(alpha = 0.4f)
+    val containerColor = (if (isMaterial()) MaterialTheme.colorScheme.surfaceContainer else MiuixTheme.colorScheme.surfaceContainer).copy(alpha = 0.4f)
     val innerHeight = barHeight - 8f.dp
 
     val tabsBackdrop = rememberLayerBackdrop()
