@@ -382,6 +382,9 @@ private fun MainScreen(
                     }
                 }
             }
+            val glassPageColor = ZeroTheme.colors.page
+            val glassAccentColor = ZeroTheme.colors.accent
+            val glassAccentContainerColor = ZeroTheme.colors.accentContainer
             Box(Modifier.weight(1f).fillMaxHeight()) {
                 // A dedicated background-only layer is sampled by glass cards.
                 // Never put the foreground page content in this backdrop source.
@@ -389,17 +392,17 @@ private fun MainScreen(
                     Modifier.matchParentSize()
                         .liquidSource(liquidBackdrop)
                         .drawBehind {
-                            drawRect(ZeroTheme.colors.page)
+                            drawRect(glassPageColor)
                             drawRect(
                                 Brush.radialGradient(
-                                    colors = listOf(ZeroTheme.colors.accent.copy(alpha = 0.20f), Color.Transparent),
+                                    colors = listOf(glassAccentColor.copy(alpha = 0.20f), Color.Transparent),
                                     center = Offset(size.width * 0.12f, size.height * 0.12f),
                                     radius = size.minDimension * 0.78f
                                 )
                             )
                             drawRect(
                                 Brush.radialGradient(
-                                    colors = listOf(ZeroTheme.colors.accentContainer.copy(alpha = 0.30f), Color.Transparent),
+                                    colors = listOf(glassAccentContainerColor.copy(alpha = 0.30f), Color.Transparent),
                                     center = Offset(size.width * 0.92f, size.height * 0.74f),
                                     radius = size.minDimension * 0.72f
                                 )
