@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.compose.material3.MaterialTheme
 import com.zeroui.kit.theme.LocalBlurEnabled
 import com.zeroui.kit.theme.LocalTopBarBlur
 import com.zeroui.kit.theme.isMaterial
@@ -49,8 +50,8 @@ fun shaderUsable(): Boolean =
 /** Sampling layer for floating bars; null when blur is off or not available. */
 @Composable
 fun rememberBlurBackdrop(): BlurBackdrop? {
-    if (!LocalBlurEnabled.current || !shaderUsable() || isMaterial()) return null
-    val base = MiuixTheme.colorScheme.surface
+    if (!LocalBlurEnabled.current || !shaderUsable()) return null
+    val base = if (isMaterial()) MaterialTheme.colorScheme.surface else MiuixTheme.colorScheme.surface
     val layer = rememberLayerBackdrop {
         // Content does not paint every pixel. Without a solid base the blur would
         // sample transparency wherever it left a gap.
@@ -63,8 +64,8 @@ fun rememberBlurBackdrop(): BlurBackdrop? {
 /** Sampling layer for the top bar blur; null when it is off or not available. */
 @Composable
 fun rememberTopBarBackdrop(): BlurBackdrop? {
-    if (!LocalTopBarBlur.current || !shaderUsable() || isMaterial()) return null
-    val base = MiuixTheme.colorScheme.surface
+    if (!LocalTopBarBlur.current || !shaderUsable()) return null
+    val base = if (isMaterial()) MaterialTheme.colorScheme.surface else MiuixTheme.colorScheme.surface
     val page = LocalPageBackground.current
     val layer = rememberLayerBackdrop {
         drawRect(base)
@@ -100,7 +101,7 @@ fun BlurredTopBar(
         return
     }
     val colors = BlurDefaults.blurColors(
-        blendColors = listOf(BlendColorEntry(color = MiuixTheme.colorScheme.surface.copy(alpha = 0.3f))),
+        blendColors = listOf(BlendColorEntry(color = (if (isMaterial()) MaterialTheme.colorScheme.surface else MiuixTheme.colorScheme.surface).copy(alpha = 0.3f))),
     )
     val ready = rememberAfterFirstFrame()
     Box {
