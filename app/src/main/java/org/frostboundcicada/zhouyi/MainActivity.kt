@@ -698,16 +698,21 @@ private fun CategoryGrid(onCategoryChange: (String) -> Unit) {
         Triple("版本档案", "敦煌、宋本与日本古本", "本"),
         Triple("相关古籍", "互见文献与引书", "典")
     )
-    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        categories.chunked(2).forEach { group ->
-            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                group.forEach { (name, description, glyph) ->
-                    ZeroCard(
-                        modifier = Modifier.weight(1f).heightIn(min = 112.dp),
-                        cornerRadius = 22.dp,
-                        contentPadding = PaddingValues(15.dp),
-                        onClick = { onCategoryChange(name) },
-                    ) {
+    BoxWithConstraints(Modifier.fillMaxWidth()) {
+        val columnCount = if (maxWidth >= 720.dp) 3 else 2
+        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            categories.chunked(columnCount).forEach { group ->
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    group.forEach { (name, description, glyph) ->
+                        ZeroCard(
+                            modifier = Modifier.weight(1f).heightIn(min = 112.dp),
+                            cornerRadius = 22.dp,
+                            contentPadding = PaddingValues(15.dp),
+                            onClick = { onCategoryChange(name) },
+                        ) {
                             ZeroCard(
                                 modifier = Modifier.size(36.dp),
                                 color = ZeroTheme.colors.accentContainer.copy(alpha = 0.78f),
@@ -715,8 +720,11 @@ private fun CategoryGrid(onCategoryChange: (String) -> Unit) {
                                 contentPadding = PaddingValues(0.dp)
                             ) {
                                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                                    ZeroText(glyph, style = MaterialTheme.typography.titleMedium.copy(fontFamily = FontFamily.Serif),
-                                        color = ZeroTheme.colors.onAccentContainer)
+                                    ZeroText(
+                                        glyph,
+                                        style = MaterialTheme.typography.titleMedium.copy(fontFamily = FontFamily.Serif),
+                                        color = ZeroTheme.colors.onAccentContainer
+                                    )
                                 }
                             }
                             ZeroText(name, fontWeight = FontWeight.SemiBold,
@@ -724,10 +732,11 @@ private fun CategoryGrid(onCategoryChange: (String) -> Unit) {
                             ZeroText(description, style = MaterialTheme.typography.labelSmall,
                                 color = ZeroTheme.colors.contentMuted,
                                 maxLines = 2, overflow = TextOverflow.Ellipsis)
+                        }
                     }
+                    repeat(columnCount - group.size) { Spacer(Modifier.weight(1f)) }
                 }
             }
-        }
         }
     }
 }
