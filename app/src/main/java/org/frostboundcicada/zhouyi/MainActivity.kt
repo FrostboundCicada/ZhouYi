@@ -101,9 +101,9 @@ private fun ZhouYiApp() {
     val prefs = remember { context.getSharedPreferences("zhouyi_settings", 0) }
     var themeMode by rememberSaveable { mutableStateOf(prefs.getString("theme_mode", "system") ?: "system") }
     var dynamicColor by rememberSaveable { mutableStateOf(prefs.getBoolean("dynamic_color", true)) }
-    var uiScale by remember { mutableFloatStateOf(prefs.getFloat("ui_scale", 1.0f)) }
-    var fontScale by remember { mutableFloatStateOf(prefs.getFloat("font_scale", 1.0f)) }
-    var fontUri by remember { mutableStateOf(prefs.getString("font_uri", null)) }
+    var uiScale by rememberSaveable { mutableFloatStateOf(prefs.getFloat("ui_scale", 1.0f)) }
+    var fontScale by rememberSaveable { mutableFloatStateOf(prefs.getFloat("font_scale", 1.0f)) }
+    var fontUri by rememberSaveable { mutableStateOf(prefs.getString("font_uri", null)) }
     val customTypeface = remember(fontUri) {
         if (fontUri.isNullOrBlank()) null else runCatching {
             val uri = Uri.parse(fontUri)
@@ -248,9 +248,9 @@ private fun MainScreen(
 
     val titles = listOf("典藏", "卦序", "专题", "设置")
     val all = remember { buildEntries() }
-    val selectedEntry = all.firstOrNull { it.title == selectedEntryTitle }
     val hexagrams = remember { buildHexagramIndex() }
     val wings = remember { buildWingsIndex() }
+    val selectedEntry = (all + hexagrams + wings).firstOrNull { it.title == selectedEntryTitle }
     val visible = remember(tab, category, query, all, hexagrams, wings) {
         val source = when (tab) {
             1 -> if (category == "十翼") wings else all.filter { it.section == "易经" } + hexagrams
@@ -376,6 +376,7 @@ private fun MainScreen(
                 }
             }
             Box(Modifier.weight(1f).fillMaxHeight().topBarBlurSource(topBarBackdrop).liquidSource(liquidBackdrop)) {
+                Box(Modifier.fillMaxSize().widthIn(max = 1120.dp).align(Alignment.TopCenter)) {
             if (tab == 3) {
                 SettingsPage(
                     themeMode = themeMode,
@@ -403,6 +404,7 @@ private fun MainScreen(
                     visible, { selectedEntryTitle = it.title }, libraryListState, Modifier
                 )
             }
+                }
             }
         }
     }
@@ -433,8 +435,9 @@ private fun ReadingPage(entry: Entry, onBack: () -> Unit) {
             }
         }
     ) { padding ->
+        Box(Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.TopCenter) {
         LazyColumn(
-            modifier = Modifier.fillMaxSize().padding(padding).topBarBlurSource(readingTopBarBackdrop),
+            modifier = Modifier.fillMaxSize().widthIn(max = 920.dp).topBarBlurSource(readingTopBarBackdrop),
             contentPadding = PaddingValues(start = 18.dp, end = 18.dp, top = 14.dp, bottom = 44.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
@@ -720,6 +723,7 @@ private fun CategoryGrid(onCategoryChange: (String) -> Unit) {
                     }
                 }
             }
+        }
         }
     }
 }
