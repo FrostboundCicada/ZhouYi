@@ -1,6 +1,7 @@
 package org.frostboundcicada.zhouyi
 
 import android.os.Bundle
+import android.os.Build
 import android.graphics.Typeface
 import android.content.Intent
 import android.net.Uri
@@ -37,8 +38,11 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -95,7 +99,8 @@ class MainActivity : ComponentActivity() {
 private fun ZhouYiApp() {
     val context = LocalContext.current
     val prefs = remember { context.getSharedPreferences("zhouyi_settings", 0) }
-    var themeMode by remember { mutableStateOf(prefs.getString("theme_mode", "system") ?: "system") }
+    var themeMode by rememberSaveable { mutableStateOf(prefs.getString("theme_mode", "system") ?: "system") }
+    var dynamicColor by rememberSaveable { mutableStateOf(prefs.getBoolean("dynamic_color", true)) }
     var uiScale by remember { mutableFloatStateOf(prefs.getFloat("ui_scale", 1.0f)) }
     var fontScale by remember { mutableFloatStateOf(prefs.getFloat("font_scale", 1.0f)) }
     var fontUri by remember { mutableStateOf(prefs.getString("font_uri", null)) }
@@ -120,7 +125,7 @@ private fun ZhouYiApp() {
         "dark" -> true
         else -> isSystemInDarkTheme()
     }
-    val scheme = if (dark) darkColorScheme(
+    val fallbackScheme = if (dark) darkColorScheme(
         primary = Color(0xFFE0B89E), onPrimary = Color(0xFF392316),
         primaryContainer = Color(0xFF654632), onPrimaryContainer = Color(0xFFFFE0CB),
         secondary = Color(0xFFD1BDAA), background = Color(0xFF151411),
@@ -135,6 +140,10 @@ private fun ZhouYiApp() {
         onSurface = Color(0xFF28231E), onSurfaceVariant = Color(0xFF6F665D),
         outline = Color(0xFFD8CEC1)
     )
+
+    val scheme = if (dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        if (dark) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+    } else fallbackScheme
 
     val baseDensity = LocalDensity.current
     val scaledTypography = remember(appFontFamily) {
@@ -167,6 +176,7 @@ private fun ZhouYiApp() {
             settings = ThemeSettings(
                 style = UiStyle.Miuix,
                 darkMode = zeroDarkMode,
+                dynamicColor = dynamicColor,
                 uiScale = 100,
                 glassMode = GlassMode.Liquid,
                 glassIntensity = 100,
@@ -176,6 +186,11 @@ private fun ZhouYiApp() {
             MaterialTheme(colorScheme = scheme, typography = scaledTypography) {
                 MainScreen(
                     themeMode = themeMode,
+                    dynamicColor = dynamicColor,
+                    onDynamicColorChange = {
+                        dynamicColor = it
+                        prefs.edit().putBoolean("dynamic_color", it).apply()
+                    },
                     onThemeChange = {
                         themeMode = it
                         prefs.edit().putString("theme_mode", it).apply()
@@ -206,6 +221,8 @@ private fun ZhouYiApp() {
 private fun MainScreen(
     themeMode: String,
     onThemeChange: (String) -> Unit,
+    dynamicColor: Boolean,
+    onDynamicColorChange: (Boolean) -> Unit,
     uiScale: Float,
     onUiScaleChange: (Float) -> Unit,
     fontScale: Float,
@@ -213,10 +230,10 @@ private fun MainScreen(
     fontUri: String?,
     onFontUriChange: (String?) -> Unit
 ) {
-    var tab by remember { mutableIntStateOf(0) }
-    var category by remember { mutableStateOf("全部") }
-    var query by remember { mutableStateOf("") }
-    var selectedEntry by remember { mutableStateOf<Entry?>(null) }
+    var tab by rememberSaveable { mutableIntStateOf(0) }
+    var category by rememberSaveable { mutableStateOf("全部") }
+    var query by rememberSaveable { mutableStateOf("") }
+    var selectedEntryTitle by rememberSaveable { mutableStateOf<String?>(null) }
     val libraryListState = rememberLazyListState()
     // Keep the sampled page layer separate from glass surfaces to avoid a render-layer cycle.
     val liquidBackdrop = rememberLiquidBackdrop()
@@ -231,6 +248,7 @@ private fun MainScreen(
 
     val titles = listOf("典藏", "卦序", "专题", "设置")
     val all = remember { buildEntries() }
+    val selectedEntry = all.firstOrNull { it.title == selectedEntryTitle }
     val hexagrams = remember { buildHexagramIndex() }
     val wings = remember { buildWingsIndex() }
     val visible = remember(tab, category, query, all, hexagrams, wings) {
@@ -247,11 +265,13 @@ private fun MainScreen(
                 e.body.contains(q, true) || e.source.contains(q, true) || e.section.contains(q, true))
         }
     }
-    BackHandler(enabled = selectedEntry != null) { selectedEntry = null }
+    BackHandler(enabled = selectedEntry != null) { selectedEntryTitle = null }
 
     if (selectedEntry != null) {
-        ReadingPage(entry = selectedEntry!!, onBack = { selectedEntry = null })
-    } else ZeroScaffold(
+        ReadingPage(entry = selectedEntry, onBack = { selectedEntryTitle = null })
+    } else BoxWithConstraints(Modifier.fillMaxSize()) {
+        val wideLayout = maxWidth >= 600.dp
+        ZeroScaffold(
         modifier = Modifier.nestedScroll(topBarScrollBehavior.nestedScrollConnection),
         containerColor = ZeroTheme.colors.page,
         topBar = {
@@ -271,7 +291,7 @@ private fun MainScreen(
             }
         },
         bottomBar = {
-            Box(
+            if (!wideLayout) Box(
                 modifier = Modifier.fillMaxWidth().height(92.dp),
                 contentAlignment = Alignment.BottomCenter
             ) {
@@ -336,7 +356,26 @@ private fun MainScreen(
             }
         }
     ) { padding ->
-        Box(Modifier.fillMaxSize().padding(padding).topBarBlurSource(topBarBackdrop).liquidSource(liquidBackdrop)) {
+        Row(Modifier.fillMaxSize().padding(padding)) {
+            if (wideLayout) {
+                NavigationRail(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    contentColor = MaterialTheme.colorScheme.onSurface
+                ) {
+                    val navLabels = listOf("典藏", "卦序", "专题", "设置")
+                    val navIcons = listOf(Icons.Filled.Home, Icons.Filled.List, Icons.Filled.Info, Icons.Filled.Settings)
+                    navLabels.forEachIndexed { index, label ->
+                        NavigationRailItem(
+                            selected = tab == index,
+                            onClick = { tab = index; category = "全部"; query = "" },
+                            icon = { Icon(navIcons[index], contentDescription = label) },
+                            label = { Text(label) },
+                            alwaysShowLabel = true
+                        )
+                    }
+                }
+            }
+            Box(Modifier.weight(1f).fillMaxHeight().topBarBlurSource(topBarBackdrop).liquidSource(liquidBackdrop)) {
             if (tab == 3) {
                 SettingsPage(
                     themeMode = themeMode,
@@ -347,6 +386,8 @@ private fun MainScreen(
                     onFontScaleChange = onFontScaleChange,
                     fontUri = fontUri,
                     onFontUriChange = onFontUriChange,
+                    dynamicColor = dynamicColor,
+                    onDynamicColorChange = onDynamicColorChange,
                 )
             } else if (tab == 0) {
                 HomePage(
@@ -359,8 +400,9 @@ private fun MainScreen(
             } else {
                 LibraryPage(
                     tab, category, { category = it }, query, { query = it },
-                    visible, { selectedEntry = it }, libraryListState, Modifier
+                    visible, { selectedEntryTitle = it.title }, libraryListState, Modifier
                 )
+            }
             }
         }
     }
@@ -717,6 +759,8 @@ private fun EntryCard(entry: Entry, onClick: () -> Unit) {
 private fun SettingsPage(
     themeMode: String,
     onThemeChange: (String) -> Unit,
+    dynamicColor: Boolean,
+    onDynamicColorChange: (Boolean) -> Unit,
     uiScale: Float,
     onUiScaleChange: (Float) -> Unit,
     fontScale: Float,
@@ -858,6 +902,14 @@ private fun SettingsPage(
                 contentPadding = PaddingValues(18.dp)
             ) {
                 ZeroText("主题模式", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                    Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                        ZeroText("动态取色（Monet）", style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
+                        ZeroText("根据系统壁纸生成应用配色；Android 12 及以上生效。", style = MaterialTheme.typography.bodySmall, color = ZeroTheme.colors.contentMuted)
+                    }
+                    Switch(checked = dynamicColor, onCheckedChange = onDynamicColorChange)
+                }
+                ZeroDivider(color = ZeroTheme.colors.outline.copy(alpha = 0.28f))
                 ZeroText("选择应用外观，也可以跟随系统自动切换。",
                     style = MaterialTheme.typography.bodySmall,
                     color = ZeroTheme.colors.contentMuted)
