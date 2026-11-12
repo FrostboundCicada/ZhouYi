@@ -193,9 +193,28 @@ private fun GlassCard(
     content: @Composable ColumnScope.() -> Unit,
 ) {
     if (isMaterial()) {
+        // Keep the same independently controlled glass material in both component families.
+        // The backdrop source is supplied by the page background layer, never by card content.
+        val shape = RoundedCornerShape(cornerRadius)
+        val intensity = LocalLiquidIntensity.current
+        val glassModifier = when {
+            glass.liquid != null -> modifier.liquidGlassOver(
+                backdrop = glass.liquid.layer,
+                shape = { shape },
+                tint = MaterialTheme.colorScheme.surface.copy(alpha = LiquidTintAlpha),
+                intensity = intensity,
+                shadow = null,
+            )
+            glass.blur != null -> modifier.frostedGlass(
+                backdrop = glass.blur,
+                shape = rememberSquircleShape(cornerRadius),
+                tint = MaterialTheme.colorScheme.surface.copy(alpha = BlurTintAlpha),
+            )
+            else -> modifier
+        }
         MaterialCard(
-            modifier,
-            MaterialTheme.colorScheme.surfaceBright.copy(alpha = TranslucentAlpha),
+            glassModifier,
+            MaterialTheme.colorScheme.surface.copy(alpha = TranslucentAlpha),
             MaterialTheme.colorScheme.onSurface,
             cornerRadius,
             contentPadding,
@@ -265,7 +284,7 @@ private fun MaterialCard(
         return
     }
     val radius = if (cornerRadius == CardDefaults.CornerRadius) MaterialCardRadius else cornerRadius
-    val shape = RoundedCornerShape(radius)
+    val shape = rememberSquircleShape(radius)
     CompositionLocalProvider(LocalInSegmentedList provides false) {
         ProvideContentColor(foreground) {
             Column(
