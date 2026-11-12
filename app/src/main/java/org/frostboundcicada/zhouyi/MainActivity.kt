@@ -296,7 +296,7 @@ private fun MainScreen(
     val visible = remember(tab, category, query, all, hexagrams, wings) {
         val source = when (tab) {
             1 -> if (category == "十翼") wings else all.filter { it.section == "易经" } + hexagrams
-            2 -> all.filter { it.section in listOf("河图", "洛书", "相关古籍", "版本档案") }
+            2 -> all.filter { it.section in listOf("河图", "洛书", "相关古籍", "版本档案", "历代注疏") }
             else -> all + wings
         }
         source.filter { e ->
@@ -652,8 +652,8 @@ private fun LibraryPage(
 ) {
     val categories = when (tab) {
         1 -> listOf("全部", "易经", "十翼")
-        2 -> listOf("全部", "河图", "洛书", "版本档案", "相关古籍")
-        else -> listOf("全部", "易经", "十翼", "河图", "洛书", "版本档案", "相关古籍")
+        2 -> listOf("全部", "河图", "洛书", "历代注疏", "版本档案", "相关古籍")
+        else -> listOf("全部", "易经", "十翼", "河图", "洛书", "历代注疏", "版本档案", "相关古籍")
     }
     BoxWithConstraints(modifier.fillMaxSize()) {
         val columns = if (maxWidth >= 760.dp) 2 else 1
