@@ -376,7 +376,7 @@ private fun MainScreen(
                 }
             }
             Box(Modifier.weight(1f).fillMaxHeight().topBarBlurSource(topBarBackdrop).liquidSource(liquidBackdrop)) {
-                Box(Modifier.fillMaxSize().widthIn(max = 1120.dp).align(Alignment.TopCenter)) {
+                Box(Modifier.widthIn(max = 1120.dp).fillMaxSize().align(Alignment.TopCenter)) {
             if (tab == 3) {
                 SettingsPage(
                     themeMode = themeMode,
@@ -437,7 +437,7 @@ private fun ReadingPage(entry: Entry, onBack: () -> Unit) {
     ) { padding ->
         Box(Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.TopCenter) {
         LazyColumn(
-            modifier = Modifier.fillMaxSize().widthIn(max = 920.dp).topBarBlurSource(readingTopBarBackdrop),
+            modifier = Modifier.widthIn(max = 920.dp).fillMaxSize().topBarBlurSource(readingTopBarBackdrop),
             contentPadding = PaddingValues(start = 18.dp, end = 18.dp, top = 14.dp, bottom = 44.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
