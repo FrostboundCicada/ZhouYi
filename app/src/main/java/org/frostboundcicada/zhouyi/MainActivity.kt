@@ -460,7 +460,7 @@ private fun MainScreen(
                         }
                 )
                 CompositionLocalProvider(
-                    LocalCardGlass provides if (glassCardsEnabled && uiStyle == UiStyle.Miuix) liquidBackdrop?.let { CardGlass(liquid = it) } else null
+                    LocalCardGlass provides if (glassCardsEnabled) liquidBackdrop?.let { CardGlass(liquid = it) } else null
                 ) {
                     Box(
                         Modifier.widthIn(max = 1120.dp).fillMaxSize()
