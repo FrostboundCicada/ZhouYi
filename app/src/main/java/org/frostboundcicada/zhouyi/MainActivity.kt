@@ -90,7 +90,7 @@ import com.zeroui.kit.theme.UiStyle
 import com.zeroui.kit.theme.ThemeSettings
 import com.zeroui.kit.theme.ZeroTheme
 
-private data class Entry(val section: String, val title: String, val source: String, val body: String, val translation: String? = null)
+private data class Entry(val section: String, val title: String, val source: String, val body: String, val translation: String? = null, val chatGptTranslation: String? = null)
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -611,6 +611,24 @@ private fun ReadingPage(entry: Entry, onBack: () -> Unit) {
                         ZeroText(entry.translation, modifier = Modifier.fillMaxWidth(),
                             style = MaterialTheme.typography.bodyLarge.copy(lineHeight = 30.sp),
                             color = ZeroTheme.colors.contentMuted)
+                    }
+                }
+            }
+            if (entry.chatGptTranslation != null) {
+                item {
+                    ZeroCard(
+                        modifier = Modifier.fillMaxWidth(),
+                        cornerRadius = 24.dp,
+                        contentPadding = PaddingValues(20.dp)
+                    ) {
+                        ZeroText("ChatGPT 翻译（工作译文）", style = MaterialTheme.typography.titleMedium,
+                            color = ZeroTheme.colors.accent, fontWeight = FontWeight.SemiBold)
+                        ZeroText("以下译文由 ChatGPT 根据本条所录原文独立翻译，不沿用条目中已有译文；疑难训诂、异文和残缺处以说明为准。",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = ZeroTheme.colors.contentMuted)
+                        ZeroText(entry.chatGptTranslation, modifier = Modifier.fillMaxWidth(),
+                            style = MaterialTheme.typography.bodyLarge.copy(lineHeight = 30.sp),
+                            color = ZeroTheme.colors.content)
                     }
                 }
             }
@@ -3766,7 +3784,14 @@ private fun buildEntries(): List<Entry> = listOf(
 
 三、校勘说明
 
-此处九个名称的字形和读法存在传抄、训读问题。尤其“巫”字，郑玄已提出校读意见；末一名称“巫𡑡”的字形也须依版本图像复核。当前引文来自《太平御览》所保存的《周礼》引文，不等于已据《周礼》古本、注疏本完成校勘。九筮各自的具体适用场景，不能仅凭名称臆测补齐。"""),
+此处九个名称的字形和读法存在传抄、训读问题。尤其“巫”字，郑玄已提出校读意见；末一名称“巫𡑡”的字形也须依版本图像复核。当前引文来自《太平御览》所保存的《周礼》引文，不等于已据《周礼》古本、注疏本完成校勘。九筮各自的具体适用场景，不能仅凭名称臆测补齐。, """),
+        """【ChatGPT 翻译｜工作译文】
+
+《周礼·春官上》说：“筮人掌管三种《易》，负责辨明九种筮法的名称。三种《易》分别是《连山》《归藏》《周易》。九种筮法的名称，依次是巫更、巫咸、巫式、巫目、巫易、巫比、巫祠、巫参、巫𡑡，用来辨别吉凶。”
+
+郑玄说：“这九个名称中的‘巫’字，都应当读作‘筮’，这是文字讹误。‘更’指通过筮占决定迁移都邑。凡是国家大事，通常先用蓍草筮问，然后再用龟甲占卜。”
+
+译文说明：“三易”是此处文献所列的三种易书；九筮名称的具体含义，现有材料并不足以全部确定。郑玄对“巫”字的读法属于古注校读，不是原文中已经写明的改字。末一名称的罕见字仍须核对版本图像，不能仅凭译文确定其字形。""")
     Entry("卜筮", "《礼记·曲礼》卜筮礼制：不过三、不相袭", "底本参照《礼记·曲礼》通行文本；中国孔子网所载经文可供核对。此条讨论礼制规范，不将其解释为任何现代占卜次数规则。", """一、经文
 
 外事以刚日，内事以柔日。凡卜筮日，旬之外曰远某日，旬之内曰近某日。丧事先远日，吉事先近日。
@@ -3783,7 +3808,16 @@ private fun buildEntries(): List<Entry> = listOf(
 
 三、解释边界
 
-“卜筮不过三”在礼学注疏中有具体礼仪语境，涉及择日等程序；不应脱离上下文，简单改写成“任何占卜都能连续试三次”的通用算法。“卜筮不相袭”强调龟卜与筮占不宜无原则地反复替换。"""),
+“卜筮不过三”在礼学注疏中有具体礼仪语境，涉及择日等程序；不应脱离上下文，简单改写成“任何占卜都能连续试三次”的通用算法。“卜筮不相袭”强调龟卜与筮占不宜无原则地反复替换。, """),
+        """【ChatGPT 翻译｜工作译文】
+
+外部事务选用阳日，内部事务选用阴日。凡是通过卜或筮来选择日期，十日周期以外的日期称为“远某日”，十日周期以内的日期称为“近某日”。办理丧事，先选较远的日期；办理吉庆之事，先选较近的日期。
+
+仪式上的祷告说：“请为我确定日期，借助您灵验而有常度的大神龟，借助您灵验而有常度的大神筮。”
+
+卜和筮都不应超过三次，也不应把龟卜与蓍筮交替反复使用。用龟甲进行的叫作“卜”，用蓍草策数进行的叫作“筮”。卜筮制度，是先代圣王用来使百姓相信时令与日期、敬重鬼神、敬畏法令的办法，也是用来帮助人们裁定疑惑、消除犹豫的办法。所以说：“心中有疑惑而用筮占询问，便不再认为这样做不妥。”既然已经选定日期并决定办事，就一定要按期实行。
+
+译文说明：“泰龟”“泰筮”中的“泰”保留其尊称或强调语气，不擅自落实为某一具体神祇。“旬”按十日为一周期理解。“卜筮不过三”必须放在本段择日与礼仪制度的语境中理解，不能抽离为现代占问的通用操作规则。""")
     Entry("卜筮", "《左传·僖公十五年》晋献公筮嫁伯姬：归妹之睽", "底本参照《春秋左传正义》僖公十五年相关经传与注疏；另可参洪迈《容斋随笔·左传易筮》对春秋筮例的回顾。此条为单一筮例，不代表所有先秦占筮规则。", """一、经文节录
 
 初，晋献公筮嫁伯姬于秦，遇《归妹》之《睽》。史苏占之曰：“不吉。其繇曰：‘士刲羊，亦无血也。女承筐，亦无贶也。西邻责言，不可偿也。’《归妹》之《睽》，犹无相也。”
@@ -3798,7 +3832,14 @@ private fun buildEntries(): List<Entry> = listOf(
 
 四、校勘提示
 
-古本及不同整理本在“无血”相关字形上有异文，传本亦见“无衁”等写法。这里采用可读通行字并保留异文提示；正式定本仍应对照《春秋左传正义》影印页逐字复核。"""),
+古本及不同整理本在“无血”相关字形上有异文，传本亦见“无衁”等写法。这里采用可读通行字并保留异文提示；正式定本仍应对照《春秋左传正义》影印页逐字复核。, """),
+        """【ChatGPT 翻译｜工作译文】
+
+当初，晋献公为把伯姬嫁给秦国而进行筮占，得到《归妹》卦，变为《睽》卦。史苏判断说：“不吉利。它的筮辞是：‘男子宰羊，却没有流出血；女子捧着筐，却没有得到赠物。西边邻国提出责难，这种责难无法偿还。’《归妹》变成《睽》，就像双方不能相互帮助。”
+
+译文说明：“遇《归妹》之《睽》”表示筮占所得的本卦与变化后的卦；“繇”指筮辞。“女承筐，亦无贶也”中的“贶”是赠予、赐予之意。“西邻责言，不可偿也”可理解为西方邻国将提出难以回应或偿付的责难，具体指涉仍须结合后文史事与注疏判断。“犹无相也”是以卦变关系比拟双方缺乏相助，不能把它扩写成原文没有明说的婚姻细节。
+
+本译文只翻译本条所录节文，不代替《左传》后续叙事，也不把后世对春秋筮例的归纳倒写成这段经传原文。""")
     Entry("卜筮", "《左传》《国语》筮例：占得卦象之后如何解释", "参考清华大学出土文献研究与保护中心介绍《出土数字卦文献辑释》（贾连翔著，2020）所列先秦至汉初传世文献筮占研究；具体筮例须逐条回到《左传》《国语》原文及注疏。", """一、材料性质
 
 《左传》《国语》保存了多则古代筮占叙事，常见结构包括提出所问、记述所得卦象、引用卦爻辞或相关象义、解释吉凶及后续事件。
