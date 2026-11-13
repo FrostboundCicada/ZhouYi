@@ -606,8 +606,10 @@ private fun ReadingPage(entry: Entry, onBack: () -> Unit) {
                         cornerRadius = 24.dp,
                         contentPadding = PaddingValues(20.dp)
                     ) {
-                        ZeroText("ChatGPT 翻译", style = MaterialTheme.typography.titleMedium,
+                        ZeroText("原有译文 / 内容说明", style = MaterialTheme.typography.titleMedium,
                             color = ZeroTheme.colors.accent, fontWeight = FontWeight.SemiBold)
+                        ZeroText("保留条目原有字段内容；它可能是已有译文，也可能是译注或状态说明，不自动认定为可靠译本。",
+                            style = MaterialTheme.typography.labelSmall, color = ZeroTheme.colors.contentMuted)
                         ZeroText(entry.translation, modifier = Modifier.fillMaxWidth(),
                             style = MaterialTheme.typography.bodyLarge.copy(lineHeight = 30.sp),
                             color = ZeroTheme.colors.contentMuted)
