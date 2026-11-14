@@ -586,6 +586,36 @@ private fun ReadingPage(entry: Entry, onBack: () -> Unit) {
                     item { LuoshuIllustration(entry.title) }
                 }
             }
+            // 已取得的明正德十六年《周易本义》第一册原版扫描页。
+            if (entry.section == "河图") {
+                item { OriginalScanPreview("page-05.webp", "《周易本义》明正德本·PDF第5页：河图原版扫描") }
+            }
+            if (entry.section == "洛书") {
+                item { OriginalScanPreview("page-06.webp", "《周易本义》明正德本·PDF第6页：洛书原版扫描") }
+            }
+            // 其余六页已提取，但具体图名尚待核定，暂集中放在版本档案区，不臆定内容。
+            if (entry.section == "版本档案") {
+                item {
+                    ZeroCard(
+                        modifier = Modifier.fillMaxWidth(),
+                        cornerRadius = 24.dp,
+                        contentPadding = PaddingValues(16.dp)
+                    ) {
+                        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                            ZeroText("明正德本《周易本义》第一册原版扫描",
+                                style = MaterialTheme.typography.titleMedium,
+                                color = ZeroTheme.colors.accent,
+                                fontWeight = FontWeight.SemiBold)
+                            ZeroText("以下为 PDF 第10、11、13—16页。页面已离线提取；具体图名和对应条目仍待逐页核定。",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = ZeroTheme.colors.contentMuted)
+                        }
+                    }
+                }
+                listOf("10", "11", "13", "14", "15", "16").forEach { page ->
+                    item { OriginalScanPreview("page-$page.webp", "明正德本《周易本义》第一册·PDF第${page}页原版扫描（图名待核）") }
+                }
+            }
             item {
                 ZeroCard(
                     modifier = Modifier.fillMaxWidth(),
@@ -19021,6 +19051,47 @@ private fun localDiagramAssetsFor(title: String): List<Pair<String, String>> = w
 }
 
 @Composable
+@Composable
+private fun OriginalScanPreview(fileName: String, caption: String) {
+    ZeroCard(
+        modifier = Modifier.fillMaxWidth(),
+        color = ZeroTheme.colors.card.copy(alpha = 0.42f),
+        cornerRadius = 24.dp,
+        contentPadding = PaddingValues(14.dp)
+    ) {
+        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            ZeroText(caption, style = MaterialTheme.typography.titleSmall,
+                color = ZeroTheme.colors.accent, fontWeight = FontWeight.SemiBold)
+            AndroidView(
+                modifier = Modifier.fillMaxWidth().height(520.dp),
+                factory = { context ->
+                    android.webkit.WebView(context).apply {
+                        settings.javaScriptEnabled = false
+                        settings.allowFileAccess = true
+                        settings.loadsImagesAutomatically = true
+                        settings.useWideViewPort = true
+                        settings.loadWithOverviewMode = true
+                        settings.builtInZoomControls = true
+                        settings.displayZoomControls = false
+                        setBackgroundColor(android.graphics.Color.rgb(244, 236, 217))
+                        loadUrl("file:///android_asset/zhouyi_diagrams/original_1521_vol1/$fileName")
+                    }
+                },
+                update = { view ->
+                    val target = "file:///android_asset/zhouyi_diagrams/original_1521_vol1/$fileName"
+                    if (view.tag != target) {
+                        view.tag = target
+                        view.loadUrl(target)
+                    }
+                }
+            )
+            ZeroText("古籍原版整页扫描的离线压缩副本；未裁切、未重绘。放大可查看图版细节。",
+                style = MaterialTheme.typography.labelSmall,
+                color = ZeroTheme.colors.contentMuted)
+        }
+    }
+}
+
 private fun LocalDiagramPreview(fileName: String, caption: String) {
     ZeroCard(
         modifier = Modifier.fillMaxWidth(),
