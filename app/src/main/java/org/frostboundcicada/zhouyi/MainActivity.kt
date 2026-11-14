@@ -19051,7 +19051,6 @@ private fun localDiagramAssetsFor(title: String): List<Pair<String, String>> = w
 }
 
 @Composable
-@Composable
 private fun OriginalScanPreview(fileName: String, caption: String) {
     ZeroCard(
         modifier = Modifier.fillMaxWidth(),
@@ -19092,6 +19091,7 @@ private fun OriginalScanPreview(fileName: String, caption: String) {
     }
 }
 
+@Composable
 private fun LocalDiagramPreview(fileName: String, caption: String) {
     ZeroCard(
         modifier = Modifier.fillMaxWidth(),
