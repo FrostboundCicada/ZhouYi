@@ -141,5 +141,128 @@
     }
   ],
   "policy": "原版扫描未实际进入 assets 前，一律保持 not_bundled；不可用复原 SVG 代替原图，也不可从图题推测图像细节。",
-  "acquisition_blocker": "当前执行环境无法从 Wikimedia 下载 PDF/页面 JPEG（二进制下载失败且容器网络 DNS 不可用）；因此尚未生成可打包的原始图像文件。"
+  "acquisition_blocker": "当前执行环境无法从 Wikimedia 下载 PDF/页面 JPEG（二进制下载失败且容器网络 DNS 不可用）；因此尚未生成可打包的原始图像文件。",
+  "download_link_catalog": [
+    {
+      "work": "周易本义",
+      "edition": "明正德十六年（1521）袁州府仰韩堂刻本，中国国家图书馆藏",
+      "note": "四册组成一套；第一册已确认扫描第5页河图、第6页洛书。推荐整套下载后逐页核对。Commons 文件页标注 Public Domain/PD-scan。",
+      "files": [
+        {
+          "volume": "第1册",
+          "pages": 44,
+          "size": "11.81 MB",
+          "file_page": "https://commons.wikimedia.org/wiki/File:NLC892-411999019942-45020_%E5%91%A8%E6%98%93%E6%9C%AC%E7%BE%A9_%E7%AC%AC1%E5%86%8A.pdf",
+          "direct_download": "https://upload.wikimedia.org/wikipedia/commons/6/67/NLC892-411999019942-45020_%E5%91%A8%E6%98%93%E6%9C%AC%E7%BE%A9_%E7%AC%AC1%E5%86%8A.pdf"
+        },
+        {
+          "volume": "第2册",
+          "pages": 58,
+          "size": "15.70 MB",
+          "file_page": "https://commons.wikimedia.org/wiki/File:NLC892-411999019942-45069_%E5%91%A8%E6%98%93%E6%9C%AC%E7%BE%A9_%E7%AC%AC2%E5%86%8A.pdf"
+        },
+        {
+          "volume": "第3册",
+          "pages": 75,
+          "size": "20.00 MB",
+          "file_page": "https://commons.wikimedia.org/wiki/File:NLC892-411999019942-45070_%E5%91%A8%E6%98%93%E6%9C%AC%E7%BE%A9_%E7%AC%AC3%E5%86%8A.pdf"
+        },
+        {
+          "volume": "第4册",
+          "pages": 42,
+          "size": "11.19 MB",
+          "file_page": "https://commons.wikimedia.org/wiki/File:NLC892-411999019942-45071_%E5%91%A8%E6%98%93%E6%9C%AC%E7%BE%A9_%E7%AC%AC4%E5%86%8A.pdf",
+          "direct_download": "https://upload.wikimedia.org/wikipedia/commons/1/13/NLC892-411999019942-45071_%E5%91%A8%E6%98%93%E6%9C%AC%E7%BE%A9_%E7%AC%AC4%E5%86%8A.pdf"
+        }
+      ],
+      "status": "download_links_verified; local_files_not_yet_bundled"
+    },
+    {
+      "work": "周易本义",
+      "edition": "宋咸淳元年（1265）吴革建宁府刊本；国家图书馆藏",
+      "note": "包含《易图》一卷。Commons 影印 PDF 标注 Public Domain/PD-scan；分辨率较低但为可直接取得的完整扫描。",
+      "files": [
+        {
+          "volume": "全本",
+          "pages": 282,
+          "size": "254.14 MB",
+          "file_page": "https://commons.wikimedia.org/wiki/File:ZHSY000005_%E5%91%A8%E6%98%93%E6%9C%AC%E7%BE%A9%E5%8D%81%E4%BA%8C%E5%8D%B7%E6%98%93%E5%9C%96%E4%B8%80%E5%8D%B7%E4%BA%94%E8%B4%8A%E4%B8%80%E5%8D%B7%E7%AD%AE%E5%84%80%E4%B8%80%E5%8D%B7_(%E5%AE%8B)%E6%9C%B1%E7%86%B9_%E6%92%B0_%E5%AE%8B%E5%92%B8%E6%B7%B3%E5%85%83%E5%B9%B4%E5%90%B3%E9%9D%A9%E5%88%BB%E6%9C%AC.pdf",
+          "direct_download": "https://upload.wikimedia.org/wikipedia/commons/6/66/ZHSY000005_%E5%91%A8%E6%98%93%E6%9C%AC%E7%BE%A9%E5%8D%81%E4%BA%8C%E5%8D%B7%E6%98%93%E5%9C%96%E4%B8%80%E5%8D%B7%E4%BA%94%E8%B4%8A%E4%B8%80%E5%8D%B7%E7%AD%AE%E5%84%80%E4%B8%80%E5%8D%B7_%28%E5%AE%8B%29%E6%9C%B1%E7%86%B9_%E6%92%B0_%E5%AE%8B%E5%92%B8%E6%B7%B3%E5%85%83%E5%B9%B4%E5%90%B3%E9%9D%A9%E5%88%BB%E6%9C%AC.pdf"
+        }
+      ],
+      "status": "download_link_verified; local_file_not_yet_bundled"
+    },
+    {
+      "work": "周易本义",
+      "edition": "清康熙内府仿宋咸淳吴革刊本；哈佛燕京图书馆藏",
+      "note": "四册；第一册 77 页、48.78 MB，含卷首易图。适合作为异本对照。Commons 页面标注 Public Domain。",
+      "files": [
+        {
+          "volume": "第1册",
+          "pages": 77,
+          "size": "48.78 MB",
+          "file_page": "https://commons.wikimedia.org/wiki/File:Harvard_drs_15902269_%E5%91%A8%E6%98%93%E6%9C%AC%E7%BE%A9_v.1.pdf"
+        },
+        {
+          "volume": "第2册",
+          "pages": 93,
+          "size": "62.23 MB",
+          "file_page": "https://commons.wikimedia.org/wiki/File:Harvard_drs_15902269_%E5%91%A8%E6%98%93%E6%9C%AC%E7%BE%A9_v.2.pdf"
+        },
+        {
+          "volume": "第3册",
+          "pages": 59,
+          "size": "39.24 MB",
+          "file_page": "https://commons.wikimedia.org/wiki/File:Harvard_drs_15902269_%E5%91%A8%E6%98%93%E6%9C%AC%E7%BE%A9_v.3.pdf"
+        },
+        {
+          "volume": "第4册",
+          "pages": 64,
+          "size": "42.18 MB",
+          "file_page": "https://commons.wikimedia.org/wiki/File:Harvard_drs_15902269_%E5%91%A8%E6%98%93%E6%9C%AC%E7%BE%A9_v.4.pdf"
+        }
+      ],
+      "status": "download_links_verified; local_files_not_yet_bundled"
+    },
+    {
+      "work": "易数钩隐图",
+      "edition": "明万历二十七年（1599）颁赐崂山太清宫《正统道藏》本",
+      "note": "169页，3卷；书目标明含插图，文本与影印图片来源注明识典古籍。此页有阅读入口，但第三方原页链接可能需在站内打开。",
+      "files": [
+        {
+          "volume": "全本书目与阅读入口",
+          "pages": 169,
+          "file_page": "https://profound.fate-craft.com/dao/book/LSDZ0153",
+          "source_page": "https://www.shidianguji.com/book/LSDZ0153"
+        }
+      ],
+      "status": "source_link_verified; direct_bulk_download_not_verified"
+    },
+    {
+      "work": "易数钩隐图",
+      "edition": "上海涵芬楼影印明《正统道藏》本",
+      "note": "98页，3卷；同题异本。",
+      "files": [
+        {
+          "volume": "全本书目与阅读入口",
+          "pages": 98,
+          "file_page": "https://profound.fate-craft.com/dao/book/DZ0159"
+        }
+      ],
+      "status": "source_link_verified; direct_bulk_download_not_verified"
+    },
+    {
+      "work": "周易本义",
+      "edition": "宋咸淳元年吴革建宁府刊本；书格数字影像",
+      "note": "书格页面列出原色版约1.02GB、黑白版约48.3MB；版权说明为未知，下载后不可直接视作可再分发素材，须另核许可。",
+      "files": [
+        {
+          "volume": "全本及易图",
+          "file_page": "https://www.shuge.org/view/zhou_yi_ben_yi/"
+        }
+      ],
+      "status": "download_page_verified; reuse_permission_unclear"
+    }
+  ],
+  "download_catalog_note": "文件页链接可用于浏览并点选 Original file 下载；Commons 的大 PDF 在自动抓取端可能因文件体积限制失败，但用户浏览器通常可直接下载。链接登记不等于文件已下载或已加入应用。"
 }
