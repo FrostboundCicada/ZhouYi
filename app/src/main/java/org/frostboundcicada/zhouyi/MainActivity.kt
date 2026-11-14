@@ -612,8 +612,16 @@ private fun ReadingPage(entry: Entry, onBack: () -> Unit) {
                         }
                     }
                 }
-                listOf("10", "11", "13", "14", "15", "16").forEach { page ->
-                    item { OriginalScanPreview("page-$page.webp", "明正德本《周易本义》第一册·PDF第${page}页原版扫描（图名待核）") }
+                val scanCaptions = listOf(
+                    "10" to "PDF第10页：伏羲八卦次序图",
+                    "11" to "PDF第11页：伏羲八卦方位图",
+                    "13" to "PDF第13页：伏羲六十四卦图版（页内题名待细校）",
+                    "14" to "PDF第14页：六十四卦圆图及四卦次序图版（页内题名待细校）",
+                    "15" to "PDF第15页：文王八卦次序及六十四卦圆图版",
+                    "16" to "PDF第16页：文王八卦方位图"
+                )
+                scanCaptions.forEach { (page, caption) ->
+                    item { OriginalScanPreview("page-$page.webp", "明正德本《周易本义》第一册·$caption") }
                 }
             }
             item {
