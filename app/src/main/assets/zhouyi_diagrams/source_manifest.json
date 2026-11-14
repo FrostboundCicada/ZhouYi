@@ -99,6 +99,20 @@
       "type": "modern_schematic",
       "basis": "第一次所得记初爻，依次向上，第六次所得为上爻",
       "not_original_scan": true
+    },
+    {
+      "file": "modern_mutual_opposite_reversed.svg",
+      "subject": "互卦、错卦、综卦关系示例",
+      "type": "modern_schematic",
+      "basis": "以天风姤为例：互卦取二至四爻与三至五爻得乾为天；错卦六爻阴阳反转得地雷复；综卦六爻次序颠倒得泽天夬",
+      "not_original_scan": true
+    },
+    {
+      "file": "modern_64_hexagram_matrix.svg",
+      "subject": "六十四卦上下卦组合矩阵",
+      "type": "modern_schematic",
+      "basis": "八个上卦与八个下卦构成八乘八组合矩阵；格内名称为上下卦简称，不表示周易通行卦序",
+      "not_original_scan": true
     }
   ],
   "verified_original_sources": [
