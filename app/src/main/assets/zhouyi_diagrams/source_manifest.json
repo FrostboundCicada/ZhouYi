@@ -50,6 +50,41 @@
       "type": "modern_reconstruction",
       "basis": "刘牧《易数钩隐图》第五十五图题名及五行关系说明",
       "not_original_scan": true
+    },
+    {
+      "file": "modern_eight_trigrams.svg",
+      "subject": "八卦基本爻象",
+      "type": "modern_schematic",
+      "basis": "八卦三爻阴阳组合；爻序明确标注自下而上",
+      "not_original_scan": true
+    },
+    {
+      "file": "modern_six_lines.svg",
+      "subject": "六爻卦体与爻位",
+      "type": "modern_schematic",
+      "basis": "六爻自下而上排列；示意上下卦分界及爻位",
+      "not_original_scan": true
+    },
+    {
+      "file": "modern_three_coin_method.svg",
+      "subject": "三钱法：爻值与动静",
+      "type": "modern_schematic",
+      "basis": "常见三钱法记值6、7、8、9及老阴老阳动爻规则；正反计数约定须另行说明",
+      "not_original_scan": true
+    },
+    {
+      "file": "modern_changing_line_example.svg",
+      "subject": "动爻与变卦示例",
+      "type": "modern_schematic",
+      "basis": "乾为天初爻老阳变阴，得天风姤；仅作卦画结构示例，不提供占断",
+      "not_original_scan": true
+    },
+    {
+      "file": "modern_divination_workflow.svg",
+      "subject": "卜筮阅读流程",
+      "type": "modern_schematic",
+      "basis": "从明确问题、起卦、记录六爻到核对经传文本的学习流程",
+      "not_original_scan": true
     }
   ],
   "verified_original_sources": [
@@ -64,19 +99,55 @@
       "commons_file": "NLC892-411999019942-45020 周易本義 第1冊.pdf",
       "url": "https://commons.wikimedia.org/wiki/File:NLC892-411999019942-45020_%E5%91%A8%E6%98%93%E6%9C%AC%E7%BE%A9_%E7%AC%AC1%E5%86%8A.pdf",
       "rights_note": "Wikimedia Commons 标注 PD-scan / Public Domain Mark",
-      "local_image_status": "not_bundled",
+      "local_image_status": "bundled_in_repository",
       "verified_image_pages": [
         {
           "pdf_page": 5,
           "subject": "河图",
-          "visual_check": "已逐页查看扫描预览；左页为河图点数图，右页有对应文字说明",
-          "local_image_status": "not_bundled"
+          "visual_check": "已核对扫描页",
+          "local_image_status": "bundled"
         },
         {
           "pdf_page": 6,
           "subject": "洛书",
-          "visual_check": "已逐页查看扫描预览；右页为洛书点数图，周围有说明文字",
-          "local_image_status": "not_bundled"
+          "visual_check": "已核对扫描页",
+          "local_image_status": "bundled"
+        },
+        {
+          "pdf_page": 10,
+          "subject": "伏羲八卦次序图",
+          "visual_check": "已核对扫描页",
+          "local_image_status": "bundled"
+        },
+        {
+          "pdf_page": 11,
+          "subject": "伏羲八卦方位图",
+          "visual_check": "已核对扫描页",
+          "local_image_status": "bundled"
+        },
+        {
+          "pdf_page": 13,
+          "subject": "伏羲六十四卦图版",
+          "visual_check": "图版已收录，题名细目仍待校读",
+          "local_image_status": "bundled"
+        },
+        {
+          "pdf_page": 14,
+          "subject": "六十四卦圆图及四卦次序图版",
+          "visual_check": "图版已收录，题名细目仍待校读",
+          "local_image_status": "bundled"
+        },
+        {
+          "pdf_page": 15,
+          "subject": "文王八卦次序及六十四卦圆图版",
+          "visual_check": "已核对扫描页",
+          "local_image_status": "bundled"
+        },
+        {
+          "pdf_page": 16,
+          "subject": "文王八卦方位图",
+          "visual_check": "已核对扫描页",
+          "local_image_status": "bundled"
         }
       ],
       "preview_inspection": {
@@ -140,8 +211,8 @@
       "local_image_status": "not_bundled"
     }
   ],
-  "policy": "原版扫描未实际进入 assets 前，一律保持 not_bundled；不可用复原 SVG 代替原图，也不可从图题推测图像细节。",
-  "acquisition_blocker": "当前执行环境无法从 Wikimedia 下载 PDF/页面 JPEG（二进制下载失败且容器网络 DNS 不可用）；因此尚未生成可打包的原始图像文件。",
+  "policy": "原版扫描与现代示意图分开登记；原版扫描未实际进入 assets 前保持 not_bundled；现代示意图不得冒充原图。缺失或不可辨内容不得凭空补绘。",
+  "acquisition_blocker": "1521年《周易本义》第1册8张整页WebP扫描已进入仓库；其余原版图像来源仍需逐册下载、逐页核验。",
   "download_link_catalog": [
     {
       "work": "周易本义",
