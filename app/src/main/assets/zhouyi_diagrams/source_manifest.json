@@ -113,6 +113,14 @@
       "type": "modern_schematic",
       "basis": "八个上卦与八个下卦构成八乘八组合矩阵；格内名称为上下卦简称，不表示周易通行卦序",
       "not_original_scan": true
+    },
+    {
+      "file": "modern_yarrow_stalk_method.svg",
+      "subject": "大衍蓍法步骤图",
+      "type": "modern_schematic",
+      "basis": "依朱熹《蓍卦考误》所述：五十策置一不用、分二、挂一、左右揲四、归奇于扐；三变成一爻，六爻十八变成卦。仅呈现朱熹此篇所述一法，不代表历代筮法完全一致。",
+      "source": "https://www.shidianguji.com/zh/book/SBCK218/chapter/SBCK218_2923",
+      "not_original_scan": true
     }
   ],
   "verified_original_sources": [
