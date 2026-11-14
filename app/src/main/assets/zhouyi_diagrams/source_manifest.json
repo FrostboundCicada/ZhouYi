@@ -64,7 +64,38 @@
       "commons_file": "NLC892-411999019942-45020 周易本義 第1冊.pdf",
       "url": "https://commons.wikimedia.org/wiki/File:NLC892-411999019942-45020_%E5%91%A8%E6%98%93%E6%9C%AC%E7%BE%A9_%E7%AC%AC1%E5%86%8A.pdf",
       "rights_note": "Wikimedia Commons 标注 PD-scan / Public Domain Mark",
-      "local_image_status": "not_bundled"
+      "local_image_status": "not_bundled",
+      "verified_image_pages": [
+        {
+          "pdf_page": 5,
+          "subject": "河图",
+          "visual_check": "已逐页查看扫描预览；左页为河图点数图，右页有对应文字说明",
+          "local_image_status": "not_bundled"
+        },
+        {
+          "pdf_page": 6,
+          "subject": "洛书",
+          "visual_check": "已逐页查看扫描预览；右页为洛书点数图，周围有说明文字",
+          "local_image_status": "not_bundled"
+        }
+      ],
+      "preview_inspection": {
+        "pages_checked": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "image_pages_confirmed": [
+          5,
+          6
+        ],
+        "note": "第1至4页及第7至8页当前查看为序文或说明文字页；不能据此推断全册仅有两图。尚须继续检查其余扫描页。"
+      }
     },
     {
       "work": "易数钩隐图",
@@ -108,5 +139,6 @@
       "local_image_status": "not_bundled"
     }
   ],
-  "policy": "原版扫描未实际进入 assets 前，一律保持 not_bundled；不可用复原 SVG 代替原图，也不可从图题推测图像细节。"
+  "policy": "原版扫描未实际进入 assets 前，一律保持 not_bundled；不可用复原 SVG 代替原图，也不可从图题推测图像细节。",
+  "acquisition_blocker": "当前执行环境无法从 Wikimedia 下载 PDF/页面 JPEG（二进制下载失败且容器网络 DNS 不可用）；因此尚未生成可打包的原始图像文件。"
 }
