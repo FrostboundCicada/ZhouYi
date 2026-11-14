@@ -14,6 +14,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
@@ -575,8 +576,15 @@ private fun ReadingPage(entry: Entry, onBack: () -> Unit) {
                     }
                 }
             }
-            if (entry.section == "洛书") {
-                item { LuoshuIllustration(entry.title) }
+            if (entry.section == "洛书" || entry.section == "河图") {
+                val localDiagrams = localDiagramAssetsFor(entry.title)
+                if (localDiagrams.isNotEmpty()) {
+                    localDiagrams.forEach { diagram ->
+                        item { LocalDiagramPreview(diagram.first, diagram.second) }
+                    }
+                } else if (entry.section == "洛书") {
+                    item { LuoshuIllustration(entry.title) }
+                }
             }
             item {
                 ZeroCard(
@@ -18984,6 +18992,74 @@ private fun originalImageSourceFor(title: String): String? = when {
     title.contains("易象钩解") ->
         "https://sourcelibrary.org/book/vol-1-1782366422220"
     else -> null
+}
+
+private fun localDiagramAssetsFor(title: String): List<Pair<String, String>> = when {
+    title.contains("河图第四十九") -> listOf(
+        "hetu49.svg" to "刘牧《易数钩隐图》河图第四十九"
+    )
+    title.contains("五行生数") && title.contains("成数") -> listOf(
+        "luoshu_birth.svg" to "刘牧《易数钩隐图》洛书五行生数（第五十三图）",
+        "luoshu_complete.svg" to "刘牧《易数钩隐图》洛书五行成数（第五十四图）",
+        "ten_stems.svg" to "刘牧《易数钩隐图》十日生五行并相生（第五十五图）"
+    )
+    title.contains("第五十三图") -> listOf(
+        "luoshu_birth.svg" to "刘牧《易数钩隐图》洛书五行生数（第五十三图）"
+    )
+    title.contains("第五十四图") -> listOf(
+        "luoshu_complete.svg" to "刘牧《易数钩隐图》洛书五行成数（第五十四图）"
+    )
+    title.contains("第五十五图") || title.contains("十日生五行") -> listOf(
+        "ten_stems.svg" to "刘牧《易数钩隐图》十日生五行并相生（第五十五图）"
+    )
+    else -> emptyList()
+}
+
+@Composable
+private fun LocalDiagramPreview(fileName: String, caption: String) {
+    ZeroCard(
+        modifier = Modifier.fillMaxWidth(),
+        color = ZeroTheme.colors.card.copy(alpha = 0.42f),
+        cornerRadius = 24.dp,
+        contentPadding = PaddingValues(14.dp)
+    ) {
+        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            ZeroText(
+                caption,
+                style = MaterialTheme.typography.titleSmall,
+                color = ZeroTheme.colors.accent,
+                fontWeight = FontWeight.SemiBold
+            )
+            AndroidView(
+                modifier = Modifier.fillMaxWidth().height(430.dp),
+                factory = { context ->
+                    android.webkit.WebView(context).apply {
+                        settings.javaScriptEnabled = false
+                        settings.allowFileAccess = true
+                        settings.loadsImagesAutomatically = true
+                        settings.useWideViewPort = true
+                        settings.loadWithOverviewMode = true
+                        settings.builtInZoomControls = true
+                        settings.displayZoomControls = false
+                        setBackgroundColor(android.graphics.Color.rgb(244, 236, 217))
+                        loadUrl("file:///android_asset/zhouyi_diagrams/$fileName")
+                    }
+                },
+                update = { view ->
+                    val target = "file:///android_asset/zhouyi_diagrams/$fileName"
+                    if (view.tag != target) {
+                        view.tag = target
+                        view.loadUrl(target)
+                    }
+                }
+            )
+            ZeroText(
+                "本图为本地离线 SVG。因对应古图扫描尚未取得可直接收录的图像文件，此处按已录原文及方位／数序说明作现代复原，明确不作为古籍原图。",
+                style = MaterialTheme.typography.labelSmall,
+                color = ZeroTheme.colors.contentMuted
+            )
+        }
+    }
 }
 
 @Composable
