@@ -20,7 +20,7 @@
       "file": "four_images.svg",
       "subject": "四象",
       "type": "modern_schematic",
-      "basis": "四象名称与阴阳爻象的基础示意",
+      "basis": "校正版：四象两爻结构，按下爻至上爻编码太阳11、少阴10、少阳01、太阴00",
       "not_original_scan": true
     },
     {
@@ -55,7 +55,7 @@
       "file": "modern_eight_trigrams.svg",
       "subject": "八卦基本爻象",
       "type": "modern_schematic",
-      "basis": "八卦三爻阴阳组合；爻序明确标注自下而上",
+      "basis": "校正版：八卦三爻阴阳组合，编码按初爻至上爻；SVG绘制时已反转显示顺序以保证初爻在下",
       "not_original_scan": true
     },
     {
@@ -84,6 +84,20 @@
       "subject": "卜筮阅读流程",
       "type": "modern_schematic",
       "basis": "从明确问题、起卦、记录六爻到核对经传文本的学习流程",
+      "not_original_scan": true
+    },
+    {
+      "file": "modern_postheaven_bagua.svg",
+      "subject": "后天八卦方位图",
+      "type": "modern_schematic",
+      "basis": "常见后天方位：离南、坎北、震东、兑西；南上北下",
+      "not_original_scan": true
+    },
+    {
+      "file": "modern_six_cast_order.svg",
+      "subject": "六次记录与六爻排列",
+      "type": "modern_schematic",
+      "basis": "第一次所得记初爻，依次向上，第六次所得为上爻",
       "not_original_scan": true
     }
   ],
