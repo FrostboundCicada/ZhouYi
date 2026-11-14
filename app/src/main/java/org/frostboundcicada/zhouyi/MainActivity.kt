@@ -564,12 +564,12 @@ private fun ReadingPage(entry: Entry, onBack: () -> Unit) {
                     val sourceImageUrl = originalImageSourceFor(entry.title)
                     if (sourceImageUrl != null) {
                         ZeroTextButton(
-                            text = "打开古籍原书影像 ↗",
+                            text = "查看古籍影像来源 ↗",
                             onClick = { uriHandler.openUri(sourceImageUrl) },
                             modifier = Modifier.fillMaxWidth()
                         )
                         ZeroText(
-                            "馆藏／数字化原书入口，需要联网；目前尚未缓存为应用内离线图片。",
+                            "此处为版本与馆藏影像来源入口；原版扫描尚未打包进应用，不能离线查看。",
                             style = MaterialTheme.typography.labelSmall,
                             color = ZeroTheme.colors.contentMuted
                         )
@@ -18978,7 +18978,7 @@ private fun relatedTranslationFor(title: String): String = when (title) {
 
 private fun originalImageSourceFor(title: String): String? = when {
     title.contains("刘牧") || title.contains("易数钩隐图") ->
-        "https://www.shidianguji.com/book/DZ0159/chapter/DZ0159_58"
+        "https://profound.fate-craft.com/dao/book/LSDZ0153"
     title.contains("周易本义") ->
         "https://commons.wikimedia.org/wiki/File:NLC892-411999019942-45020_%E5%91%A8%E6%98%93%E6%9C%AC%E7%BE%A9_%E7%AC%AC1%E5%86%8A.pdf"
     title.contains("易象图说") ->
