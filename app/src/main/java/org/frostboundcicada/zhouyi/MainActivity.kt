@@ -18995,8 +18995,13 @@ private fun originalImageSourceFor(title: String): String? = when {
 }
 
 private fun localDiagramAssetsFor(title: String): List<Pair<String, String>> = when {
+    title.contains("天地数、四象、八卦三图") -> listOf(
+        "tiandi_numbers.svg" to "刘牧《易数钩隐图》天地生成数（现代数表）",
+        "four_images.svg" to "四象基本爻象（现代线画）",
+        "eight_trigrams.svg" to "八卦基本爻象（现代线画）"
+    )
     title.contains("河图第四十九") -> listOf(
-        "hetu49.svg" to "刘牧《易数钩隐图》河图第四十九"
+        "hetu49.svg" to "刘牧《易数钩隐图》河图第四十九（五方生成数示意）"
     )
     title.contains("五行生数") && title.contains("成数") -> listOf(
         "luoshu_birth.svg" to "刘牧《易数钩隐图》洛书五行生数（第五十三图）",
