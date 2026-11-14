@@ -14,6 +14,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
@@ -563,17 +564,21 @@ private fun ReadingPage(entry: Entry, onBack: () -> Unit) {
                     val sourceImageUrl = originalImageSourceFor(entry.title)
                     if (sourceImageUrl != null) {
                         ZeroTextButton(
-                            text = "打开古籍原书影像 ↗",
+                            text = "打开原书影像来源 ↗",
                             onClick = { uriHandler.openUri(sourceImageUrl) },
                             modifier = Modifier.fillMaxWidth()
                         )
                         ZeroText(
-                            "馆藏／数字化原书入口，需要联网；目前尚未缓存为应用内离线图片。",
+                            "下方直接载入对应馆藏／数字化版本页面中的图版。需联网；尚未缓存为应用内离线图片，原书图与现代示意图会分别标注。",
                             style = MaterialTheme.typography.labelSmall,
                             color = ZeroTheme.colors.contentMuted
                         )
                     }
                 }
+            }
+            val originalImageUrl = originalImageSourceFor(entry.title)
+            if (originalImageUrl != null) {
+                item { OriginalImagePreview(originalImageUrl) }
             }
             if (entry.section == "洛书") {
                 item { LuoshuIllustration(entry.title) }
@@ -18984,6 +18989,54 @@ private fun originalImageSourceFor(title: String): String? = when {
     title.contains("易象钩解") ->
         "https://sourcelibrary.org/book/vol-1-1782366422220"
     else -> null
+}
+
+@Composable
+private fun OriginalImagePreview(url: String) {
+    ZeroCard(
+        modifier = Modifier.fillMaxWidth(),
+        color = ZeroTheme.colors.card.copy(alpha = 0.42f),
+        cornerRadius = 24.dp,
+        contentPadding = PaddingValues(14.dp)
+    ) {
+        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            ZeroText(
+                "原书图版预览",
+                style = MaterialTheme.typography.titleSmall,
+                color = ZeroTheme.colors.accent,
+                fontWeight = FontWeight.SemiBold
+            )
+            AndroidView(
+                modifier = Modifier.fillMaxWidth().height(460.dp),
+                factory = { context ->
+                    android.webkit.WebView(context).apply {
+                        settings.javaScriptEnabled = false
+                        settings.domStorageEnabled = true
+                        settings.loadsImagesAutomatically = true
+                        settings.useWideViewPort = true
+                        settings.loadWithOverviewMode = true
+                        settings.builtInZoomControls = true
+                        settings.displayZoomControls = false
+                        webViewClient = android.webkit.WebViewClient()
+                        setBackgroundColor(android.graphics.Color.TRANSPARENT)
+                        tag = url
+                        loadUrl(url)
+                    }
+                },
+                update = { view ->
+                    if (view.tag != url) {
+                        view.tag = url
+                        view.loadUrl(url)
+                    }
+                }
+            )
+            ZeroText(
+                "来源页面由馆藏或古籍数字化平台提供。页面无法加载时，可使用上方来源入口打开；此预览不是现代复原图。",
+                style = MaterialTheme.typography.labelSmall,
+                color = ZeroTheme.colors.contentMuted
+            )
+        }
+    }
 }
 
 @Composable
