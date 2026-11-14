@@ -1,0 +1,112 @@
+{
+  "schema": "zhouyi-image-source-manifest-v1",
+  "purpose": "离线图版来源登记。现代复原图与古籍原版扫描严格分开；未取得文件的扫描件不得标记为已收录。",
+  "bundled_modern_reconstructions": [
+    {
+      "file": "hetu49.svg",
+      "subject": "河图第四十九",
+      "type": "modern_reconstruction",
+      "basis": "刘牧《易数钩隐图》河图天地生成数与五方关系说明",
+      "not_original_scan": true
+    },
+    {
+      "file": "tiandi_numbers.svg",
+      "subject": "天地生成数",
+      "type": "modern_schematic",
+      "basis": "天一地六、地二天七、天三地八、地四天九、天五地十的数序配对",
+      "not_original_scan": true
+    },
+    {
+      "file": "four_images.svg",
+      "subject": "四象",
+      "type": "modern_schematic",
+      "basis": "四象名称与阴阳爻象的基础示意",
+      "not_original_scan": true
+    },
+    {
+      "file": "eight_trigrams.svg",
+      "subject": "八卦",
+      "type": "modern_schematic",
+      "basis": "八卦三爻阴阳组合基础示意",
+      "not_original_scan": true
+    },
+    {
+      "file": "luoshu_birth.svg",
+      "subject": "洛书五行生数",
+      "type": "modern_reconstruction",
+      "basis": "刘牧《易数钩隐图》第五十三图的文字数序说明",
+      "not_original_scan": true
+    },
+    {
+      "file": "luoshu_complete.svg",
+      "subject": "洛书五行成数",
+      "type": "modern_reconstruction",
+      "basis": "刘牧《易数钩隐图》第五十四图的文字数序说明",
+      "not_original_scan": true
+    },
+    {
+      "file": "ten_stems.svg",
+      "subject": "十日生五行并相生",
+      "type": "modern_reconstruction",
+      "basis": "刘牧《易数钩隐图》第五十五图题名及五行关系说明",
+      "not_original_scan": true
+    }
+  ],
+  "verified_original_sources": [
+    {
+      "work": "周易本义",
+      "author": "朱熹",
+      "edition": "明正德十六年（1521）袁州府仰韩堂刻本",
+      "holding_institution": "中国国家图书馆",
+      "volume": "第1册",
+      "contents": "卷首、图说、易五赞、一卷",
+      "scan_pages": 44,
+      "commons_file": "NLC892-411999019942-45020 周易本義 第1冊.pdf",
+      "url": "https://commons.wikimedia.org/wiki/File:NLC892-411999019942-45020_%E5%91%A8%E6%98%93%E6%9C%AC%E7%BE%A9_%E7%AC%AC1%E5%86%8A.pdf",
+      "rights_note": "Wikimedia Commons 标注 PD-scan / Public Domain Mark",
+      "local_image_status": "not_bundled"
+    },
+    {
+      "work": "易数钩隐图",
+      "author": "刘牧",
+      "edition": "明万历二十七年（1599）颁赐崂山太清宫《正统道藏》本",
+      "holding_institution": "山东省青岛市博物馆",
+      "scan_pages": 169,
+      "volumes": 3,
+      "diagrams_reported": 55,
+      "source_catalog": "衍象坊书目，影印图片来源注明识典古籍",
+      "url": "https://profound.fate-craft.com/dao/book/LSDZ0153",
+      "local_image_status": "not_bundled"
+    },
+    {
+      "work": "易数钩隐图",
+      "author": "刘牧",
+      "edition": "上海涵芬楼影印明《正统道藏》本",
+      "scan_pages": 98,
+      "source_catalog": "衍象坊同题异本书目",
+      "url": "https://profound.fate-craft.com/dao/book/DZ0159",
+      "local_image_status": "not_bundled"
+    },
+    {
+      "work": "易象图说",
+      "author": "张理",
+      "edition": "清同治十二年（1873）粤东书局重刊本",
+      "holding_institution": "中国国家图书馆",
+      "volumes": 6,
+      "local_image_status": "not_bundled"
+    },
+    {
+      "work": "易经图释",
+      "author": "刘定之",
+      "edition": "明刻本，待逐册核对具体版次与图页",
+      "local_image_status": "not_bundled"
+    },
+    {
+      "work": "易经六十四卦版画",
+      "author": "待考",
+      "edition": "须逐张确认原书、年代、作者与馆藏",
+      "local_image_status": "not_bundled"
+    }
+  ],
+  "policy": "原版扫描未实际进入 assets 前，一律保持 not_bundled；不可用复原 SVG 代替原图，也不可从图题推测图像细节。"
+}
