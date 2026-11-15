@@ -645,6 +645,10 @@ private fun ReadingPage(entry: Entry, onBack: () -> Unit) {
                     }
                 }
             }
+            // 卜筮专题教学解析：紧随原文显示，默认收起，按需点击展开。
+            if (entry.section == "卜筮") {
+                item { DivinationTeachingDisclosure(entry.title) }
+            }
             if (entry.translation != null) {
                 item {
                     ZeroCard(
