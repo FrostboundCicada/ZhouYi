@@ -142,6 +142,20 @@
       "type": "modern_schematic",
       "basis": "依朱熹《蓍卦考误》所述蓍法，三变后余策数36、32、28、24分别除以四得9、8、7、6，对应老阳、少阴、少阳、老阴；老阳老阴为动爻",
       "not_original_scan": true
+    },
+    {
+      "file": "modern_text_layers.svg",
+      "subject": "《周易》经传层次示意图",
+      "type": "modern_schematic",
+      "basis": "按通行经传结构区分六十四卦经文与十翼传文；展示卦辞、爻辞及彖传、象传、系辞传、文言传、说卦传、序卦传、杂卦传的阅读层次",
+      "not_original_scan": true
+    },
+    {
+      "file": "modern_yin_yang_positions.svg",
+      "subject": "六爻爻位与阴阳位置",
+      "type": "modern_schematic",
+      "basis": "六爻自下而上排列，初、三、五为阳位，二、四、上为阴位；说明得位的一种常见判法，图表不代表具体卦象",
+      "not_original_scan": true
     }
   ],
   "verified_original_sources": [
