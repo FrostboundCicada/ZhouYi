@@ -135,6 +135,13 @@
       "type": "modern_schematic",
       "basis": "《说卦传》基本自然取象：乾天、坤地、震雷、巽风（木）、坎水、离火、艮山、兑泽；图中简述为教学提示",
       "not_original_scan": true
+    },
+    {
+      "file": "modern_yarrow_result_values.svg",
+      "subject": "蓍法三变后的策数与爻值",
+      "type": "modern_schematic",
+      "basis": "依朱熹《蓍卦考误》所述蓍法，三变后余策数36、32、28、24分别除以四得9、8、7、6，对应老阳、少阴、少阳、老阴；老阳老阴为动爻",
+      "not_original_scan": true
     }
   ],
   "verified_original_sources": [
