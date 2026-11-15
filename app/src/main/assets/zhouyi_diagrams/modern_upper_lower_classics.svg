@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="980" viewBox="0 0 1200 980">
+<rect width="1200" height="980" fill="#f4ecd9"/><rect x="28" y="28" width="1144" height="924" rx="18" fill="none" stroke="#765f3d" stroke-width="3"/>
+<text x="600" y="105" text-anchor="middle" font-size="54" fill="#382d20" font-family="serif">《周易》上下经分篇示意</text>
+<text x="600" y="160" text-anchor="middle" font-size="26" fill="#5c4b35" font-family="serif">通行本六十四卦分为上经三十卦、下经三十四卦</text>
+<rect x="130" y="225" width="940" height="270" rx="18" fill="#e8d8b9" stroke="#8d7048" stroke-width="3"/>
+<rect x="130" y="535" width="940" height="270" rx="18" fill="#eee2c9" stroke="#a18a64" stroke-width="3"/>
+<g font-family="serif" text-anchor="middle" fill="#302719">
+<text x="600" y="295" font-size="44">上经：三十卦</text>
+<text x="600" y="365" font-size="35">第一卦　乾</text><text x="600" y="425" font-size="35">……</text><text x="600" y="470" font-size="35">第三十卦　离</text>
+<text x="600" y="605" font-size="44">下经：三十四卦</text>
+<text x="600" y="675" font-size="35">第三十一卦　咸</text><text x="600" y="735" font-size="35">……</text><text x="600" y="780" font-size="35">第六十四卦　未济</text>
+</g>
+<path d="M600 495V530" stroke="#765f3d" stroke-width="5"/><path d="M588 518L600 533L612 518" fill="none" stroke="#765f3d" stroke-width="4"/>
+<text x="600" y="875" text-anchor="middle" font-size="24" fill="#705c3e" font-family="serif">此图仅示通行本分篇与首末卦，不代替完整卦序目录</text>
+</svg>
