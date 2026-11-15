@@ -121,6 +121,20 @@
       "basis": "依朱熹《蓍卦考误》所述：五十策置一不用、分二、挂一、左右揲四、归奇于扐；三变成一爻，六爻十八变成卦。仅呈现朱熹此篇所述一法，不代表历代筮法完全一致。",
       "source": "https://www.shidianguji.com/zh/book/SBCK218/chapter/SBCK218_2923",
       "not_original_scan": true
+    },
+    {
+      "file": "modern_xiantian_bagua.svg",
+      "subject": "先天八卦方位图",
+      "type": "modern_schematic",
+      "basis": "《说卦传》及传统伏羲先天方位：乾南、坤北、离东、坎西、震东北、兑东南、巽西南、艮西北；与后天方位明确区分",
+      "not_original_scan": true
+    },
+    {
+      "file": "modern_bagua_natural_images.svg",
+      "subject": "八卦自然取象图",
+      "type": "modern_schematic",
+      "basis": "《说卦传》基本自然取象：乾天、坤地、震雷、巽风（木）、坎水、离火、艮山、兑泽；图中简述为教学提示",
+      "not_original_scan": true
     }
   ],
   "verified_original_sources": [
