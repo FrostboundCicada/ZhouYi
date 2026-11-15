@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200">
+<rect width="1200" height="1200" fill="#f4ecd9"/><rect x="28" y="28" width="1144" height="1144" rx="18" fill="none" stroke="#765f3d" stroke-width="3"/>
+<text x="600" y="105" text-anchor="middle" font-size="54" fill="#382d20" font-family="serif">先天八卦方位图</text>
+<text x="600" y="165" text-anchor="middle" font-size="27" fill="#5c4b35" font-family="serif">伏羲先天方位示意｜南上、北下、东左、西右</text>
+<g fill="#eee2c9" stroke="#a18a64" stroke-width="3">
+<rect x="440" y="215" width="320" height="145" rx="14"/><rect x="440" y="840" width="320" height="145" rx="14"/>
+<rect x="105" y="515" width="320" height="145" rx="14"/><rect x="775" y="515" width="320" height="145" rx="14"/>
+<rect x="170" y="245" width="220" height="125" rx="12"/><rect x="810" y="245" width="220" height="125" rx="12"/>
+<rect x="170" y="825" width="220" height="125" rx="12"/><rect x="810" y="825" width="220" height="125" rx="12"/>
+</g>
+<g text-anchor="middle" font-family="serif" fill="#302719">
+<text x="600" y="275" font-size="42">乾</text><text x="600" y="325" font-size="25">南</text>
+<text x="600" y="900" font-size="42">坤</text><text x="600" y="950" font-size="25">北</text>
+<text x="265" y="575" font-size="42">离</text><text x="265" y="625" font-size="25">东</text>
+<text x="935" y="575" font-size="42">坎</text><text x="935" y="625" font-size="25">西</text>
+<text x="280" y="295" font-size="38">震</text><text x="280" y="340" font-size="23">东北</text>
+<text x="920" y="295" font-size="38">艮</text><text x="920" y="340" font-size="23">西北</text>
+<text x="280" y="875" font-size="38">兑</text><text x="280" y="920" font-size="23">东南</text>
+<text x="920" y="875" font-size="38">巽</text><text x="920" y="920" font-size="23">西南</text>
+</g>
+<text x="600" y="1080" text-anchor="middle" font-size="24" fill="#705c3e" font-family="serif">方位歌诀：乾南、坤北、离东、坎西；震东北、兑东南、巽西南、艮西北</text>
+<text x="600" y="1125" text-anchor="middle" font-size="20" fill="#705c3e" font-family="serif">现代方位示意图｜与后天八卦方位不同，不可混用</text>
+</svg>
