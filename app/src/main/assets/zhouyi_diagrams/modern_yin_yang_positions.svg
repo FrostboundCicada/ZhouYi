@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1120" viewBox="0 0 1200 1120">
+<rect width="1200" height="1120" fill="#f4ecd9"/><rect x="28" y="28" width="1144" height="1064" rx="18" fill="none" stroke="#765f3d" stroke-width="3"/>
+<text x="600" y="105" text-anchor="middle" font-size="54" fill="#382d20" font-family="serif">六爻爻位与阴阳位置</text>
+<text x="600" y="162" text-anchor="middle" font-size="26" fill="#5c4b35" font-family="serif">奇数位为阳位，偶数位为阴位；爻位自下而上计数</text>
+<g font-family="serif" text-anchor="middle" fill="#302719">
+<text x="230" y="285" font-size="30">阳位</text><text x="600" y="285" font-size="30">爻位</text><text x="970" y="285" font-size="30">阴位</text>
+<g stroke="#765f3d" stroke-width="18" stroke-linecap="round">
+<path d="M145 365H315 M145 485H315 M145 605H315 M145 725H315 M145 845H315 M145 965H315"/>
+<path d="M885 365H955 M985 365H1055 M885 485H955 M985 485H1055 M885 605H955 M985 605H1055 M885 725H955 M985 725H1055 M885 845H955 M985 845H1055 M885 965H955 M985 965H1055"/>
+</g>
+<g font-size="34">
+<text x="600" y="377">上爻（第六位）</text><text x="600" y="497">五爻（第五位）</text><text x="600" y="617">四爻（第四位）</text><text x="600" y="737">三爻（第三位）</text><text x="600" y="857">二爻（第二位）</text><text x="600" y="977">初爻（第一位）</text>
+</g>
+<g font-size="25" fill="#765f3d"><text x="230" y="350">阳位</text><text x="230" y="470">阳位</text><text x="230" y="590">阳位</text><text x="230" y="710">阳位</text><text x="230" y="830">阳位</text><text x="230" y="950">阳位</text></g>
+<g font-size="25" fill="#765f3d"><text x="970" y="350">阴位</text><text x="970" y="470">阴位</text><text x="970" y="590">阴位</text><text x="970" y="710">阴位</text><text x="970" y="830">阴位</text><text x="970" y="950">阴位</text></g>
+</g>
+<text x="600" y="1040" text-anchor="middle" font-size="21" fill="#705c3e" font-family="serif">校正提示：初、三、五为阳位；二、四、上为阴位。阳爻居阳位、阴爻居阴位，称为得位的一种常见判法</text>
+</svg>
