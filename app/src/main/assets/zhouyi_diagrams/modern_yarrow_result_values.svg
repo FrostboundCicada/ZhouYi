@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1050" viewBox="0 0 1200 1050">
+<rect width="1200" height="1050" fill="#f4ecd9"/><rect x="28" y="28" width="1144" height="994" rx="18" fill="none" stroke="#765f3d" stroke-width="3"/>
+<text x="600" y="105" text-anchor="middle" font-size="52" fill="#382d20" font-family="serif">蓍法三变后的策数与爻值</text>
+<text x="600" y="165" text-anchor="middle" font-size="26" fill="#5c4b35" font-family="serif">依朱熹《蓍卦考误》所述一法：三变成一爻，余策总数除以四</text>
+<g fill="#eee2c9" stroke="#a18a64" stroke-width="3">
+<rect x="90" y="235" width="235" height="510" rx="16"/><rect x="355" y="235" width="235" height="510" rx="16"/><rect x="620" y="235" width="235" height="510" rx="16"/><rect x="885" y="235" width="235" height="510" rx="16"/>
+</g>
+<g stroke="#765f3d" stroke-width="9" stroke-linecap="round">
+<path d="M145 310v95 M165 310v95 M185 310v95 M205 310v95 M225 310v95 M245 310v95 M265 310v95"/>
+<path d="M410 310v95 M430 310v95 M450 310v95 M470 310v95 M490 310v95 M510 310v95 M530 310v95"/>
+<path d="M675 310v95 M695 310v95 M715 310v95 M735 310v95 M755 310v95 M775 310v95 M795 310v95"/>
+<path d="M940 310v95 M960 310v95 M980 310v95 M1000 310v95 M1020 310v95 M1040 310v95 M1060 310v95"/>
+</g>
+<g text-anchor="middle" font-family="serif" fill="#302719">
+<text x="207" y="470" font-size="43">36策</text><text x="207" y="530" font-size="28">36 ÷ 4 = 9</text><text x="207" y="610" font-size="40">老阳</text><text x="207" y="675" font-size="25">阳爻，动</text>
+<text x="472" y="470" font-size="43">32策</text><text x="472" y="530" font-size="28">32 ÷ 4 = 8</text><text x="472" y="610" font-size="40">少阴</text><text x="472" y="675" font-size="25">阴爻，静</text>
+<text x="737" y="470" font-size="43">28策</text><text x="737" y="530" font-size="28">28 ÷ 4 = 7</text><text x="737" y="610" font-size="40">少阳</text><text x="737" y="675" font-size="25">阳爻，静</text>
+<text x="1002" y="470" font-size="43">24策</text><text x="1002" y="530" font-size="28">24 ÷ 4 = 6</text><text x="1002" y="610" font-size="40">老阴</text><text x="1002" y="675" font-size="25">阴爻，动</text>
+</g>
+<text x="600" y="830" text-anchor="middle" font-size="27" fill="#302719" font-family="serif">动爻规则：老阳变阴，老阴变阳；少阳、少阴不变</text>
+<text x="600" y="890" text-anchor="middle" font-size="22" fill="#705c3e" font-family="serif">本图展示三变结束后的总策数与爻值对应，不展示各次分策的所有可能路径</text>
+<text x="600" y="935" text-anchor="middle" font-size="20" fill="#705c3e" font-family="serif">现代计算示意｜不同传本及筮法细节应以所据文献为准</text>
+</svg>
