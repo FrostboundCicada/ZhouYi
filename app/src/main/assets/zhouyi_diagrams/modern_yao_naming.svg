@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1120" viewBox="0 0 1200 1120">
+<rect width="1200" height="1120" fill="#f4ecd9"/><rect x="28" y="28" width="1144" height="1064" rx="18" fill="none" stroke="#765f3d" stroke-width="3"/>
+<text x="600" y="105" text-anchor="middle" font-size="54" fill="#382d20" font-family="serif">六爻名称与爻题读法</text>
+<text x="600" y="160" text-anchor="middle" font-size="26" fill="#5c4b35" font-family="serif">爻题由位置名称与阴阳爻数名称组合而成</text>
+<g font-family="serif" text-anchor="middle" fill="#302719">
+<rect x="100" y="220" width="460" height="650" rx="16" fill="#eee2c9" stroke="#a18a64" stroke-width="3"/>
+<rect x="640" y="220" width="460" height="650" rx="16" fill="#eee2c9" stroke="#a18a64" stroke-width="3"/>
+<text x="330" y="285" font-size="40">乾卦：六爻皆阳</text><text x="870" y="285" font-size="40">坤卦：六爻皆阴</text>
+<g font-size="34">
+<text x="330" y="365">上九</text><text x="330" y="445">九五</text><text x="330" y="525">九四</text><text x="330" y="605">九三</text><text x="330" y="685">九二</text><text x="330" y="765">初九</text>
+<text x="870" y="365">上六</text><text x="870" y="445">六五</text><text x="870" y="525">六四</text><text x="870" y="605">六三</text><text x="870" y="685">六二</text><text x="870" y="765">初六</text>
+</g>
+<g stroke="#765f3d" stroke-width="12" stroke-linecap="round">
+<path d="M220 335H440 M220 415H440 M220 495H440 M220 575H440 M220 655H440 M220 735H440"/>
+<path d="M760 335H830 M870 335H940 M760 415H830 M870 415H940 M760 495H830 M870 495H940 M760 575H830 M870 575H940 M760 655H830 M870 655H940 M760 735H830 M870 735H940"/>
+</g></g>
+<text x="600" y="940" text-anchor="middle" font-size="31" fill="#382d20" font-family="serif">阳爻称“九”，阴爻称“六”</text>
+<text x="600" y="990" text-anchor="middle" font-size="25" fill="#5c4b35" font-family="serif">最下称“初”，最上称“上”；中间依次为二、三、四、五</text>
+<text x="600" y="1040" text-anchor="middle" font-size="21" fill="#705c3e" font-family="serif">例如：阳爻在第二位称“九二”，阴爻在第二位称“六二”</text>
+</svg>
