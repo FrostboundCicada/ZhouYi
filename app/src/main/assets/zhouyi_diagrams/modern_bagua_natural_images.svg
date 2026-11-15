@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1100" viewBox="0 0 1200 1100">
+<rect width="1200" height="1100" fill="#f4ecd9"/><rect x="28" y="28" width="1144" height="1044" rx="18" fill="none" stroke="#765f3d" stroke-width="3"/>
+<text x="600" y="105" text-anchor="middle" font-size="54" fill="#382d20" font-family="serif">八卦自然取象图</text>
+<text x="600" y="165" text-anchor="middle" font-size="27" fill="#5c4b35" font-family="serif">《说卦传》所列八卦基本自然象征</text>
+<g fill="#eee2c9" stroke="#a18a64" stroke-width="3">
+<rect x="90" y="230" width="235" height="300" rx="16"/><rect x="355" y="230" width="235" height="300" rx="16"/><rect x="620" y="230" width="235" height="300" rx="16"/><rect x="885" y="230" width="235" height="300" rx="16"/>
+<rect x="90" y="570" width="235" height="300" rx="16"/><rect x="355" y="570" width="235" height="300" rx="16"/><rect x="620" y="570" width="235" height="300" rx="16"/><rect x="885" y="570" width="235" height="300" rx="16"/>
+</g>
+<g text-anchor="middle" font-family="serif" fill="#302719">
+<text x="207" y="305" font-size="50">乾</text><text x="207" y="375" font-size="38">天</text><text x="207" y="455" font-size="23">刚健、覆育</text>
+<text x="472" y="305" font-size="50">坤</text><text x="472" y="375" font-size="38">地</text><text x="472" y="455" font-size="23">顺承、载物</text>
+<text x="737" y="305" font-size="50">震</text><text x="737" y="375" font-size="38">雷</text><text x="737" y="455" font-size="23">发动、震起</text>
+<text x="1002" y="305" font-size="50">巽</text><text x="1002" y="375" font-size="38">风</text><text x="1002" y="455" font-size="23">入、散</text>
+<text x="207" y="645" font-size="50">坎</text><text x="207" y="715" font-size="38">水</text><text x="207" y="795" font-size="23">陷、险</text>
+<text x="472" y="645" font-size="50">离</text><text x="472" y="715" font-size="38">火</text><text x="472" y="795" font-size="23">丽、附着</text>
+<text x="737" y="645" font-size="50">艮</text><text x="737" y="715" font-size="38">山</text><text x="737" y="795" font-size="23">止</text>
+<text x="1002" y="645" font-size="50">兑</text><text x="1002" y="715" font-size="38">泽</text><text x="1002" y="795" font-size="23">说、悦</text>
+</g>
+<text x="600" y="945" text-anchor="middle" font-size="23" fill="#705c3e" font-family="serif">取象依据：《说卦传》“乾为天、坤为地、震为雷、巽为木、坎为水、离为火、艮为山、兑为泽”</text>
+<text x="600" y="995" text-anchor="middle" font-size="20" fill="#705c3e" font-family="serif">本图仅列基本自然取象；八卦在不同语境中还有其他取象与解释</text>
+</svg>
